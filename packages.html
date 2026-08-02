@@ -401,6 +401,7 @@
   .xtree summary::before { content: "▶"; color: var(--pink); font-size: 13px; flex: 0 0 22px; transition: transform .15s; transform-origin: 40% 50%; line-height: 1; align-self: center; }
   .xtree details[open] > summary::before { transform: rotate(90deg); }
   .xtree summary:hover { background: var(--surface2); color: var(--text); }
+  .xleaf.plain::before { content: ""; }
   .xleaf::before { content: "·"; color: var(--text-subtle); font-size: 15px; flex: 0 0 22px; text-align: left; }
   .xname { font-family: var(--font-mono); color: var(--text); min-width: 230px; flex-shrink: 0; }
   .xname .t-dir { color: var(--cyan); font-weight: 500; }
@@ -453,6 +454,9 @@
   @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
 
   /* ============ 네트워크 토폴로지 ============ */
+  .topo { width: 100%; height: auto; display: block; margin: 16px 0 6px; }
+  .topo text { font-family: var(--font-body); }
+  .topo text.mono { font-family: var(--font-mono); }
   .netmap { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: stretch; margin: 16px 0; }
   .netlink { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 6px; }
   .netlink .wire { font-size: 20px; color: var(--pink); letter-spacing: -2px; }
