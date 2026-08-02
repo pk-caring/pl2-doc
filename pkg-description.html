@@ -496,6 +496,22 @@ params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울�
   <div class="tbl-wrap"><table><tbody><tr><td><strong>mobi/urdf/…</strong></td><td>메시 참조 · 관절 길이</td></tr><tr><td><strong>mobi/config/arm/joint/<br>joint_limits.yaml</strong></td><td>관절 한계 — canonical 우측, 좌측은 거울상 자동</td></tr><tr><td><strong>관성값</strong></td><td>CAD 재산출 — 중력보상 정확도가 여기서 나온다</td></tr><tr><td><strong>pl2_arm_bringup/contract/</strong></td><td><code>openarm_v2.contract.yaml</code> 사본 → <code>mobi.contract.yaml</code> (model: mobi — 관절 수 같으면 거의 그대로)</td></tr></tbody></table></div>
   <div class="codeblock"><pre>cp -r assets/robot/openarm_v2.0 assets/robot/mobi</pre></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">관절 한계는 코드가 아니라 이 데이터다. 기준은 오른팔이고, 왼팔은 매크로가 부호를 뒤집어 만든다.</p>
+  <p class="diagram-shell__hint">config/arm/joint/joint_limits.yaml (발췌)</p>
+  <div class="codeblock"><pre>joint1:
+  limit:
+    lower: -1.3963
+    upper: 3.4907
+    effort: 40
+    velocity: 16.755
+joint2:
+  limit:
+    lower: -0.17453
+    upper: 3.3161
+    effort: 40
+    velocity: 16.755</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_description/</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

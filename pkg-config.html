@@ -501,6 +501,40 @@ arm.right:
   <p class="p dim">module_revision 자물쇠 — 모델을 바꾸면 낡은 실측이 이름만 같은 파라미터로 넘어오지 못하게 resolver 가 기동을 거부한다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>rigs/&lt;rig&gt;/rig.yaml</strong></td><td><code>module_revision: openarm_v2</code> → <code>mobi</code> — 어긋난 동안은 기동 거부 (fail-closed)</td></tr><tr><td><strong>커미셔닝 재실행</strong></td><td><code>CalibratePayload</code> → torque_bias · payload 가 mobi 기준으로 새로 저장</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">보드의 네트워크 사실이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
+  <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
+  <div class="codeblock"><pre># links: 기가비트 유선 실측 (compute↔leader 직결):
+#   TCP 양방향 941 Mbit/s, ping RTT avg 0.41 ms.
+#   예산은 측정치보다 보수적으로 잡는다.
+devices: [socketcan]
+links:
+  leader: {bandwidth_mbps: 800, latency_ms: 1}
+streams:
+  camera.top.rgb:           {bandwidth_mbps: 14}
+  camera.right_gripper.rgb: {bandwidth_mbps: 17}
+  camera.left_gripper.rgb:  {bandwidth_mbps: 17}</pre></div>
+  <p class="p dim">어떤 컴포넌트가 어느 머신에서 도는지의 템플릿이다. 복사해서 이 호스트의 값으로 채운다.</p>
+  <p class="diagram-shell__hint">config/placement.json.example (발췌)</p>
+  <div class="codeblock"><pre>{
+  "machines": {
+    "leaderbox": {
+      "hostname": "192.168.0.10",
+      "components": {
+        "leader":   {"type": "leader",   "args": ["--backend", "mini"]},
+        "recorder": {"type": "recorder", "args": ["--schema", "..."]}
+      }
+    },
+    "followerbox": {
+      "hostname": "192.168.0.11",
+      "components": {
+        "follower": {"type": "follower"},
+        "cameras":  {"type": "cameras"}
+      }
+    }
+  }
+}</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>config/ 각 디렉터리 · robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

@@ -496,6 +496,22 @@ def make_backend(kind: str, *, port_right: str = "", port_left: str = "",
                  teleop_id: str = "mini", v2_wrist_fix: bool = False,
                  interactive_calibration: bool = True) -&gt; LeaderBackend:</pre></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">리더 계약이다. 관절 그룹과 상태 토픽을 선언하고, resolver 가 이것을 팔 계약과 짝지어 텔레옵 매핑표를 만든다.</p>
+  <p class="diagram-shell__hint">pl2_leader/contract/leader.contract.yaml (발췌)</p>
+  <div class="codeblock"><pre>groups:
+  right_arm:
+    joints: [leader_right_joint1, leader_right_joint2, leader_right_joint3,
+             leader_right_joint4, leader_right_joint5, leader_right_joint6,
+             leader_right_joint7]
+    unit: rad
+  right_gripper:
+    joints: [leader_right_gripper]
+    unit: ratio
+
+state:
+  topic: leader_state</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_leader/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

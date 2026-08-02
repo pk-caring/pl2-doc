@@ -500,6 +500,21 @@ ros2 run pl_supervisor doctor --kill               # 고아 노드 정리</pre><
   <p class="p dim">새 모델 mobi 가 와도 <strong>0줄</strong> — resolver 는 계약·선언만 읽는다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — mobi.contract.yaml + composition 의 model: mobi 로 같은 파이프라인이 돈다</td></tr><tr><td><strong>검증</strong></td><td>계약 대조 · rig 자물쇠 · 링크 예산이 새 모델에 자동 적용</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">플랫폼이 자기 검증에 쓰는 가짜 로봇이다. mock 계약으로 존재하지 않는 로봇을 조립해 본다 — 이것이 성공하면 조립 기계가 로봇 무관이라는 증명이 된다.</p>
+  <p class="diagram-shell__hint">reference_robots/ref_bimanual/composition.yaml (발췌)</p>
+  <div class="codeblock"><pre>robot_id: ref_bimanual
+description: mock bimanual fixed rig
+modules:
+  - role: arm.right
+    provider: mock_arm
+    model: mock6
+    namespace: right
+    mount: {parent: rig_frame, xyz: [0.0, -0.2, 0.8]}
+  - role: leader
+    provider: mock_leader
+    optional: true</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl_platform/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

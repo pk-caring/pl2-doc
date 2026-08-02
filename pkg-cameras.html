@@ -495,6 +495,30 @@ frame, stamp = feed.get_latest()              # 항상 최신 프레임 (np.ndar
     from pl_camera_server.config import resolve_cameras_json
     return str(resolve_cameras_json())</pre></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">카메라 계약 전문이다. 해상도·fps 가 없다 — 그 값은 rig 기록이 소유하고, 계약은 '이 역할이 무엇을 공개하는가'만 선언한다.</p>
+  <p class="diagram-shell__hint">pl2_arm_cameras/contract/camera.contract.yaml</p>
+  <div class="codeblock"><pre>contract_version: 1
+module: sensing
+provider: pl_camera_server
+model: jpeg_stream
+
+observation:
+  - {key: camera.rgb, transport: zmq, dtype: uint8}
+
+lifecycle:
+  nodes: [camera_server]</pre></div>
+  <p class="p dim">카메라 인벤토리 템플릿이다. type 이 드라이버를 고른다: intelrealsense 는 시리얼로, opencv 는 USB 물리 포트 경로로 장치를 찾는다.</p>
+  <p class="diagram-shell__hint">config/cameras.json.example (발췌)</p>
+  <div class="codeblock"><pre>{
+  "top": {"type": "intelrealsense",
+          "serial_number_or_name": "&lt;your-realsense-serial&gt;",
+          "width": 960, "height": 540, "fps": 60},
+  "right_gripper": {"type": "opencv",
+          "index_or_path": "/dev/v4l/by-path/&lt;usb-path&gt;-video-index0",
+          "width": 960, "height": 600, "fps": 60, "fourcc": "YUYV"}
+}</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_cameras/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

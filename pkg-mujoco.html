@@ -497,6 +497,15 @@ python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
   <p class="p dim">새 모델 mobi 의 디지털 트윈 — description 과 같은 기구 값의 MJCF 트리가 v1·v2 옆에 선다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/ · v2/ · <strong>mobi/</strong></strong></td><td>새 자산 트리 — 관절 길이·관성은 description 과 동일해야 한다 (어긋나면 심이 거짓말을 한다)</td></tr><tr><td><strong>소비자</strong></td><td>무변경 — share 아래에서 모델명으로 찾는다</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">sim 레이어의 rig 값이다. 가짜지만 스키마를 온전히 만족한다 — 하드웨어 없이 resolver 검증과 CI 를 돌리기 위한 값이고, 실물 값은 config/rigs/ 가 가진다.</p>
+  <p class="diagram-shell__hint">robot/layers/sim/rig.yaml (발췌)</p>
+  <div class="codeblock"><pre>arm.right:
+  joint_zero_offset: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  torque_bias:       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  payload_mass: 0.0          # 0 = 미보정과 같은 의미
+  payload_com:  [0.0, 0.0, 0.0]</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_mujoco/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

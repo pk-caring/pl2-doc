@@ -501,6 +501,14 @@ flowchart LR
   <p class="p dim">새 모델 mobi 가 와도 관절 수·모터가 같으면 <strong>0줄</strong>이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>모터 구동</strong></td><td>URDF param(arm_type·can_interface)으로 조정 — 기구가 바뀌어도 CAN 트랜잭션은 동일</td></tr><tr><td><strong>결선</strong></td><td>바뀌면 rig 레코드(board.yaml)만 갱신</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">결선의 단일 진실이다. 코드 어디에도 can0 이 오른팔이라는 지식이 없다 — 이 파일이 말하고 resolver 가 나른다.</p>
+  <p class="diagram-shell__hint">config/rigs/pl2m-001/board.yaml</p>
+  <div class="codeblock"><pre>arm.right: {can_interfaces: [can0]}
+arm.left:  {can_interfaces: [can1]}
+leader:    {port_right: /dev/openarm_leader_right,
+            port_left:  /dev/openarm_leader_left}</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_hardware/README.md · src/pl2_arm/pl2_arm_can/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

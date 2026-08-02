@@ -515,6 +515,17 @@ ros2 topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray "{data: [
   <p class="p dim">새 모델 mobi 가 와도 이 패키지는 <strong>0줄</strong>이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>한계</strong></td><td>전개된 URDF 에서 측별로 다시 읽는다 — mobi 의 joint_limits.yaml → URDF → 게이트</td></tr><tr><td><strong>게이트 배선</strong></td><td>lease · E-stop · 체인 게이트는 이름 기준이라 모델과 무관</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">실행 설정이 게이트의 플러그인 클래스 이름을 보는 지점이다. 시뮬레이션도 실물과 같은 게이트 구조를 쓴다 — 게이트 없는 심은 더 작은 로봇이 아니라 다른 로봇이다.</p>
+  <p class="diagram-shell__hint">pl2_arm_bringup/config/controllers/pl2_sim_controllers.yaml (발췌)</p>
+  <div class="codeblock"><pre>left_safety_gate:
+  type: pl2_arm_safety_controller/SafetyGateController
+right_safety_gate:
+  type: pl2_arm_safety_controller/SafetyGateController
+
+left_joint_trajectory_controller:
+  type: joint_trajectory_controller/JointTrajectoryController</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_safety/README.md — 실물 검증 절차 포함</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>

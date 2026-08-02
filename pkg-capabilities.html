@@ -503,6 +503,18 @@ goal.bidirectional = bidirectional</pre></div>
   <p class="p dim">새 모델 mobi 에서 능력 패키지들이 해야 하는 일 — MoveIt config 한 벌과 커미셔닝 재실행뿐, 코드는 0줄.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl2_arm_moveit</strong></td><td>계획까지 쓰면 mobi config 한 벌 (v1/v2 옆 — SRDF·조인트 그룹)</td></tr><tr><td><strong>payload</strong></td><td>모델 교체 후 <code>CalibratePayload</code> 재실행 — rig 자물쇠가 강제한다</td></tr><tr><td><strong>servo · mit</strong></td><td><strong>0줄</strong> — /robot_description 과 게인 SSOT 에서 재파생</td></tr></tbody></table></div>
 
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p dim">능력이 쓰는 명령 토픽도 계약이 선언한다. 어느 그룹이 어떤 토픽·QoS 로 명령을 받는지가 데이터로 고정된다.</p>
+  <p class="diagram-shell__hint">pl2_arm_bringup/contract/openarm_v2.contract.yaml (발췌)</p>
+  <div class="codeblock"><pre>groups:
+  arm:
+    joints: [joint1, joint2, joint3, joint4, joint5, joint6, joint7]
+    unit: rad
+    command:
+      topic: forward_position_controller/commands
+      type: std_msgs/msg/Float64MultiArray
+      qos: {reliability: reliable, durability: volatile, depth: 1}</pre></div>
+
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_{moveit,servo,mit,payload}/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
