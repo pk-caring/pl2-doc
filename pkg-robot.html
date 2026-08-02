@@ -544,9 +544,6 @@ modules:
   - role: camera.top
     provider: pl_camera_server
     model: jpeg_stream</pre></div>
-  <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">로봇 선언이 mobi 를 가리키게 — 바뀌는 선언은 두 곳이고, 나머지는 generate 가 다시 만든다.</p>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td><code>model: openarm_v2</code> → <code>model: mobi</code> (팔당 한 줄)</td></tr><tr><td><strong>urdf/pl2_m.urdf.xacro</strong></td><td><code>openarm_v20_single_arm</code> → <code>mobi_single_arm</code> 매크로 호출 교체</td></tr><tr><td><strong>재생성</strong></td><td><code>robot/generate.sh</code> — schema hash 가 바뀐다 (데이터셋은 새 에폭)</td></tr></tbody></table></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">어느 노드가 어느 보드 역할에서 도는지 선언한다. 실제 hostname 은 여기 없다 — 그것은 배포 단계 config/ 의 몫이다.</p>
   <p class="diagram-shell__hint">robot/placement.yaml</p>
@@ -571,6 +568,9 @@ placement:
   },
   "unit": "rad"
 }</pre></div>
+  <div class="sec-head" id="p7"><span class="num">07</span><h2>새 모델(mobi)을 추가할 때</h2><a class="anchor" href="#p7">#</a></div>
+  <p class="p dim">로봇 선언이 mobi 를 가리키게 — 바뀌는 선언은 두 곳이고, 나머지는 generate 가 다시 만든다.</p>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td><code>model: openarm_v2</code> → <code>model: mobi</code> (팔당 한 줄)</td></tr><tr><td><strong>urdf/pl2_m.urdf.xacro</strong></td><td><code>openarm_v20_single_arm</code> → <code>mobi_single_arm</code> 매크로 호출 교체</td></tr><tr><td><strong>재생성</strong></td><td><code>robot/generate.sh</code> — schema hash 가 바뀐다 (데이터셋은 새 에폭)</td></tr></tbody></table></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

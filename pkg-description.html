@@ -530,10 +530,6 @@ xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/u
         / "assets" / "robot" / folder / "urdf" / entry)).toxml()
 side = LaunchConfiguration("side").perform(context)
 params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울상이라 공유 불가</pre></div>
-  <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">겉 형상·관절 길이가 다른 새 팔 <strong>mobi</strong> 를 추가할 때 이 패키지에서 해야 하는 일 — 전부 데이터 작업이다.</p>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>mobi/urdf/…</strong></td><td>메시 참조 · 관절 길이</td></tr><tr><td><strong>mobi/config/arm/joint/<br>joint_limits.yaml</strong></td><td>관절 한계 — canonical 우측, 좌측은 거울상 자동</td></tr><tr><td><strong>관성값</strong></td><td>CAD 재산출 — 중력보상 정확도가 여기서 나온다</td></tr><tr><td><strong>pl2_arm_bringup/contract/</strong></td><td><code>openarm_v2.contract.yaml</code> 사본 → <code>mobi.contract.yaml</code> (model: mobi — 관절 수 같으면 거의 그대로)</td></tr></tbody></table></div>
-  <div class="codeblock"><pre>cp -r assets/robot/openarm_v2.0 assets/robot/mobi</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">관절 한계는 코드가 아니라 이 데이터다. 기준은 오른팔이고, 왼팔은 매크로가 부호를 뒤집어 만든다.</p>
   <p class="diagram-shell__hint">config/arm/joint/joint_limits.yaml (발췌)</p>
@@ -549,6 +545,10 @@ joint2:
     upper: 3.3161
     effort: 40
     velocity: 16.755</pre></div>
+  <div class="sec-head" id="p7"><span class="num">07</span><h2>새 모델(mobi)을 추가할 때</h2><a class="anchor" href="#p7">#</a></div>
+  <p class="p dim">겉 형상·관절 길이가 다른 새 팔 <strong>mobi</strong> 를 추가할 때 이 패키지에서 해야 하는 일 — 전부 데이터 작업이다.</p>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>mobi/urdf/…</strong></td><td>메시 참조 · 관절 길이</td></tr><tr><td><strong>mobi/config/arm/joint/<br>joint_limits.yaml</strong></td><td>관절 한계 — canonical 우측, 좌측은 거울상 자동</td></tr><tr><td><strong>관성값</strong></td><td>CAD 재산출 — 중력보상 정확도가 여기서 나온다</td></tr><tr><td><strong>pl2_arm_bringup/contract/</strong></td><td><code>openarm_v2.contract.yaml</code> 사본 → <code>mobi.contract.yaml</code> (model: mobi — 관절 수 같으면 거의 그대로)</td></tr></tbody></table></div>
+  <div class="codeblock"><pre>cp -r assets/robot/openarm_v2.0 assets/robot/mobi</pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_description/</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

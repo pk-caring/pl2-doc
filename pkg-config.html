@@ -536,9 +536,6 @@ arm.right:
   torque_bias: [0.114, 0.062, 0.047, 0.187, -0.009, 0.048, 0.009]
   payload_mass: 0.211
   payload_com: [-0.003, -0.001, -0.162]</pre></div>
-  <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">module_revision 자물쇠 — 모델을 바꾸면 낡은 실측이 이름만 같은 파라미터로 넘어오지 못하게 resolver 가 기동을 거부한다.</p>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>rigs/&lt;rig&gt;/rig.yaml</strong></td><td><code>module_revision: openarm_v2</code> → <code>mobi</code> — 어긋난 동안은 기동 거부 (fail-closed)</td></tr><tr><td><strong>커미셔닝 재실행</strong></td><td><code>CalibratePayload</code> → torque_bias · payload 가 mobi 기준으로 새로 저장</td></tr></tbody></table></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">보드의 네트워크 사실이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
   <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
@@ -572,6 +569,9 @@ streams:
     }
   }
 }</pre></div>
+  <div class="sec-head" id="p7"><span class="num">07</span><h2>새 모델(mobi)을 추가할 때</h2><a class="anchor" href="#p7">#</a></div>
+  <p class="p dim">module_revision 자물쇠 — 모델을 바꾸면 낡은 실측이 이름만 같은 파라미터로 넘어오지 못하게 resolver 가 기동을 거부한다.</p>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>rigs/&lt;rig&gt;/rig.yaml</strong></td><td><code>module_revision: openarm_v2</code> → <code>mobi</code> — 어긋난 동안은 기동 거부 (fail-closed)</td></tr><tr><td><strong>커미셔닝 재실행</strong></td><td><code>CalibratePayload</code> → torque_bias · payload 가 mobi 기준으로 새로 저장</td></tr></tbody></table></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>config/ 각 디렉터리 · robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

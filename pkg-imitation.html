@@ -535,9 +535,6 @@ self._provenance = {
                 for role, m in doc["modules"].items()},
     "expected_lease_source": expected_lease_source,
 }</pre></div>
-  <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">새 모델 mobi 전환 시 이 도메인은 <strong>0줄</strong> — 다만 데이터셋 에폭이 갈린다.</p>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — 스키마만 본다</td></tr><tr><td><strong>데이터셋</strong></td><td>schema hash 변경 → 기존 append 거부, mobi 는 새 에폭. 보호 장치다 — 기구가 다른 로봇의 데이터를 섞으면 학습이 조용히 오염된다</td></tr></tbody></table></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">recorder 가 읽는 관측 선언이다. 어느 토픽의 어느 관절을 어떤 의미로 기록할지가 코드가 아니라 데이터로 온다.</p>
   <p class="diagram-shell__hint">robot/generated/schema.json (관측 항목 하나)</p>
@@ -553,6 +550,9 @@ self._provenance = {
   },
   "unit": "rad"
 }</pre></div>
+  <div class="sec-head" id="p7"><span class="num">07</span><h2>새 모델(mobi)을 추가할 때</h2><a class="anchor" href="#p7">#</a></div>
+  <p class="p dim">새 모델 mobi 전환 시 이 도메인은 <strong>0줄</strong> — 다만 데이터셋 에폭이 갈린다.</p>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — 스키마만 본다</td></tr><tr><td><strong>데이터셋</strong></td><td>schema hash 변경 → 기존 append 거부, mobi 는 새 에폭. 보호 장치다 — 기구가 다른 로봇의 데이터를 섞으면 학습이 조용히 오염된다</td></tr></tbody></table></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl_imitation/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
