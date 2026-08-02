@@ -595,7 +595,19 @@ flowchart LR
     <div class="jstat"><span class="tag">하드웨어</span><b>모터</b> — DAMIAO ×16
       <p>실제 움직임. 위 단계는 어느 하나도 건너뛸 수 없다.</p></div>
   </div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>빠른 시작</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>정지와 복구</h2><a class="anchor" href="#p5">#</a></div>
+  <p class="p">이 층이 팔을 세우는 경우와 다시 살리는 방법이다. 아래는 전부 고장이 아니라 의도된 동작이다.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>상황</th><th>무슨 일이 일어나나</th><th>되살리는 법</th></tr></thead>
+    <tbody>
+      <tr><td><strong>heartbeat 끊김</strong><br><span style="color:var(--text-subtle);font-size:11px">프로그램 다운 · 멈춤</span></td><td>0.2 초 안에 lease 자동 반납, 게이트가 명령을 막는다. 팔은 그 자리에 선다.</td><td>프로그램을 살리고 lease 를 다시 얻는다.</td></tr>
+      <tr><td><strong>E-stop</strong></td><td>즉시 latch + lease 강탈. 노드를 재시작해도 풀리지 않는다(파일에 남는다).</td><td><code>rearm</code> 을 명시로 요청한다. rearm 만으로는 아무것도 움직이지 않는다 — lease 를 다시 얻어야 명령이 흐른다.</td></tr>
+      <tr><td><strong>정책 게이트 사망</strong></td><td>체인 게이트가 열림 신호의 TTL 만료를 보고 스스로 닫힌다 — fail-closed 정지.</td><td>정책 노드를 재기동한다. 열림 신호가 다시 이어지면 재개된다.</td></tr>
+      <tr><td><strong>한계 밖 intent</strong></td><td>clamp 가 아니라 거부 — 그 후보만 버려지고 팔은 그대로다.</td><td>값을 한계 안으로 고쳐 다시 발행한다.</td></tr>
+      <tr><td><strong>다른 소스가 lease 보유</strong></td><td>획득이 거부된다 — 명령권은 한 번에 하나다.</td><td>기존 소스가 반납하거나 그쪽 heartbeat 가 끊길 때까지 기다린다.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>빠른 시작</h2><a class="anchor" href="#p6">#</a></div>
   <div class="codeblock"><pre># 1) lease 획득
 LEASE=$(ros2 service call /right/command_lease \
         pl2_arm_interfaces/srv/AcquireCommandLease "{source: my_app}" | grep -o "lease_id='[^']*'" | cut -d"'" -f2)
@@ -606,7 +618,7 @@ ros2 topic pub -r 20 /right/lease_heartbeat \
 
 # 3) 이제야 intent 가 팔에 닿는다 (7관절 rad)
 ros2 topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray "{data: [0.0, ...]}"</pre></div>
-  <div class="sec-head" id="p6"><span class="num">06</span><h2>실전 코드</h2><a class="anchor" href="#p6">#</a></div>
+  <div class="sec-head" id="p7"><span class="num">07</span><h2>실전 코드</h2><a class="anchor" href="#p7">#</a></div>
   <p class="p dim">bringup 이 게이트를 띄우는 실제 코드 — 실물이든 심이든 같은 함수 하나로, 측별 한계를 URDF 에서 읽어 두 게이트를 세운다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/safety_gates.py</p>
   <div class="codeblock"><pre>def safety_gate_nodes(robot_description: str) -&gt; list[Node]:
@@ -643,16 +655,6 @@ def gate_velocity(self, values, now):
         self._vel_last_pass = now
         return True, "", False
     zero_now = self._vel_last_pass is not None</pre></div>
-  <div class="sec-head" id="p7"><span class="num">07</span><h2>설정 파일 실물</h2><a class="anchor" href="#p7">#</a></div>
-  <p class="p dim">실행 설정이 게이트의 플러그인 클래스 이름을 보는 지점이다. 시뮬레이션도 실물과 같은 게이트 구조를 쓴다 — 게이트 없는 심은 더 작은 로봇이 아니라 다른 로봇이다.</p>
-  <p class="diagram-shell__hint">pl2_arm_bringup/config/controllers/pl2_sim_controllers.yaml (발췌)</p>
-  <div class="codeblock"><pre>left_safety_gate:
-  type: pl2_arm_safety_controller/SafetyGateController
-right_safety_gate:
-  type: pl2_arm_safety_controller/SafetyGateController
-
-left_joint_trajectory_controller:
-  type: joint_trajectory_controller/JointTrajectoryController</pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_safety/README.md — 실물 검증 절차 포함</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
