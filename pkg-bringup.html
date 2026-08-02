@@ -542,7 +542,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl2_arm_bringup/pl2_sim_description.py</span><span class="xdesc">심 URDF 생성 — 실물과 같은 게인 SSOT</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>pl2_arm_bringup/safety_gates.py</span><span class="xdesc">게이트 기동 헬퍼 — URDF 측별 한계</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -574,7 +574,7 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>세 진입점</strong></td><td>실물 <code>pl2_arm</code> · 심 <code>pl2_sim</code> · 심+계획 <code>pl2_sim_moveit</code> — 전부 같은 컨트롤러·게이트 구조, 심은 하드웨어 plugin 한 줄만 다르다</td></tr><tr><td><strong>모듈 계약</strong></td><td><code>contract/</code> 가 팔의 공개 인터페이스(그룹·토픽·QoS)를 데이터로 선언 — resolver 의 입력</td></tr><tr><td><strong>컨트롤러 설정</strong></td><td><code>config/controllers/</code> 가 JTC · 게이트 체인 · 브로드캐스터의 실행 배선을 가진다</td></tr><tr><td><strong>게인 로더</strong></td><td><code>pl2_control_gains</code> 가 description 소유 <code>control_gains.yaml</code> 을 읽는 한 철자 — 심도 같은 파일을 본다</td></tr><tr><td><strong>모델 자동 결정</strong></td><td>단독 기동 시 rig 기록(<code>module_revision</code>)을 따라 v1/v2 결정 — env 는 명시 오버라이드일 뿐</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># 실물 팔 스택 (모델은 rig 기록이 결정)
 ros2 launch pl2_arm_bringup pl2_arm.launch.py
 
@@ -583,7 +583,7 @@ ros2 launch pl2_arm_bringup pl2_sim.launch.py model:=v2
 
 # 심 + move_group 풀스택 (앱이 sim 세션에 자동 선택)
 ros2 launch pl2_arm_bringup pl2_sim_moveit.launch.py model:=v2</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">단독 기동에서도 "이 로봇이 무엇인가"의 답은 rig 기록 하나다 — launch 의 모델 기본값이 캘리브레이션·스튜디오와 같은 해석(rig 기록 → v1/v2)을 따른다. 조립 경로(robot.launch.py)는 파생된 description 을 명시로 넘긴다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/launch/pl2_arm.launch.py</p>
   <div class="codeblock"><pre># The model default follows the rig record (env override -&gt; record -&gt; v2),

@@ -543,7 +543,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>services/policy_server/</span><span class="xdesc">정책 서빙 (GPU 호스트)</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>scripts/</span><span class="xdesc">학습 도구 (비-ROS)</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -575,9 +575,9 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>lerobot_ros2</strong></td><td>토픽·QoS·피처를 전부 스키마에서 파생 — 코드에 로봇 이름 없음</td></tr><tr><td><strong>recorder</strong></td><td>에피소드 판정(전 스트림 도착 강제) · lease 소스 검증 · provenance(schema hash) 기록</td></tr><tr><td><strong>inference</strong></td><td>policy server 의 액션 청크를 intent 로 — 게이트 통과 필수</td></tr><tr><td><strong>studio</strong></td><td>녹화·추론의 정식 경로 — 순서 강제 + 단계별 프로브</td></tr><tr><td><strong>산출물</strong></td><td>데이터셋·모델은 리포 밖 (<code>~/pl2_datasets</code> · <code>~/pl2_models</code>)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>python -m pl_imitation_studio      # 콘솔 하나 — 메인 메뉴: 녹화 / 추론</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">recorder 가 에피소드마다 기록하는 실제 provenance — 어떤 로봇 정의(스키마 해시)에서 수집됐는지가 데이터셋에 박힌다. 로봇이 바뀌면 append 가 거부되는 근거다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/recorder.py</p>
   <div class="codeblock"><pre>doc = robot.schema_doc
@@ -600,6 +600,54 @@ self._provenance = {
         self._buffer = SnapshotBuffer(
             self.features.required_keys | self.features.recording_keys,
             required=self.features.required_keys)</pre></div>
+  <p class="p dim">GPU 정책 서버(services/policy_server)가 관측을 받아 액션 청크를 내는 지점이다. 학습 서버(thor)에서 도는 독립 프로세스이고, GR00T·ACT 서버가 같은 wire 규약(ServedPolicy)을 구현해 클라이언트는 모델 종류를 모른다.</p>
+  <p class="diagram-shell__hint">src/pl_imitation/services/policy_server/lerobot_groot_server.py</p>
+  <div class="codeblock"><pre>def _get_action_impl(self, observation, options):
+    # RTC 사이드채널을 먼저 분리하고, 관측을 lerobot 배치로 변환
+    previous_action = observation.pop("previous_action", None)
+    batch = grouped_to_lerobot(observation, self.device,
+                               letter_box=self._letter_box)
+    with torch.no_grad():
+        processed = self.preprocessor(batch)  # 예측 시점 raw state 캐시
+        if self.serve_mode == "absolute_rtc":
+            ...</pre></div>
+  <p class="p dim">추론이 관측을 조립하는 실제 코드 — 카메라는 ZMQ 원시 JPEG 를 받아 GPU(CUDA)에서 디코드하고, 관절은 /joint_states 캐시에서 온다. 소스마다 나이(age)를 함께 실어 오래된 관측을 걸러낸다.</p>
+  <p class="diagram-shell__hint">src/pl_imitation/pl_imitation_inference/pl_imitation_inference/inference_node.py</p>
+  <div class="codeblock"><pre>def _build_obs(self) -&gt; dict:
+    frames_rgb, ages = {}, {}
+    for role in SETTINGS.camera_roles:
+        raw_jpeg, age = self._cam_client.get_frame_bytes(role)
+        frames_rgb[role] = decode_jpeg_cuda(raw_jpeg)  # GPU 디코드 — RGB
+        ages[role] = age
+    with self._js_lock:
+        cache_rad = dict(self._js_cache)
+    return build_gr00t_obs(cache_rad, frames_rgb, self._task,
+                           ages=ages, bounds=self._bounds)</pre></div>
+  <p class="p dim">녹화 연결 시점의 시계 게이트다 — 보드가 chronyc 로 자기 오프셋을 재고, 검증 불가능한 시계는 나쁜 시계와 똑같이 거부한다(기초 지식의 시간 동기화 절 참조).</p>
+  <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/gating.py</p>
+  <div class="codeblock"><pre>def chrony_gate(max_ms, run=None) -&gt; Gate:
+    def check() -&gt; list[str]:
+        try:
+            offset = parse_chronyc_tracking((run or _run_chronyc)())
+        except Exception as exc:
+            return [f"clock sync unverifiable: {exc}"]
+        if abs(offset) &gt; max_ms:
+            return [f"clock offset {offset:+.2f} ms exceeds "
+                    f"the {max_ms:.1f} ms budget"]
+        return []
+    return check</pre></div>
+  <p class="p dim">콘솔이 수집 스택을 스폰하는 방법 — 컴포넌트 이름을 argv 목록으로 푼다. 카메라는 cameras.json 의 역할별로 프로세스 하나씩, 모르는 타입은 fail-closed 로 거부.</p>
+  <p class="diagram-shell__hint">src/pl_imitation/pl_imitation_studio/pl_imitation_studio/launch_spec.py</p>
+  <div class="codeblock"><pre>def resolve_procs(component_name, spec):
+    if comp_type == "recorder":
+        return [[VENV_PYTHON, "-m",
+                 "pl_imitation_recorder.recorder.recorder_node"] + args]
+    if comp_type == "cameras":
+        roles = [role] if role else camera_roles()
+        return [[VENV_PYTHON, "-m", "pl2_arm_cameras.camera_server",
+                 "--role", r] for r in roles]
+    ...
+    raise ValueError(f"unknown component type: {comp_type!r}")</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">recorder 가 읽는 관측 선언이다. 어느 토픽의 어느 관절을 어떤 의미로 기록할지가 코드가 아니라 데이터로 온다.</p>
   <p class="diagram-shell__hint">robot/generated/schema.json (관측 항목 하나)</p>

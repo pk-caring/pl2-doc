@@ -554,7 +554,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl2_arm_payload/procedure.py</span><span class="xdesc">실제 팔 순회 절차</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>pl2_arm_payload/payload_server.py</span><span class="xdesc">CalibratePayload action 서버</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -587,13 +587,13 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>moveit</strong></td><td>MoveIt 설정(v1/v2) + 부르는 쪽의 지식. 노드 아님 — move_group 이 이미 서비스를 내놓는다</td></tr><tr><td><strong>servo</strong></td><td>트위스트를 래치해 반복 발행 → 미분 IK → forward 컨트롤러. JTC ⇄ forward 전환 포함</td></tr><tr><td><strong>mit</strong></td><td>τ = kp·Δq + kd·Δq̇ + τ_ff — MitGains(안전 규칙) · ZeroG(직접교시) · gravity_pub(관찰자)</td></tr><tr><td><strong>payload</strong></td><td>정지 자세 tau_pd 잔차 회귀로 질량·무게중심 실측 — <code>CalibratePayload</code> action, 결과는 rig 레코드로</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># 조그: 팔 끝을 방향으로 밀기 (스튜디오 없이)
 ros2 launch pl2_arm_servo servo.launch.py model:=v2
 ros2 service call /arm_servo/set_servo_mode std_srvs/srv/SetBool "{data: true}"
 
 # 무중력 직접교시·게인은 mit, 쥔 물건 실측은 payload 의 action 으로 — 각 README 참고</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">스튜디오가 payload 실측을 요청하는 실제 코드 — 제어 기능은 action 서버로 노출돼 있고, 스튜디오도 여느 클라이언트처럼 ActionClient 로 부른다(다른 소스가 lease 를 쥐고 있으면 거절당한다).</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_studio/pl2_arm_studio/ros/payload_client.py</p>
   <div class="codeblock"><pre>from pl2_arm_interfaces.action import CalibratePayload

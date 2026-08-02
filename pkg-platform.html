@@ -541,7 +541,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>reference_robots/</span><span class="xdesc">mock 로봇 3종 — 자기 검증</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>ci/ · tests/</span><span class="xdesc">제품명 금지 등 경계 게이트</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -573,11 +573,11 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl_composition</strong></td><td>계약·구성이 따라야 하는 JSON Schema</td></tr><tr><td><strong>pl_resolver</strong></td><td>계약 + 구성 + 레이어 → 파라미터·관측/행동 스키마. 순수 함수</td></tr><tr><td><strong>pl_adapters</strong></td><td>leader_state → 게이트 intent (enable/align 상태기계)</td></tr><tr><td><strong>pl_supervisor</strong></td><td>고아 노드 doctor · NIC 자동감지/DDS 핀</td></tr><tr><td><strong>reference_robots</strong></td><td>mock 참조 구성 3종 — 로봇 없이 조립 규칙 검증</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>robot/generate.sh                                  # 선언 → generated/ (sim 레이어)
 robot/generate.sh --layers config/rigs/pl2m-001    # 이 기체의 실측 레이어로
 ros2 run pl_supervisor doctor --kill               # 고아 노드 정리</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">로봇 선언을 생성물로 바꾸는 실제 호출 — generate.sh 가 resolver 를 이렇게 부른다. 계약·선언·레이어가 입력의 전부이고, 출력이 robot/generated/ 다.</p>
   <p class="diagram-shell__hint">robot/generate.sh</p>
   <div class="codeblock"><pre>python -m pl_resolver resolve \

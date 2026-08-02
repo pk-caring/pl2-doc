@@ -539,7 +539,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>src/ · include/</span><span class="xdesc">SystemInterface — 모터 대신 MuJoCo 스텝</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>pl2_arm_mujoco/mujoco_viewer.py</span><span class="xdesc">패시브 3D 뷰어 (/joint_states 구독)</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -570,10 +570,10 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>자산</strong></td><td>MJCF/메시 트리 v1·v2 — share 설치, <code>get_package_share_directory(&quot;pl2_arm_mujoco&quot;)</code></td></tr><tr><td><strong>한 패키지인 이유</strong></td><td>자산과 그것을 구동하는 플러그인은 항상 짝이 맞아야 한다 — 따로 두면 한쪽만 갱신되는 사고가 난다</td></tr><tr><td><strong>클래스명</strong></td><td><code>openarm_mujoco_hardware/OpenArmMujocoSystem</code> — 벤더링 정체성 그대로</td></tr><tr><td><strong>빌드 함정</strong></td><td>CMake 가 venv 의 mujoco 를 찾는다 — venv 활성화 상태로 빌드 (build_workspace.sh 가 처리)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)
 python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">심 스택이 자산과 게인을 얻는 실제 코드 — MJCF 는 이 패키지 share 에서, 게인은 실물 xacro 가 굽는 것과 같은 모델별 control_gains.yaml 에서 온다. 그래서 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
   <div class="codeblock"><pre>def _mjcf_path(model: str) -&gt; str:

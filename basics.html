@@ -524,26 +524,9 @@
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0">기초 지식</h1>
-  <p class="subtitle animate" style="--i:1">이 프로젝트를 읽는 데 필요한 배경 — 보드 · 네트워크 · 통신 · 용어</p>
+  <p class="subtitle animate" style="--i:1">네트워크 · 통신 · 시간 동기화 · 용어</p>
 
-  <div class="sec-head" id="b1"><span class="num">01</span><h2>두 대의 컴퓨터 — 보드</h2><a class="anchor" href="#b1">#</a></div>
-  <p class="p">이 시스템은 컴퓨터 두 대로 돈다. 로봇에 실린 <strong>compute 보드</strong>와 운영자 자리의 <strong>leader 보드</strong>다. 어느 프로그램이 어느 보드 몫인지는 <code>robot/placement.yaml</code>(역할)과 <code>config/placement.json</code>(실제 머신)이 정한다.</p>
-  <div class="ws2col">
-    <div class="wcard"><b>compute 보드</b><p>기체(로봇)에 실린다.</p>
-      <ul class="devlist">
-        <li><b>팔 하드웨어</b> — 모터 구동 (CAN-FD)</li>
-        <li><b>안전 게이트 · 컨트롤러</b></li>
-        <li><b>카메라 서버</b> — 카메라가 물리로 꽂힌 쪽</li>
-      </ul></div>
-    <div class="wcard"><b>leader 보드</b><p>운영자 자리에 있다.</p>
-      <ul class="devlist">
-        <li><b>리더 디바이스 드라이버</b> — 교시 입력</li>
-        <li><b>운영자 콘솔</b> — 녹화 · 추론 화면</li>
-        <li><b>recorder</b> — 데이터셋 기록</li>
-      </ul></div>
-  </div>
-
-  <div class="sec-head" id="b2"><span class="num">02</span><h2>네트워크 토폴로지</h2><a class="anchor" href="#b2">#</a></div>
+  <div class="sec-head" id="b1"><span class="num">01</span><h2>네트워크 토폴로지</h2><a class="anchor" href="#b1">#</a></div>
   <svg class="topo" viewBox="0 0 980 660" role="img" aria-label="네트워크 토폴로지">
     <defs>
       <marker id="aC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -564,12 +547,10 @@
     <line x1="444" y1="104" x2="444" y2="98" marker-end="url(#aC)" style="stroke: var(--cyan); stroke-width: 2"/>
     <line x1="452" y1="98" x2="452" y2="210" style="stroke: var(--green); stroke-width: 2"/>
     <line x1="452" y1="104" x2="452" y2="98" marker-end="url(#aG)" style="stroke: var(--green); stroke-width: 2"/>
-    <polyline points="510,98 510,140 683,140 683,210" fill="none" stroke-dasharray="6 4" style="stroke: var(--text-subtle); stroke-width: 1.5"/>
-    <polyline points="530,98 530,148 871,148 871,210" fill="none" stroke-dasharray="6 4" style="stroke: var(--text-subtle); stroke-width: 1.5"/>
-    <text x="188" y="152" class="mono" style="fill: var(--cyan); font-size: 11px">DDS — ROS 토픽</text>
-    <text x="188" y="167" style="fill: var(--text-dim); font-size: 9.5px">leader_state · intent · /joint_states 100 Hz</text>
-    <text x="188" y="186" class="mono" style="fill: var(--green); font-size: 11px">ZMQ — 카메라 JPEG</text>
-    <text x="188" y="201" style="fill: var(--text-dim); font-size: 9.5px">compute → leader · 14+17+17 Mb/s (30 fps)</text>
+    <polyline points="530,98 530,132 871,132 871,210" fill="none" stroke-dasharray="6 4" style="stroke: var(--text-subtle); stroke-width: 1.5"/>
+    <polyline points="510,98 510,144 683,144 683,210" fill="none" stroke-dasharray="6 4" style="stroke: var(--text-subtle); stroke-width: 1.5"/>
+    <text x="188" y="158" class="mono" style="fill: var(--cyan); font-size: 11.5px">DDS — ROS 토픽</text>
+    <text x="188" y="180" class="mono" style="fill: var(--green); font-size: 11.5px">ZMQ — 카메라 JPEG</text>
     <rect x="30" y="210" width="260" height="200" rx="14" style="fill: var(--surface); stroke: var(--border); stroke-width: 1.5"/>
     <text x="46" y="238" style="fill: var(--text); font-size: 15px; font-weight: 600">leader 보드</text>
     <text x="46" y="256" style="fill: var(--text-subtle); font-size: 11px">운영자 자리</text>
@@ -628,17 +609,7 @@
     <rect x="700" y="624" width="16" height="14" rx="3" stroke-dasharray="4 3" style="fill: var(--surface); stroke: var(--border)"/>
     <text x="722" y="636" style="fill: var(--text-dim); font-size: 11px">추가 예정</text>
   </svg>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th>항목</th><th>실측</th><th>예산 (resolver 가 검사)</th></tr></thead>
-    <tbody>
-      <tr><td>링크 대역</td><td>941 Mb/s (TCP 양방향)</td><td>800 Mb/s</td></tr>
-      <tr><td>지연 (RTT)</td><td>평균 0.41 ms</td><td>편도 1 ms</td></tr>
-      <tr><td>카메라 스트림</td><td>top 14 · 그리퍼 17 + 17 Mb/s (30 fps JPEG)</td><td>링크 예산에 합산해 검사</td></tr>
-    </tbody>
-  </table></div>
-  <p class="p dim">값의 출처는 <code>config/boards/compute.yaml</code> 실측 기록이다. 예산을 넘는 구성(카메라 fps 를 올리는 등)은 resolver 가 기동 전에 거부한다.</p>
-
-  <div class="sec-head" id="b3"><span class="num">03</span><h2>통신은 세 가지다</h2><a class="anchor" href="#b3">#</a></div>
+  <div class="sec-head" id="b2"><span class="num">02</span><h2>통신 종류</h2><a class="anchor" href="#b2">#</a></div>
   <div class="tbl-wrap"><table>
     <thead><tr><th>전송</th><th>싣는 것</th><th>알아둘 것</th></tr></thead>
     <tbody>
@@ -648,7 +619,7 @@
     </tbody>
   </table></div>
 
-  <div class="sec-head" id="b4"><span class="num">04</span><h2>이름과 발견 — 서로를 어떻게 찾나</h2><a class="anchor" href="#b4">#</a></div>
+  <div class="sec-head" id="b3"><span class="num">03</span><h2>이름과 발견</h2><a class="anchor" href="#b3">#</a></div>
   <div class="tbl-wrap"><table>
     <thead><tr><th>방식</th><th>설명</th></tr></thead>
     <tbody>
@@ -658,7 +629,7 @@
     </tbody>
   </table></div>
 
-  <div class="sec-head" id="b5"><span class="num">05</span><h2>시간 동기화 — 두 보드, 하나의 타임라인</h2><a class="anchor" href="#b5">#</a></div>
+  <div class="sec-head" id="b4"><span class="num">04</span><h2>시간 동기화</h2><a class="anchor" href="#b4">#</a></div>
   <p class="p">한 에피소드의 관측은 두 보드의 시계로 찍힌다. 팔 상태(<code>/joint_states</code>)는 compute 보드가, 리더 상태와 프레임 조립은 leader 보드가 스탬프한다. 두 시계가 갈라지면 프레임 정렬이 조용히 틀어지는데, 이 결함은 데이터에서는 보이지 않다가 학습 결과에서야 드러난다. 그래서 이 프로젝트는 시계를 맞추는 것과 별개로, <b>안 맞으면 녹화를 시작하지 못하게 막는다.</b></p>
   <div class="tbl-wrap"><table>
     <thead><tr><th>단계</th><th>설명</th></tr></thead>
@@ -670,7 +641,7 @@
   </table></div>
   <p class="p dim">50 ms 의 근거: 녹화가 30 Hz 이므로 프레임 주기가 33 ms 다 — 반 프레임을 넘는 시계 차이는 관측이 인접 프레임으로 오정렬되는 것과 같다. 판정이 median 인 이유는 단발 스파이크(디스커버리 · GC)가 녹화를 막아 조작자가 게이트를 불신하게 되는 일을 피하기 위해서다. "측정 안 됨"도 거부하는 이유는 간단하다 — 모름은 0 이 아니다.</p>
 
-  <div class="sec-head" id="b6"><span class="num">06</span><h2>자주 나오는 용어</h2><a class="anchor" href="#b6">#</a></div>
+  <div class="sec-head" id="b5"><span class="num">05</span><h2>주요 용어</h2><a class="anchor" href="#b5">#</a></div>
   <div class="tbl-wrap"><table>
     <thead><tr><th>용어</th><th>뜻</th></tr></thead>
     <tbody>

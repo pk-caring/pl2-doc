@@ -540,7 +540,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>placement.yaml</span><span class="xdesc">컴포넌트 → 보드 역할 선언</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>launch/robot.launch.py</span><span class="xdesc">유일한 기동 진입점</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -572,11 +572,11 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td>이 로봇이 무엇으로 이루어지는가 — 조건 분기도 스크립트도 없는 선언</td></tr><tr><td><strong>generate.sh</strong></td><td>계약·선언·레이어 수정 후 재실행 — <code>generated/</code> 를 다시 만든다</td></tr><tr><td><strong>generated/</strong></td><td>전부 산출물 — 손으로 고치지 않는다. 수집·추론이 보는 유일한 로봇 정의</td></tr><tr><td><strong>robot.launch.py</strong></td><td>유일한 기동 진입점 — <code>board</code> 인자는 placement 어휘와 대조되고, 그 머신 몫의 컴포넌트만 뜬다</td></tr><tr><td><strong>urdf/</strong></td><td>마운트 선언 — 베이스 어느 링크에 팔이 붙는가 (좌표값은 description 소유)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>robot/generate.sh                                   # 선언 → generated/ (sim 레이어)
 robot/generate.sh --layers config/rigs/pl2m-001     # 이 기체의 실측 레이어로
 ros2 launch pl2_m_bringup robot.launch.py board:=compute   # 이 머신의 컴포넌트만 기동</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">선언이 실제로 어떻게 생겼는지 — 조건 분기도 스크립트도 없다. 팔 둘·리더·카메라 셋이 이 로봇의 전부고, resolver 가 이걸 모듈 계약과 합쳐 산출물을 만든다.</p>
   <p class="diagram-shell__hint">robot/composition.yaml (발췌)</p>
   <div class="codeblock"><pre>robot_id: pl2_m

@@ -540,7 +540,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>rigs/pl2m-001/cameras.json</span><span class="xdesc">카메라 결선 · 해상도 · fps</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>sites/lab.yaml</span><span class="xdesc">현장 값</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -572,10 +572,10 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>placement.json</strong></td><td>머신 배치 — 호스트별(gitignore), 커밋본은 <code>.example</code> 템플릿</td></tr><tr><td><strong>boards/</strong></td><td>보드 사실 — 장치 목록·링크 대역/지연 예산·카메라 스트림 실측. resolver 가 링크 예산을 검사한다</td></tr><tr><td><strong>rigs/&lt;rig&gt;/</strong></td><td>기체 실측 기록 — payload 커미셔닝이 직접 저장, <code>module_revision</code> 이 모델 자물쇠</td></tr><tr><td><strong>config.env</strong></td><td>bash 점검 스크립트 전용 호스트 사실 — 파이썬은 읽지 않는다</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>cp config/placement.json.example config/placement.json   # 템플릿 → 이 호스트의 배치
 robot/generate.sh --layers config/rigs/pl2m-001          # 실측 레이어로 산출물 생성</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">이 물리적 로봇 한 대의 실측 — payload 커미셔닝이 이 파일에 직접 저장하고, resolver 가 기동 파라미터로 나른다. module_revision 은 캘리브가 측정된 모델의 자물쇠다(어긋나면 기동 거부).</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (발췌)</p>
   <div class="codeblock"><pre>meta:

@@ -543,7 +543,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>include/openarm/ · src/</span><span class="xdesc">OpenArmCAN C++ API (Damiao · CAN-FD)</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>setup/</span><span class="xdesc">socketcan 프로비저닝 — can0 · can1 유닛</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -575,13 +575,13 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl2_arm_hardware</strong></td><td><code>hardware_interface::SystemInterface</code> 구현 (enactic 포크 — 벤더링 정체성 유지)</td></tr><tr><td><strong>pl2_arm_can</strong></td><td>Damiao CAN/CAN-FD C++ 라이브러리 + 호스트 프로비저닝 <code>setup/</code> (socketcan 유닛). subtree 벤더링</td></tr><tr><td><strong>결선값</strong></td><td>어느 팔 = 어느 iface 는 rig 레코드 소유 — 코드에 없다</td></tr><tr><td><strong>심 대칭</strong></td><td><code>pl2_arm_mujoco</code> 가 같은 인터페이스를 물리 스텝으로 구현</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>&lt;!-- URDF ros2_control 블록 — 이 문자열 하나로 실물/심을 고른다 --&gt;
 &lt;hardware&gt;
   &lt;plugin&gt;openarm_hardware/OpenArmHW&lt;/plugin&gt;                    &lt;!-- 실물 · CAN-FD --&gt;
   &lt;!-- &lt;plugin&gt;openarm_mujoco_hardware/OpenArmMujocoSystem&lt;/plugin&gt;  심 · MuJoCo --&gt;
 &lt;/hardware&gt;</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">resolver 가 생성한 실제 robot_description — rig 레코드의 결선(can0/can1)이 파라미터로 실려 온다. 손으로 쓴 게 아니라 생성물이다.</p>
   <p class="diagram-shell__hint">robot/generated/robot_description.urdf (발췌)</p>
   <div class="codeblock"><pre>&lt;hardware&gt;

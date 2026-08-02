@@ -541,7 +541,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">│  └─ </span>robot_presets/</span><span class="xdesc">조립 프리셋 (좌팔 · 우팔 · 그리퍼 조합)</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>launch/ · rviz/</span><span class="xdesc">단독 확인용</span></div>
 </div>
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -573,10 +573,10 @@ flowchart LR
   </section>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/v2 나란히</strong></td><td>모델별 xacro — composition 의 <code>model:</code> 필드가 고른다</td></tr><tr><td><strong>단일 RSP</strong></td><td>합성 robot_description 은 하나 — 소비자는 파일이 아니라 토픽에서 형상을 얻는다</td></tr><tr><td><strong>거울상</strong></td><td>joint1·joint2·그리퍼 envelope 는 좌우 부호 거울상 — 한 세트를 양측에 쓰면 안 된다</td></tr><tr><td><strong>마운트는 여기 없다</strong></td><td>팔이 로봇 어디에 붙는지는 로봇 워크스페이스 <code>robot/urdf</code> 소유</td></tr></tbody></table></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># 안전 게이트·심이 실제로 쓰는 그 URDF 를 눈으로 확인
 xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/urdf/openarm_v20.urdf.xacro</pre></div>
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">안전 게이트 launch 가 한계를 얻는 실제 코드 — description 의 xacro 를 전개해 측별 파라미터를 파생한다. 파일 경로가 아니라 패키지 share 로 찾는다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_safety/launch/safety.launch.py</p>
   <div class="codeblock"><pre>urdf = xacro.process_file(
