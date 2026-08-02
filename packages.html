@@ -452,21 +452,28 @@
   .grp.green .grp-label code { color: var(--green); }
   .grp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
   @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
-  /* ============ 계층 지도 (구조 한눈에 — 명령의 층계) ============ */
-  .laymap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; margin-top: 26px; align-items: start; }
-  .laytitle { font-size: 15px; font-weight: 600; margin: 30px 0 10px; }
-  .laytitle small { font-weight: 400; color: var(--text-dim); margin-left: 8px; font-size: 12.5px; }
-  .laycard { background: var(--surface); border: 1px solid var(--border-soft); border-left: 3px solid var(--pink); border-radius: 10px; padding: 12px 16px 11px; }
+  /* ============ 계층 지도 (구조 한눈에 — 층 × 저장소) ============ */
+  .laymap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; margin-top: 14px; align-items: start; }
+  .laylabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; color: var(--text-subtle); margin: 0 0 6px; text-transform: uppercase; }
+  .layrow { display: flex; gap: 10px; }
+  .layrow .laycard { flex: 1; min-width: 0; }
+  .laycard { background: var(--surface); border: 1px solid var(--border-soft); border-left: 3px solid var(--pink); border-radius: 10px; padding: 11px 14px 10px; }
   .laycard b { font-size: 13.5px; }
-  .laycard .pk { font-family: var(--font-mono); font-size: 11px; color: var(--pink); margin-left: 8px; }
+  .laycard .rtag { float: right; font-family: var(--font-mono); font-size: 10px; color: var(--text-subtle); border: 1px solid var(--border-soft); padding: 1px 7px; border-radius: 999px; margin-left: 8px; }
+  .laycard.green { border-left-color: var(--green, #58b58c); }
+  .laycard.green .rtag { color: var(--green, #58b58c); border-color: color-mix(in srgb, var(--green, #58b58c) 40%, transparent); }
+  .laycard.pinkr .rtag { color: var(--pink); border-color: color-mix(in srgb, var(--pink) 40%, transparent); }
+  .laycard .pk { font-family: var(--font-mono); font-size: 11px; color: var(--pink); display: block; margin-top: 2px; }
+  .laycard.green .pk { color: var(--green, #58b58c); }
   .laycard p { font-size: 12px; color: var(--text-dim); line-height: 1.55; margin-top: 3px; }
   .laycard.gate { border-left-color: var(--amber, #d9a23a); background: color-mix(in srgb, var(--surface) 88%, #d9a23a 12%); }
+  .laycard.hw { border-left-color: var(--amber, #d9a23a); border-style: solid; }
+  .laycard.dashedc { border-style: dashed; opacity: .75; }
   .layarrow { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-subtle); padding: 3px 0; }
   .layarrow .a { color: var(--pink); margin-right: 6px; }
-  .layrail .laycard { border-left-color: var(--green, #58b58c); margin-bottom: 12px; }
-  .layrail .laycard .pk { color: var(--green, #58b58c); }
+  .layrail .laycard { margin-bottom: 12px; }
   .layrail .note { font-size: 11.5px; color: var(--text-subtle); line-height: 1.6; }
-  @media (max-width: 860px) { .laymap { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .laymap { grid-template-columns: 1fr; } .layrow { flex-direction: column; } }
 
   /* ============ 네트워크 토폴로지 ============ */
   .topo { width: 100%; height: auto; display: block; margin: 16px 0 6px; }
