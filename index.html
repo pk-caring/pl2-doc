@@ -415,7 +415,7 @@
   .xctl button:hover { background: var(--surface2); color: var(--text); }
 
   /* ============ 우측 설명 패널 ============ */
-  .panel-drawer { width: min(500px, 92vw); }
+  .panel-drawer { width: min(560px, 92vw); }
   .drawer-body .rich p { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 12px; }
   .drawer-body .rich .more-btn { margin-top: 4px; }
   .pbtn { cursor: pointer; margin-left: 8px; }
@@ -530,6 +530,38 @@
 </div>
 </div>
 
+  <div class="sec-head"><span class="num">MAP</span><h2>패키지 구조 한눈에</h2></div>
+  <p class="p dim">계약이 resolver 로 모여 스키마가 되고, 명령은 안전 게이트를 거쳐 모터로, 카메라 데이터는 ZMQ 로 흐른다.</p>
+  <div class="codeblock" style="overflow-x:auto"><pre class="nohl">[ 선언 ]                          [ 조립 ]                      [ 산출물 ]
+
+robot/composition.yaml ─────┐
+pl2_arm/contract ───────────┤
+pl2_leader/contract ────────┼──▶  pl_resolver  ─────▶  robot/generated/
+pl2_arm_cameras/contract ───┤     (검증 실패 =          schema.json · params · URDF
+config/ boards·rig·site ────┘      기동 거부)                  │
+                                                              ▼
+                              수집·추론(pl_imitation)은 schema.json 만 읽는다
+                              → 로봇이 바뀌어도 코드 수정 없음
+
+
+[ 명령 경로 — 모든 명령은 안전 게이트를 지난다 ]
+
+  studio · servo · teleop(pl_adapters) · inference
+        │  intent 발행 (lease + heartbeat 필요)
+        ▼
+  pl2_arm_safety ─ 정책(lease·E-stop·한계 거부) ▶ 집행(인터페이스 배타 claim)
+        │                    정책이 죽으면 그 자리에 정지 (fail-closed)
+        ▼
+  JTC · forward 컨트롤러 ──▶ pl2_arm_hardware ──▶ DAMIAO 모터 (CAN-FD)
+
+
+[ 데이터 경로 — 모방학습 ]
+
+  /joint_states · leader_state (DDS) ──┐
+                                       ├──▶ recorder ─▶ 데이터셋 ─▶ 학습
+  pl2_arm_cameras (ZMQ JPEG 스트림) ───┘                              │
+                                                                     ▼
+  intent ◀── inference ◀── policy_server (GPU) ◀─────────── 학습된 정책</pre></div>
   <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
 <div class="drawer-backdrop" id="drawer-backdrop"></div>
@@ -538,24 +570,24 @@
   <div class="drawer-body"><div class="rich"></div></div>
 </aside>
 <div class="panel-store" hidden>
-<div class="panel-src" id="panel-robot" data-title="robot/ — 로봇 진입점"><p>로봇은 코드가 아니라 <strong>선언</strong>이다. composition.yaml 이 로봇이고, generate.sh 가 선언을 산출물(generated/)로 바꾸고, robot.launch.py 가 유일한 기동 경로다. 논리 조립(composition)과 기구 조립(urdf 마운트)이 나뉘어 있고 둘 다 값이 아니라 이름만 선언한다.</p><a class="more-btn" href="pkg-robot.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-config" data-title="config/ — 이 기체의 값"><p>기체마다 다른 값은 전부 여기 — 호스트별 파일은 gitignore + .example 템플릿. 실측(토크바이어스·결선·카메라)은 rig 레코드가 소유하고, module_revision 이 '이 값이 어느 모델에서 측정됐나'의 자물쇠라 어긋나면 resolver 가 기동을 거부한다.</p><a class="more-btn" href="pkg-config.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-arm" data-title="src/pl2_arm — 팔"><p>팔 도메인 — 자체 저장소 (pk-caring/pl2_arm) · 실물 대응: OpenArm v2 ×2 · DAMIAO 모터 · CAN-FD · 카메라. 데이터(형상) → 구동(실물/심) → 안전 → 능력 → 뷰·조립 순서로 층이 쌓인다.</p><a class="more-btn" href="packages.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-base" data-title="src/pl2_base — 주행"><p>VicPinky 모바일 베이스 — 저장소는 스캐폴드. 계약이 생기면 composition.yaml 에 <code>drive</code> 모듈로 합류하고, 그때 단일 E-stop·stow 게이트 같은 coupling 도 함께 들어온다.</p></div>
-<div class="panel-src" id="panel-leader" data-title="src/pl2_leader — 리더 디바이스"><p>사람이 잡고 움직이는 교시·텔레옵 입력 장치 (실물: Feetech OpenArm Mini ×2, 판매 제품 PL-2 LEADER 는 dynamixel 스텁). 관절을 읽어 leader_state 로 발행하는 것까지가 이 저장소의 일이고, 팔을 어떻게 따라 움직이게 할지는 조립 계층(pl_adapters)이 정한다. backend 파라미터 하나로 제품 라인 교체.</p><a class="more-btn" href="pkg-leader.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-imitation" data-title="src/pl_imitation — 모방학습"><p>코드 어디에도 로봇 이름이 등장하지 않는다 — 로봇이 무엇인지는 resolver 가 만든 schema.json 으로만 알고, 그 위에서 녹화 → 학습 → 추론이 돈다. 로봇이 바뀌어도 이 저장소는 그대로다.</p><a class="more-btn" href="pkg-imitation.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-platform" data-title="src/pl_platform — 조립 규칙"><p>모듈 계약 + 로봇 선언 + 설정 레이어를 읽어 파라미터·스키마를 생성하는 resolver 의 집. 검증 실패 = 기동 거부 — 어긋난 로봇은 아예 뜨지 않는다. 이 저장소에 제품명 문자열이 들어오면 CI 가 실패한다.</p><a class="more-btn" href="pkg-platform.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-description" data-title="pl2_arm_description — 형상 SSOT"><p>팔이 <strong>어떻게 생겼는가</strong>의 SSOT — URDF·메시·모델별 값(v1/v2). 관절 한계는 config/arm/joint/joint_limits.yaml (canonical 우측, 좌측은 거울상 파생). 여기서 나온 /robot_description 하나에서 중력보상·안전 한계·심·MoveIt 이 전부 파생된다.</p><a class="more-btn" href="pkg-description.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-hardware" data-title="pl2_arm_hardware — 실물 구동"><p>controller_manager 의 read/write 주기를 DAMIAO 모터 CAN-FD 트랜잭션으로 바꾸는 SystemInterface. URDF 의 plugin 문자열 하나로 실물 ↔ 심이 갈린다.</p><a class="more-btn" href="pkg-hardware-can.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-can" data-title="pl2_arm_can — CAN 버스"><p>Damiao CAN/CAN-FD C++ 라이브러리 + 호스트 socketcan 프로비저닝 (can0=오른팔·can1=왼팔 — 결선값은 rig 레코드 소유). 실물 구동 상세는 hardware 와 한 페이지.</p><a class="more-btn" href="pkg-hardware-can.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-mujoco" data-title="pl2_arm_mujoco — MuJoCo 심"><p>실물과 <strong>같은 ros2_control 인터페이스</strong>로 MuJoCo 물리를 돌린다 — 위층(컨트롤러·플래닝·UI)에서 보면 실물과 구분되지 않는다. MJCF 자산(v1·v2)과 플러그인·뷰어를 한 패키지에 묶은 이유는 단순하다 — 자산과 그것을 구동하는 코드는 항상 짝이 맞아야 한다.</p><a class="more-btn" href="pkg-mujoco.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-safety" data-title="pl2_arm_safety — 안전층"><p>팔에 닿는 모든 명령의 관문. lease 를 얻고 heartbeat 로 생존을 증명하는 동안만 intent 가 통과하고, C++ 체인 컨트롤러가 명령 인터페이스를 배타 claim 해 우회를 물리적으로 막는다. 정책이 죽으면 게이트가 팔을 그 자리에 멈춰 세운다 — fail-closed.</p><a class="more-btn" href="pkg-safety.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-moveit" data-title="pl2_arm_moveit — 목표 자세 계획·실행"><p>MoveIt 설정(v1/v2)과 move_group 을 부르는 쪽의 지식. 노드가 아니다 — move_group 이 이미 서비스를 내놓는다. 능력 4종(계획·조그·게인·실측)은 한 상세 페이지에 있다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-servo" data-title="pl2_arm_servo — 방향으로 밀기"><p>트위스트를 래치해 반복 발행 → 미분 IK → forward 컨트롤러. JTC ⇄ forward 전환 포함 — 스튜디오 없이 서비스 콜로 쓸 수 있다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-mit" data-title="pl2_arm_mit — 게인·무중력"><p>MIT 모드(τ = kp·Δq + kd·Δq̇ + τ_ff)의 게인을 안전하게 넣는 법 — MitGains(안전 규칙) · ZeroG(직접교시) · gravity_pub(관찰자 — /robot_description 에서 체인 파생).</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-payload" data-title="pl2_arm_payload — 쥔 물건 실측"><p>정지 자세 tau_pd 잔차 회귀로 payload 질량·무게중심 실측(+ 관절별 토크 바이어스 동시 추정). CalibratePayload action — 결과는 rig 레코드로.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-studio" data-title="pl2_arm_studio — 운영자 웹 UI"><p>텔레메트리·3D·IK·서보·임피던스 실험을 한 화면에 (NiceGUI). 특별한 권한은 없다 — 하는 일 전부가 공개 ROS 인터페이스 호출이라, 팔을 움직이려면 다른 소스처럼 lease 를 얻는다.</p><a class="more-btn" href="pkg-studio.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-cameras" data-title="pl2_arm_cameras — 카메라 스트리밍"><p>카메라 장치는 서버가 단독으로 소유하고, 소비자(수집·추론·비전 기능)는 전부 ZMQ 구독자다. 서버는 항상 켜져 있어서 소비자가 생기거나 사라져도 장치를 다시 열지 않는다. import 이름이 pl_camera_server 로 남아 있는 것은 스키마 해시를 지키기 위한 의도된 선택이다.</p><a class="more-btn" href="pkg-cameras.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-robot" data-title="robot/ — 로봇 진입점"><p><strong>로봇을 정의하는 곳이다.</strong> <code>composition.yaml</code> 한 파일이 이 로봇의 구성(팔 2개·리더·카메라 3대)을 선언한다. 나머지는 모두 이 선언에서 생성된다.</p><p>선언은 두 가지다. composition.yaml 은 어떤 모듈을 쓰는지를, <code>urdf/pl2_m.urdf.xacro</code> 는 그 모듈이 몸체 어디에 붙는지를 정한다. 좌표 같은 실제 값은 description 패키지가 가진다. 여기에는 이름만 적는다.</p><p><code>generate.sh</code> 를 실행하면 스키마·파라미터·URDF 가 <code>generated/</code> 에 생성된다. 로봇 기동은 <code>robot.launch.py</code> 한 곳이며, board 인자를 받은 머신의 컴포넌트만 뜬다.</p><a class="more-btn" href="pkg-robot.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-config" data-title="config/ — 이 기체의 값"><p><strong>기체마다 다른 값을 모아 두는 곳이다.</strong> 코드가 아니라 측정값·설정값이다. 호스트별 파일은 gitignore 하고, 저장소에는 .example 템플릿만 커밋한다.</p><p><code>boards/</code> 는 보드별 장치와 네트워크 예산, <code>rigs/pl2m-001/</code> 은 이 기체 한 대의 캘리브레이션·배선·카메라 기록이다. payload 커미셔닝 결과도 이 파일에 저장된다.</p><p>rig 기록의 <code>module_revision</code> 은 안전장치다. 측정 당시의 팔 모델을 기록해 두고, composition 의 모델과 다르면 기동을 거부한다. 오래된 캘리브레이션이 새 모델에 적용되는 사고를 막는다.</p><a class="more-btn" href="pkg-config.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-arm" data-title="src/pl2_arm — 팔"><p>팔 도메인 저장소다. 제품 <strong>PL-2 ARM</strong> 에 해당한다. 실물은 OpenArm v2 팔 2개, DAMIAO 모터, CAN-FD 버스, 카메라 3대다.</p><p>패키지 13개는 층 구조다. 형상 데이터 → 모터 구동(실물/시뮬레이션) → 안전 게이트 → 팔의 능력(계획·조그·게인·실측) → 화면·조립 순이다.</p><p>팔이 외부에 제공하는 인터페이스(관절 그룹·토픽·QoS)는 <code>contract/</code> 의 계약 파일에 데이터로 선언한다. 조립 계층은 이 계약만 읽는다.</p><a class="more-btn" href="packages.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-base" data-title="src/pl2_base — 주행"><p>VicPinky 모바일 베이스의 자리다. 현재는 README 만 있다.</p><p>주행 계약이 만들어지면 composition.yaml 에 <code>drive</code> 모듈로 추가된다. 이동 중 팔 고정, 단일 E-stop 같은 주행·팔 결합 규칙도 그때 함께 들어온다.</p></div>
+<div class="panel-src" id="panel-leader" data-title="src/pl2_leader — 리더 디바이스"><p>사람이 손으로 잡고 움직이는 <strong>교시(텔레옵) 입력 장치</strong>다. 현재 실물은 Feetech OpenArm Mini 2대다. 판매 제품 PL-2 LEADER(dynamixel)는 구현 대기 상태다.</p><p>이 저장소는 장치의 관절값을 읽어 <code>leader_state</code> 토픽으로 발행하는 것까지만 한다. 팔이 이를 따라 움직이는 방식은 조립 계층(pl_adapters)이 정한다. 그래서 이 저장소에는 팔 관련 코드가 없다.</p><p>하드웨어 교체는 <code>backend</code> 파라미터 하나로 한다(mini·dynamixel·bandi·mock). 미구현 백엔드를 지정하면 명확한 에러로 종료된다.</p><a class="more-btn" href="pkg-leader.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-imitation" data-title="src/pl_imitation — 모방학습"><p>데이터 수집 → 학습 → 추론을 담당한다. <strong>코드에 로봇 이름이 없다.</strong> 로봇 정보는 resolver 가 생성한 schema.json 에서만 얻는다. 로봇이 바뀌어도 이 저장소는 수정하지 않는다.</p><p>구성: lerobot_ros2(스키마를 읽어 lerobot 에 연결), recorder(에피소드 녹화), inference(정책 실행), studio(운영자 콘솔), policy_server(GPU 서버).</p><p>에피소드마다 스키마 해시를 기록한다. 로봇이 바뀌면 기존 데이터셋에 추가 녹화가 거부되고 새 데이터셋으로 시작한다. 서로 다른 로봇의 데이터가 섞이는 것을 막기 위한 장치다.</p><a class="more-btn" href="pkg-imitation.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-platform" data-title="src/pl_platform — 조립 규칙"><p><strong>로봇 종류와 무관한 조립 계층이다.</strong> 모듈 계약 + 로봇 선언 + 설정을 읽어 파라미터와 스키마를 생성한다(resolver).</p><p>resolver 는 순수 함수다. 같은 입력이면 같은 출력이 나오고, 검증에 실패하면 로봇이 아예 기동하지 않는다.</p><p>로봇 무관 원칙은 CI 가 강제한다. 이 저장소에 제품명 문자열이 들어오면 빌드가 실패한다. 자체 검증은 reference_robots/ 의 가상 로봇 3종으로 한다.</p><a class="more-btn" href="pkg-platform.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-description" data-title="pl2_arm_description — 형상 데이터"><p>팔의 <strong>형상 데이터</strong>다. URDF, 3D 메시, 모델별 값(v1/v2)을 가진다.</p><p>여기서 만들어진 /robot_description 하나에서 모든 것이 파생된다. 중력보상, 안전 한계, 시뮬레이션, MoveIt 이 전부 이 문서를 읽는다. 형상이 바뀌어도 소비하는 쪽 코드는 수정할 필요가 없다.</p><p>관절 한계는 <code>joint_limits.yaml</code> 에 있다. 기준은 오른팔이고 왼팔은 부호를 뒤집어 자동 생성한다(거울상).</p><a class="more-btn" href="pkg-description.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-hardware" data-title="pl2_arm_hardware — 실물 모터 구동"><p>ros2_control 의 제어 주기를 <strong>실제 DAMIAO 모터 통신</strong>으로 바꾸는 드라이버다.</p><p>실물과 시뮬레이션은 URDF 의 plugin 문자열 한 줄로 전환된다. 상위 계층(컨트롤러·계획·UI)은 어느 쪽인지 모른다.</p><p>CAN 배선 정보는 코드에 없다. rig 기록이 가지고 있고 resolver 가 파라미터로 전달한다.</p><a class="more-btn" href="pkg-hardware-can.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-can" data-title="pl2_arm_can — CAN 라이브러리"><p>DAMIAO 모터용 CAN/CAN-FD C++ 라이브러리와 호스트 설정 스크립트다(can0=오른팔, can1=왼팔).</p><p>enactic/openarm_can 을 그대로 가져와(subtree) 유지한다. 업스트림 변경은 명령 한 줄로 반영한다.</p><a class="more-btn" href="pkg-hardware-can.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-mujoco" data-title="pl2_arm_mujoco — 시뮬레이션"><p>실물과 <strong>같은 인터페이스</strong>로 MuJoCo 물리를 구동한다. 상위 계층은 실물과 시뮬레이션을 구분하지 못한다. 컨트롤러·계획·UI 를 그대로 재사용하기 위한 구조다.</p><p>3D 모델(MJCF)과 구동 코드를 한 패키지에 둔다. 모델과 코드는 항상 함께 갱신되어야 하기 때문이다.</p><p>모델의 소비자는 시뮬레이션만이 아니다. payload 실측 계산과 3D 뷰어도 같은 모델을 쓴다.</p><a class="more-btn" href="pkg-mujoco.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-safety" data-title="pl2_arm_safety — 안전층"><p>팔로 가는 <strong>모든 명령이 거치는 관문</strong>이다. 명령을 보내려면 먼저 lease(명령권)를 얻고, heartbeat 로 살아 있음을 계속 증명해야 한다.</p><p>정책(Python)은 판단을 맡는다: lease 관리, E-stop, 한계 초과 거부. 집행(C++ 컨트롤러)은 차단을 맡는다: 모터 명령 인터페이스를 독점해 우회 경로를 물리적으로 없앤다.</p><p>정책이 죽으면 게이트가 팔을 그 자리에 정지시킨다(fail-closed). 감시자가 사라지면 자동으로 안전한 상태가 된다.</p><a class="more-btn" href="pkg-safety.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-moveit" data-title="pl2_arm_moveit — 동작 계획"><p>목표 자세를 주면 경로를 계획하고 실행한다. MoveIt 2 설정(v1/v2)과 호출 방법에 대한 지식을 담는다.</p><p>별도 노드는 없다. move_group 이 이미 서비스를 제공하므로 설정과 클라이언트만 가진다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-servo" data-title="pl2_arm_servo — 방향 조그"><p>팔 끝을 지정한 방향으로 계속 미는 기능이다. 정지 명령까지 방향을 유지한다.</p><p>서비스 호출로 켜고 끈다. 스튜디오 없이 다른 프로그램에서도 그대로 쓸 수 있다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-mit" data-title="pl2_arm_mit — 게인·무중력"><p>팔의 강성(뻣뻣함)을 조절한다. 저수준 제어식은 τ = kp·Δq + kd·Δq̇ + τ_ff 이고, 이 패키지는 그 값을 안전하게 바꾸는 절차를 안다.</p><p>무중력 모드(직접 교시)와 중력 방향 관찰 노드를 포함한다. 관찰 노드는 /robot_description 에서 팔 구조를 읽으므로 로봇이 바뀌어도 코드 수정이 없다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-payload" data-title="pl2_arm_payload — 쥔 물건 실측"><p>팔이 쥔 물건의 무게와 무게중심을 측정한다. 몇 개 자세에서 토크 오차를 재고 회귀로 계산한다.</p><p>CalibratePayload 액션으로 실행하며, 결과는 rig 기록에 저장되어 다음 기동부터 반영된다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-studio" data-title="pl2_arm_studio — 운영자 화면"><p>텔레메트리, 3D 뷰, 동작 계획, 조그, 임피던스 실험, payload 실측을 한 화면에서 다루는 데스크톱 앱이다.</p><p><strong>특별한 권한은 없다.</strong> 모든 동작이 공개 ROS 인터페이스 호출이다. 팔을 움직이려면 다른 프로그램과 똑같이 lease 를 얻어야 한다.</p><p>실물이 없으면 미리보기 모드로 열리고, 관절 제어에 들어가면 시뮬레이션을 자동으로 띄운다.</p><a class="more-btn" href="pkg-studio.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-cameras" data-title="pl2_arm_cameras — 카메라 스트리밍"><p>카메라 장치는 <strong>이 서버만 연다</strong>. 데이터가 필요한 쪽(녹화·추론·비전 기능)은 전부 ZMQ 구독자로 받는다. 장치를 직접 여는 것은 금지다.</p><p>서버는 항상 켜져 있다. 구독자가 생기거나 사라져도 장치를 다시 열지 않으므로, 용도 전환(추론 → 비전 기능)이 끊김 없이 된다.</p><p>디렉터리 이름과 달리 import 이름은 pl_camera_server 다. 이 이름이 데이터셋 기록에 들어가 있어 바꾸면 기존 데이터셋과 호환이 깨지기 때문에 유지한다.</p><a class="more-btn" href="pkg-cameras.html">자세히 보기 →</a></div>
 </div>
 <script>
 (function() {
@@ -587,6 +619,15 @@
 </script>
 
 </div>
-
+<script src="vendor/highlight.min.js"></script>
+<script>
+(function() {
+  if (!globalThis.hljs) return;
+  document.querySelectorAll('.codeblock pre:not(.nohl)').forEach(pre => {
+    const r = hljs.highlightAuto(pre.textContent, ['bash', 'python', 'yaml', 'xml']);
+    pre.innerHTML = r.value;
+  });
+})();
+</script>
 </body>
 </html>

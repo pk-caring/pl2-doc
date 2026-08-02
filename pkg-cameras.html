@@ -415,7 +415,7 @@
   .xctl button:hover { background: var(--surface2); color: var(--text); }
 
   /* ============ 우측 설명 패널 ============ */
-  .panel-drawer { width: min(500px, 92vw); }
+  .panel-drawer { width: min(560px, 92vw); }
   .drawer-body .rich p { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 12px; }
   .drawer-body .rich .more-btn { margin-top: 4px; }
   .pbtn { cursor: pointer; margin-left: 8px; }
@@ -726,7 +726,7 @@ if (globalThis.mermaid) {
 <script>
 (function() {
   if (!globalThis.hljs) return;
-  document.querySelectorAll('.codeblock pre').forEach(pre => {
+  document.querySelectorAll('.codeblock pre:not(.nohl)').forEach(pre => {
     const r = hljs.highlightAuto(pre.textContent, ['bash', 'python', 'yaml', 'xml']);
     pre.innerHTML = r.value;
   });
