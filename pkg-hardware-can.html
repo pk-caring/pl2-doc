@@ -538,6 +538,15 @@ flowchart LR
   &lt;param name="can_fd"&gt;True&lt;/param&gt;
   &lt;param name="ee_type"&gt;pinch_gripper&lt;/param&gt;
 &lt;/hardware&gt;</pre></div>
+  <p class="p dim">합성 robot_description 이 기동마다 다시 만들어지는 지점이다. 직전 resolve 가 채운 generated/params 를 물려받아, 하드웨어 블록에 rig 실측(CAN·torque_bias·payload)이 실린다.</p>
+  <p class="diagram-shell__hint">robot/launch/robot.launch.py</p>
+  <div class="codeblock"><pre>def _compose_robot_description(root):
+    doc = xacro.process_file(
+        str(root / "robot" / "urdf" / "pl2_m.urdf.xacro"),
+        mappings={"ros2_control": "true",
+                  "generated_params_dir":
+                      str(root / "robot" / "generated" / "params")},
+    ).toprettyxml(indent="  ")</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">결선의 단일 진실이다. 코드 어디에도 can0 이 오른팔이라는 지식이 없다 — 이 파일이 말하고 resolver 가 나른다.</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/board.yaml</p>

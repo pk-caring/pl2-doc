@@ -552,6 +552,22 @@ ros2 topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray "{data: [
         )
         for side in ("right", "left")
     ]</pre></div>
+  <p class="p dim">게이트 규칙의 본체다. 순수 파이썬 core 라 노드 없이 테스트되고, 속도 거부에는 zero_now 신호가 붙는다 — 스트림을 끊은 거부는 워치독을 기다리지 않고 즉시 0 을 명령해야 한다.</p>
+  <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_safety/pl2_arm_safety/gate_core.py</p>
+  <div class="codeblock"><pre>def gate_arm(self, values, now):
+    return self._gate(values, self.config.lower, self.config.upper, now, "arm")
+
+def gate_velocity(self, values, now):
+    """-&gt; (ok, reason, zero_now).
+    zero_now 는 이 거부가 활성 스트림을 끊었을 때 True 다 —
+    셸은 워치독을 기다리지 말고 즉시 0 을 명령해야 한다."""
+    limits = self.config.velocity_limits
+    ok, reason = (self._reject("velocity: no velocity limits configured")
+                  if not limits else self._gate_velocity(values, limits, now))
+    if ok:
+        self._vel_last_pass = now
+        return True, "", False
+    zero_now = self._vel_last_pass is not None</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">실행 설정이 게이트의 플러그인 클래스 이름을 보는 지점이다. 시뮬레이션도 실물과 같은 게이트 구조를 쓴다 — 게이트 없는 심은 더 작은 로봇이 아니라 다른 로봇이다.</p>
   <p class="diagram-shell__hint">pl2_arm_bringup/config/controllers/pl2_sim_controllers.yaml (발췌)</p>

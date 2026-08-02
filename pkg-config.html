@@ -536,6 +536,21 @@ arm.right:
   torque_bias: [0.114, 0.062, 0.047, 0.187, -0.009, 0.048, 0.009]
   payload_mass: 0.211
   payload_com: [-0.003, -0.001, -0.162]</pre></div>
+  <p class="p dim">실측 기록의 머리말이다. 값만이 아니라 언제·누가·어느 도구로 쟀고 승인됐는지가 함께 산다.</p>
+  <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (meta)</p>
+  <div class="codeblock"><pre>meta:
+  rig_id: pl2m-001
+  robot_id: pl2_m
+  module_revision:
+    arm.right: openarm_v2      # 이 값이 측정된 모델 — 어긋나면 기동 거부
+    arm.left: openarm_v2
+  measurement:
+    measured_at: 2026-07-31
+    tool_version: payload_calib
+    operator_id: woolim
+  approval:
+    status: approved
+    approved_by: woolim</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">보드의 네트워크 사실이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
   <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>

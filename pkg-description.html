@@ -530,6 +530,13 @@ xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/u
         / "assets" / "robot" / folder / "urdf" / entry)).toxml()
 side = LaunchConfiguration("side").perform(context)
 params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울상이라 공유 불가</pre></div>
+  <p class="p dim">팔 매크로의 시그니처다. 관절 길이·한계·관성이 전부 인자로 주입된다 — 매크로는 형식이고 값은 데이터 파일이 가진다.</p>
+  <p class="diagram-shell__hint">assets/robot/openarm_v2.0/urdf/utils/openarm_v20_arm.xacro</p>
+  <div class="codeblock"><pre>&lt;xacro:macro name="openarm_v20_arm"
+  params="index links prefix joint_origins joint_axes joint_limits
+          inertials visuals collisions
+          reflect_x:=1 reflect_y:=1 reflect_z:=1
+          limit_override_joints:=^ mirror_limit_sign ..."&gt;</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">관절 한계는 코드가 아니라 이 데이터다. 기준은 오른팔이고, 왼팔은 매크로가 부호를 뒤집어 만든다.</p>
   <p class="diagram-shell__hint">config/arm/joint/joint_limits.yaml (발췌)</p>

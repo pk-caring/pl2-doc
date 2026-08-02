@@ -535,6 +535,18 @@ frame, stamp = feed.get_latest()              # 항상 최신 프레임 (np.ndar
     """Where the camera inventory is — answered by the package that owns it."""
     from pl_camera_server.config import resolve_cameras_json
     return str(resolve_cameras_json())</pre></div>
+  <p class="p dim">최신 프레임만 전달하는 전송 규칙이다. 보내는 쪽은 한 슬롯 큐(SNDHWM=1), 받는 쪽은 CONFLATE=1 — 밀린 프레임은 버려지고 항상 최신만 남는다.</p>
+  <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_cameras/pl_camera_server/camera_server.py</p>
+  <div class="codeblock"><pre>def make_pub_socket(port):
+    """tcp://0.0.0.0:{port} 에 ZMQ PUB 바인드, SNDHWM=1.
+
+    SNDHWM=1: 슬롯이 차 있으면 새 프레임은 PUB 에서 버려진다.
+    SUB 쪽 CONFLATE=1 과 합쳐 '항상 최신 프레임' 이 된다.
+
+    주의: CONFLATE 를 PUB 에 걸면 안 된다 — 첫 구독자만 수신하는
+    libzmq 버그가 있다 (zeromq/libzmq#3323). CONFLATE 는 SUB 전용."""
+    ctx = zmq.Context.instance()
+    pub = ctx.socket(zmq.PUB)</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">카메라 계약 전문이다. 해상도·fps 가 없다 — 그 값은 rig 기록이 소유하고, 계약은 '이 역할이 무엇을 공개하는가'만 선언한다.</p>
   <p class="diagram-shell__hint">pl2_arm_cameras/contract/camera.contract.yaml</p>

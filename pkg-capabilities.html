@@ -540,6 +540,23 @@ if not client.wait_for_server(timeout_sec=5.0):
 goal = CalibratePayload.Goal()
 goal.side = side                 # "right" / "left"
 goal.bidirectional = bidirectional</pre></div>
+  <p class="p dim">무중력 진입·복귀의 실제 순서다. 목표=현재 동기화가 먼저다 — 순서를 바꾸면 게인이 돌아오는 순간 팔이 튄다.</p>
+  <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_mit/pl2_arm_mit/zero_g.py</p>
+  <div class="codeblock"><pre>def engage(self):
+    """FLOAT 진입: 목표=현재 동기화 후 kp=0 (끌면 끌리는 대로)."""
+    cur = self._robot.positions()
+    self._robot.move_to_joint_positions({n: cur.get(n, 0.0) for n in self._arm})
+    ok = self._robot.set_mit_config(
+        kp={i: 0.0 for i in range(7)},
+        kd={i: KD_FLOAT[i] for i in range(7)},
+        side=self._side, gravity_comp=True)
+
+def _restore_gains(self):
+    """기본 게인 복귀: JTC 목표=현재 → 게인 복귀 (순서 중요)."""
+    cur = self._robot.positions()
+    self._robot.move_to_joint_positions({n: cur.get(n, 0.0) for n in self._arm})
+    self._robot.set_mit_config(kp={i: None for i in range(7)},   # None=NaN → URDF 기본
+                               kd={i: None for i in range(7)}, side=self._side)</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">능력이 쓰는 명령 토픽도 계약이 선언한다. 어느 그룹이 어떤 토픽·QoS 로 명령을 받는지가 데이터로 고정된다.</p>
   <p class="diagram-shell__hint">pl2_arm_bringup/contract/openarm_v2.contract.yaml (발췌)</p>

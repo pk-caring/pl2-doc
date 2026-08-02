@@ -544,6 +544,19 @@ modules:
   - role: camera.top
     provider: pl_camera_server
     model: jpeg_stream</pre></div>
+  <p class="p dim">기동 시 board 어휘를 검증하고 합성 문서를 다시 만드는 코드다. 어휘의 원본은 placement.yaml 하나 — 여기 사본을 두지 않는다.</p>
+  <p class="diagram-shell__hint">robot/launch/robot.launch.py</p>
+  <div class="codeblock"><pre>def _boards(root):
+    """The board vocabulary — placement.yaml's, never a copy here."""
+    doc = yaml.safe_load((root / "robot" / "placement.yaml").read_text())
+    return set(doc["placement"])
+
+def _compose_robot_description(root):
+    """합성 robot_description 을 매 기동 생성해 generated/ 에 둔다.
+    하드웨어 블록에는 rig 레코드의 실측이 실린다."""
+    doc = xacro.process_file(str(root / "robot" / "urdf" / "pl2_m.urdf.xacro"),
+        mappings={"ros2_control": "true",
+                  "generated_params_dir": str(root / "robot" / "generated" / "params")})</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">어느 노드가 어느 보드 역할에서 도는지 선언한다. 실제 hostname 은 여기 없다 — 그것은 배포 단계 config/ 의 몫이다.</p>
   <p class="diagram-shell__hint">robot/placement.yaml</p>
