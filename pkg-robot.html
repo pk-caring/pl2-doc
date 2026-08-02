@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,18 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — PL-2 M 완성 기체 (조립체)</span></div>
   <p class="lead animate" style="--i:3">로봇은 코드가 아니라 <strong>선언</strong>이다. <code>composition.yaml</code> 이 로봇이고, <code>generate.sh</code> 가 선언을 산출물로 바꾸고, <code>robot.launch.py</code> 가 유일한 기동 경로다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 선언에서 산출물까지</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step here" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동을 거부한다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -505,14 +517,13 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td>이 로봇이 무엇으로 이루어지는가 — 조건 분기도 스크립트도 없는 선언</td></tr><tr><td><strong>generate.sh</strong></td><td>계약·선언·레이어 수정 후 재실행 — <code>generated/</code> 를 다시 만든다</td></tr><tr><td><strong>generated/</strong></td><td>전부 산출물 — 손으로 고치지 않는다. 수집·추론이 보는 유일한 로봇 정의</td></tr><tr><td><strong>robot.launch.py</strong></td><td>유일한 기동 진입점 — <code>board</code> 인자는 placement 어휘와 대조되고, 그 머신 몫의 컴포넌트만 뜬다</td></tr><tr><td><strong>urdf/</strong></td><td>마운트 선언 — 베이스 어느 링크에 팔이 붙는가 (좌표값은 description 소유)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>robot/generate.sh                                   # 선언 → generated/ (sim 레이어)
 robot/generate.sh --layers config/rigs/pl2m-001     # 이 기체의 실측 레이어로
 ros2 launch pl2_m_bringup robot.launch.py board:=compute   # 이 머신의 컴포넌트만 기동</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">선언이 실제로 어떻게 생겼는지 — 조건 분기도 스크립트도 없다. 팔 둘·리더·카메라 셋이 이 로봇의 전부고, resolver 가 이걸 모듈 계약과 합쳐 산출물을 만든다.</p>
   <p class="diagram-shell__hint">robot/composition.yaml (발췌)</p>
   <div class="codeblock"><pre>robot_id: pl2_m
@@ -536,8 +547,7 @@ modules:
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">로봇 선언이 mobi 를 가리키게 — 바뀌는 선언은 두 곳이고, 나머지는 generate 가 다시 만든다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td><code>model: openarm_v2</code> → <code>model: mobi</code> (팔당 한 줄)</td></tr><tr><td><strong>urdf/pl2_m.urdf.xacro</strong></td><td><code>openarm_v20_single_arm</code> → <code>mobi_single_arm</code> 매크로 호출 교체</td></tr><tr><td><strong>재생성</strong></td><td><code>robot/generate.sh</code> — schema hash 가 바뀐다 (데이터셋은 새 에폭)</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">어느 노드가 어느 보드 역할에서 도는지 선언한다. 실제 hostname 은 여기 없다 — 그것은 배포 단계 config/ 의 몫이다.</p>
   <p class="diagram-shell__hint">robot/placement.yaml</p>
   <div class="codeblock"><pre>schema_version: 1

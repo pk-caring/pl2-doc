@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,20 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔의 동작 능력</span></div>
   <p class="lead animate" style="--i:3">팔이 <strong>할 수 있는 일</strong>은 전부 서비스/토픽으로 노출된다 — 스튜디오는 소비자 중 하나일 뿐이고, 어떤 앱이든 같은 문으로 들어온다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 명령이 모터에 닿는 길</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step here" style="--step-accent: var(--text-subtle)"><span class="t">SOURCES</span><b>명령 소스</b><p>studio · servo · 텔레옵 · 추론<br>전부 intent 발행자다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">POLICY</span><b>정책 게이트</b><p>lease + heartbeat 확인.<br>E-stop · 한계 초과는 거부.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">ENFORCE</span><b>집행 게이트</b><p>모터 인터페이스를 독점한다.<br>정책이 죽으면 그 자리에 정지.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONTROL</span><b>컨트롤러</b><p>JTC · forward</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">MOTOR</span><b>모터 구동</b><p>실물(DAMIAO·CAN-FD)<br>또는 시뮬레이션(MuJoCo)</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -506,16 +520,15 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>moveit</strong></td><td>MoveIt 설정(v1/v2) + 부르는 쪽의 지식. 노드 아님 — move_group 이 이미 서비스를 내놓는다</td></tr><tr><td><strong>servo</strong></td><td>트위스트를 래치해 반복 발행 → 미분 IK → forward 컨트롤러. JTC ⇄ forward 전환 포함</td></tr><tr><td><strong>mit</strong></td><td>τ = kp·Δq + kd·Δq̇ + τ_ff — MitGains(안전 규칙) · ZeroG(직접교시) · gravity_pub(관찰자)</td></tr><tr><td><strong>payload</strong></td><td>정지 자세 tau_pd 잔차 회귀로 질량·무게중심 실측 — <code>CalibratePayload</code> action, 결과는 rig 레코드로</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># 조그: 팔 끝을 방향으로 밀기 (스튜디오 없이)
 ros2 launch pl2_arm_servo servo.launch.py model:=v2
 ros2 service call /arm_servo/set_servo_mode std_srvs/srv/SetBool "{data: true}"
 
 # 무중력 직접교시·게인은 mit, 쥔 물건 실측은 payload 의 action 으로 — 각 README 참고</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">스튜디오가 payload 실측을 요청하는 실제 코드 — 능력은 action 서버로 노출돼 있고, 스튜디오도 여느 클라이언트처럼 ActionClient 로 부른다(다른 소스가 lease 를 쥐고 있으면 거절당한다).</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_studio/pl2_arm_studio/ros/payload_client.py</p>
   <div class="codeblock"><pre>from pl2_arm_interfaces.action import CalibratePayload
@@ -530,8 +543,7 @@ goal.bidirectional = bidirectional</pre></div>
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">새 모델 mobi 에서 능력 패키지들이 해야 하는 일 — MoveIt config 한 벌과 커미셔닝 재실행뿐, 코드는 0줄.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl2_arm_moveit</strong></td><td>계획까지 쓰면 mobi config 한 벌 (v1/v2 옆 — SRDF·조인트 그룹)</td></tr><tr><td><strong>payload</strong></td><td>모델 교체 후 <code>CalibratePayload</code> 재실행 — rig 자물쇠가 강제한다</td></tr><tr><td><strong>servo · mit</strong></td><td><strong>0줄</strong> — /robot_description 과 게인 SSOT 에서 재파생</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">능력이 쓰는 명령 토픽도 계약이 선언한다. 어느 그룹이 어떤 토픽·QoS 로 명령을 받는지가 데이터로 고정된다.</p>
   <p class="diagram-shell__hint">pl2_arm_bringup/contract/openarm_v2.contract.yaml (발췌)</p>
   <div class="codeblock"><pre>groups:

@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -559,7 +560,6 @@
 </div>
 
   <div class="sec-head"><span class="num">MAP</span><h2>구조 한눈에</h2></div>
-  <p class="p dim">저장소가 어떻게 조립되는지 먼저 보고, 아래 세 가지 흐름을 보면 전체가 읽힌다.</p>
   <div class="wsmap">
     <div class="wstier">
       <div class="wstier-head"><b>제품 워크스페이스 · colcon 루트</b><span>로봇 선언(robot/) · 이 기체의 값(config/) · 매니페스트 · 빌드</span></div>
@@ -591,46 +591,6 @@
       </div>
     </div>
   </div>
-  <p class="p dim" style="margin-top:12px">두 제품 워크스페이스가 같은 저장소를 당겨 쓴다. 그래서 여러 로봇이 공유하는 것에는 특정 로봇 이름을 붙이지 않는다.<br>부모가 직접 소유하는 도메인은 없다 — 부모는 로봇 선언 · 이 기체의 값 · 빌드만 갖는다.</p>
-
-  <h3 style="margin-top:26px">세 가지 흐름</h3>
-  <h3 style="margin-top:22px">선언 → 조립 → 산출물</h3>
-  <div class="chain">
-    <div class="step" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동 자체를 거부한다.</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
-  </div>
-
-  <h3 style="margin-top:22px">명령 경로 — 모든 명령은 안전 게이트를 지난다</h3>
-  <div class="chain">
-    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">SOURCES</span><b>명령 소스</b><p>studio · servo · 텔레옵 · 추론<br>전부 intent 발행자다.</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--cyan)"><span class="t">POLICY</span><b>정책 게이트</b><p>lease + heartbeat 확인.<br>E-stop · 한계 초과는 거부.</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--pink)"><span class="t">ENFORCE</span><b>집행 게이트</b><p>모터 인터페이스를 독점한다.<br>정책이 죽으면 그 자리에 정지.</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--green)"><span class="t">CONTROL</span><b>컨트롤러</b><p>JTC · forward</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--amber)"><span class="t">MOTOR</span><b>DAMIAO 모터</b><p>CAN-FD (can0 · can1)</p></div>
-  </div>
-
-  <h3 style="margin-top:22px">데이터 경로 — 모방학습</h3>
-  <div class="chain">
-    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">OBSERVE</span><b>관측</b><p>/joint_states · leader_state (DDS)<br>카메라 프레임 (ZMQ)</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--green)"><span class="t">RECORD</span><b>recorder</b><p>에피소드 단위 녹화<br>스키마 해시를 함께 기록</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--amber)"><span class="t">TRAIN</span><b>데이터셋 → 학습</b><p>~/pl2_datasets<br>GPU 호스트에서 학습</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--cyan)"><span class="t">SERVE</span><b>policy_server</b><p>학습된 정책 서빙</p></div>
-    <div class="arrow">→</div>
-    <div class="step" style="--step-accent: var(--pink)"><span class="t">ACT</span><b>inference</b><p>액션을 intent 로 발행<br>→ 명령 경로로 합류</p></div>
-  </div>
-
   <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
 <div class="drawer-backdrop" id="drawer-backdrop"></div>

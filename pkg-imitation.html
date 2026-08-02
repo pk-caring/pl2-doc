@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,20 @@
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 스키마만 본다 · 로봇이 바뀌어도 그대로</span></div>
   <p class="lead animate" style="--i:3">코드 어디에도 <strong>로봇 이름이 등장하지 않는다</strong>. 로봇이 무엇인지는 resolver 가 만든 <code>schema.json</code> 으로만 알고, 그 위에서 녹화·학습·추론이 돈다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 데이터가 정책이 되는 길</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">OBSERVE</span><b>관측</b><p>/joint_states · leader_state (DDS)<br>카메라 프레임 (ZMQ)</p></div>
+    <div class="arrow">→</div>
+    <div class="step here" style="--step-accent: var(--green)"><span class="t">RECORD</span><b>recorder</b><p>에피소드 단위 녹화<br>스키마 해시를 함께 기록</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">TRAIN</span><b>데이터셋 → 학습</b><p>~/pl2_datasets · GPU 호스트</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">SERVE</span><b>policy_server</b><p>학습된 정책 서빙</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">ACT</span><b>inference</b><p>액션을 intent 로 발행<br>→ 명령 경로로 합류</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -505,12 +519,11 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>lerobot_ros2</strong></td><td>토픽·QoS·피처를 전부 스키마에서 파생 — 코드에 로봇 이름 없음</td></tr><tr><td><strong>recorder</strong></td><td>에피소드 판정(전 스트림 도착 강제) · lease 소스 검증 · provenance(schema hash) 기록</td></tr><tr><td><strong>inference</strong></td><td>policy server 의 액션 청크를 intent 로 — 게이트 통과 필수</td></tr><tr><td><strong>studio</strong></td><td>녹화·추론의 정식 경로 — 순서 강제 + 단계별 프로브</td></tr><tr><td><strong>산출물</strong></td><td>데이터셋·모델은 리포 밖 (<code>~/pl2_datasets</code> · <code>~/pl2_models</code>)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>python -m pl_imitation_studio      # 콘솔 하나 — 메인 메뉴: 녹화 / 추론</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">recorder 가 에피소드마다 기록하는 실제 provenance — 어떤 로봇 정의(스키마 해시)에서 수집됐는지가 데이터셋에 박힌다. 로봇이 바뀌면 append 가 거부되는 근거다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/recorder.py</p>
   <div class="codeblock"><pre>doc = robot.schema_doc
@@ -525,8 +538,7 @@ self._provenance = {
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">새 모델 mobi 전환 시 이 도메인은 <strong>0줄</strong> — 다만 데이터셋 에폭이 갈린다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — 스키마만 본다</td></tr><tr><td><strong>데이터셋</strong></td><td>schema hash 변경 → 기존 append 거부, mobi 는 새 에폭. 보호 장치다 — 기구가 다른 로봇의 데이터를 섞으면 학습이 조용히 오염된다</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">recorder 가 읽는 관측 선언이다. 어느 토픽의 어느 관절을 어떤 의미로 기록할지가 코드가 아니라 데이터로 온다.</p>
   <p class="diagram-shell__hint">robot/generated/schema.json (관측 항목 하나)</p>
   <div class="codeblock"><pre>{

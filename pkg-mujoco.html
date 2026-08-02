@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,20 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 디지털 트윈 · 같은 MIT 토크 제어법칙</span></div>
   <p class="lead animate" style="--i:3">실물과 <strong>같은 ros2_control 인터페이스</strong>를 노출하되 모터 대신 MuJoCo 물리를 돌린다. 위층(컨트롤러·플래닝·UI)에서 보면 실물과 구분되지 않는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 명령이 모터에 닿는 길</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">SOURCES</span><b>명령 소스</b><p>studio · servo · 텔레옵 · 추론<br>전부 intent 발행자다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">POLICY</span><b>정책 게이트</b><p>lease + heartbeat 확인.<br>E-stop · 한계 초과는 거부.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">ENFORCE</span><b>집행 게이트</b><p>모터 인터페이스를 독점한다.<br>정책이 죽으면 그 자리에 정지.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONTROL</span><b>컨트롤러</b><p>JTC · forward</p></div>
+    <div class="arrow">→</div>
+    <div class="step here" style="--step-accent: var(--amber)"><span class="t">MOTOR</span><b>모터 구동</b><p>실물(DAMIAO·CAN-FD)<br>또는 시뮬레이션(MuJoCo)</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -504,13 +518,12 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>자산</strong></td><td>MJCF/메시 트리 v1·v2 — share 설치, <code>get_package_share_directory(&quot;pl2_arm_mujoco&quot;)</code></td></tr><tr><td><strong>한 패키지인 이유</strong></td><td>자산과 그것을 구동하는 플러그인은 항상 짝이 맞아야 한다 — 따로 두면 한쪽만 갱신되는 사고가 난다</td></tr><tr><td><strong>클래스명</strong></td><td><code>openarm_mujoco_hardware/OpenArmMujocoSystem</code> — 벤더링 정체성 그대로</td></tr><tr><td><strong>빌드 함정</strong></td><td>CMake 가 venv 의 mujoco 를 찾는다 — venv 활성화 상태로 빌드 (build_workspace.sh 가 처리)</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)
 python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">심 스택이 자산과 게인을 얻는 실제 코드 — MJCF 는 이 패키지 share 에서, MIT 게인은 실물과 같은 control.yaml SSOT 에서 온다. 그래서 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
   <div class="codeblock"><pre>def _mjcf_path(model: str) -&gt; str:
@@ -524,8 +537,7 @@ python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">새 모델 mobi 의 디지털 트윈 — description 과 같은 기구 값의 MJCF 트리가 v1·v2 옆에 선다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/ · v2/ · <strong>mobi/</strong></strong></td><td>새 자산 트리 — 관절 길이·관성은 description 과 동일해야 한다 (어긋나면 심이 거짓말을 한다)</td></tr><tr><td><strong>소비자</strong></td><td>무변경 — share 아래에서 모델명으로 찾는다</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">sim 레이어의 rig 값이다. 가짜지만 스키마를 온전히 만족한다 — 하드웨어 없이 resolver 검증과 CI 를 돌리기 위한 값이고, 실물 값은 config/rigs/ 가 가진다.</p>
   <p class="diagram-shell__hint">robot/layers/sim/rig.yaml (발췌)</p>
   <div class="codeblock"><pre>arm.right:

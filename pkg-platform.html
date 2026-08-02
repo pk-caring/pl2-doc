@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,18 @@
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 제품명 문자열이 나오면 CI 실패</span></div>
   <p class="lead animate" style="--i:3">각 모듈이 계약을 <strong>선언</strong>하면, resolver 가 로봇 구성과 합쳐 파라미터·스키마를 <strong>생성</strong>한다. 검증 실패 = 기동 거부 — 어긋난 로봇은 아예 뜨지 않는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 선언에서 산출물까지</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
+    <div class="arrow">→</div>
+    <div class="step here" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동을 거부한다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -505,14 +517,13 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl_composition</strong></td><td>계약·구성이 따라야 하는 JSON Schema</td></tr><tr><td><strong>pl_resolver</strong></td><td>계약 + 구성 + 레이어 → 파라미터·관측/행동 스키마. 순수 함수</td></tr><tr><td><strong>pl_adapters</strong></td><td>leader_state → 게이트 intent (enable/align 상태기계)</td></tr><tr><td><strong>pl_supervisor</strong></td><td>고아 노드 doctor · NIC 자동감지/DDS 핀</td></tr><tr><td><strong>reference_robots</strong></td><td>mock 참조 구성 3종 — 로봇 없이 조립 규칙 검증</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>robot/generate.sh                                  # 선언 → generated/ (sim 레이어)
 robot/generate.sh --layers config/rigs/pl2m-001    # 이 기체의 실측 레이어로
 ros2 run pl_supervisor doctor --kill               # 고아 노드 정리</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">로봇 선언을 생성물로 바꾸는 실제 호출 — generate.sh 가 resolver 를 이렇게 부른다. 계약·선언·레이어가 입력의 전부이고, 출력이 robot/generated/ 다.</p>
   <p class="diagram-shell__hint">robot/generate.sh</p>
   <div class="codeblock"><pre>python -m pl_resolver resolve \
@@ -527,8 +538,7 @@ ros2 run pl_supervisor doctor --kill               # 고아 노드 정리</pre><
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">새 모델 mobi 가 와도 <strong>0줄</strong> — resolver 는 계약·선언만 읽는다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — mobi.contract.yaml + composition 의 model: mobi 로 같은 파이프라인이 돈다</td></tr><tr><td><strong>검증</strong></td><td>계약 대조 · rig 자물쇠 · 링크 예산이 새 모델에 자동 적용</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">플랫폼이 자기 검증에 쓰는 가짜 로봇이다. mock 계약으로 존재하지 않는 로봇을 조립해 본다 — 이것이 성공하면 조립 기계가 로봇 무관이라는 증명이 된다.</p>
   <p class="diagram-shell__hint">reference_robots/ref_bimanual/composition.yaml (발췌)</p>
   <div class="codeblock"><pre>robot_id: ref_bimanual

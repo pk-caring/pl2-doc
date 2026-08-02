@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,18 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 기체 pl2m-001 · 보드 · 현장</span></div>
   <p class="lead animate" style="--i:3">같은 코드가 어느 기체·어느 현장에서도 돌도록, <strong>기체마다 다른 값</strong>은 전부 여기 모인다. 호스트별 파일은 gitignore + <code>.example</code> 템플릿.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 선언에서 산출물까지</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step here" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동을 거부한다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -505,13 +517,12 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>placement.json</strong></td><td>머신 배치 — 호스트별(gitignore), 커밋본은 <code>.example</code> 템플릿</td></tr><tr><td><strong>boards/</strong></td><td>보드 사실 — 장치 목록·링크 대역/지연 예산·카메라 스트림 실측. resolver 가 링크 예산을 검사한다</td></tr><tr><td><strong>rigs/&lt;rig&gt;/</strong></td><td>기체 실측 기록 — payload 커미셔닝이 직접 저장, <code>module_revision</code> 이 모델 자물쇠</td></tr><tr><td><strong>config.env</strong></td><td>bash 점검 스크립트 전용 호스트 사실 — 파이썬은 읽지 않는다</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre>cp config/placement.json.example config/placement.json   # 템플릿 → 이 호스트의 배치
 robot/generate.sh --layers config/rigs/pl2m-001          # 실측 레이어로 산출물 생성</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">이 물리적 로봇 한 대의 실측 — payload 커미셔닝이 이 파일에 직접 저장하고, resolver 가 기동 파라미터로 나른다. module_revision 은 캘리브가 측정된 모델의 자물쇠다(어긋나면 기동 거부).</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (발췌)</p>
   <div class="codeblock"><pre>meta:
@@ -528,8 +539,7 @@ arm.right:
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
   <p class="p dim">module_revision 자물쇠 — 모델을 바꾸면 낡은 실측이 이름만 같은 파라미터로 넘어오지 못하게 resolver 가 기동을 거부한다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>rigs/&lt;rig&gt;/rig.yaml</strong></td><td><code>module_revision: openarm_v2</code> → <code>mobi</code> — 어긋난 동안은 기동 거부 (fail-closed)</td></tr><tr><td><strong>커미셔닝 재실행</strong></td><td><code>CalibratePayload</code> → torque_bias · payload 가 mobi 기준으로 새로 저장</td></tr></tbody></table></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">보드의 네트워크 사실이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
   <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
   <div class="codeblock"><pre># links: 기가비트 유선 실측 (compute↔leader 직결):

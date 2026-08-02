@@ -389,6 +389,7 @@
   .chain .step .t { font-family: var(--font-mono); font-size: 10.5px; color: var(--step-accent, var(--cyan)); letter-spacing: 1px; margin-bottom: 5px; }
   .chain .step b { font-size: 13.5px; display: block; margin-bottom: 3px; }
   .chain .step p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .chain .step.here { outline: 2px solid var(--step-accent); background: color-mix(in srgb, var(--surface2) 70%, transparent); }
   .chain .arrow { align-self: center; color: var(--text-subtle); font-family: var(--font-mono); font-size: 15px; flex: 0 0 auto; }
   .wrap1 { max-width: 900px; margin: 0 auto; }
   /* ============ 접이식 폴더 트리 ============ */
@@ -475,7 +476,18 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔 기구·형상 (openarm v1/v2)</span></div>
   <p class="lead animate" style="--i:3">팔이 <strong>어떻게 생겼는가</strong>를 담는 데이터 패키지. 여기서 나온 <code>/robot_description</code> 하나에서 중력보상·안전 한계·심·MoveIt 이 전부 파생된다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>흐름 속 위치 — 선언에서 산출물까지</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="chain">
+    <div class="step here" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동을 거부한다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
+  </div>
+  <p class="diagram-shell__hint">강조된 카드가 이 페이지의 자리다.</p>
+  <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p2">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -505,13 +517,12 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-
-  <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
+  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/v2 나란히</strong></td><td>모델별 xacro — composition 의 <code>model:</code> 필드가 고른다</td></tr><tr><td><strong>단일 RSP</strong></td><td>합성 robot_description 은 하나 — 소비자는 파일이 아니라 토픽에서 형상을 얻는다</td></tr><tr><td><strong>거울상</strong></td><td>joint1·joint2·그리퍼 envelope 는 좌우 부호 거울상 — 한 세트를 양측에 쓰면 안 된다</td></tr><tr><td><strong>마운트는 여기 없다</strong></td><td>팔이 로봇 어디에 붙는지는 로봇 워크스페이스 <code>robot/urdf</code> 소유</td></tr></tbody></table></div>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
+  <div class="sec-head" id="p4"><span class="num">04</span><h2>바로 써보기</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre># 안전 게이트·심이 실제로 쓰는 그 URDF 를 눈으로 확인
 xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/urdf/openarm_v20.urdf.xacro</pre></div>
-  <div class="sec-head" id="p4"><span class="num">04</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p4">#</a></div>
+  <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">안전 게이트 launch 가 한계를 얻는 실제 코드 — description 의 xacro 를 전개해 측별 파라미터를 파생한다. 파일 경로가 아니라 패키지 share 로 찾는다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_safety/launch/safety.launch.py</p>
   <div class="codeblock"><pre>urdf = xacro.process_file(
@@ -523,8 +534,7 @@ params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울�
   <p class="p dim">겉 형상·관절 길이가 다른 새 팔 <strong>mobi</strong> 를 추가할 때 이 패키지에서 해야 하는 일 — 전부 데이터 작업이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>mobi/urdf/…</strong></td><td>메시 참조 · 관절 길이</td></tr><tr><td><strong>mobi/config/arm/joint/<br>joint_limits.yaml</strong></td><td>관절 한계 — canonical 우측, 좌측은 거울상 자동</td></tr><tr><td><strong>관성값</strong></td><td>CAD 재산출 — 중력보상 정확도가 여기서 나온다</td></tr><tr><td><strong>pl2_arm_bringup/contract/</strong></td><td><code>openarm_v2.contract.yaml</code> 사본 → <code>mobi.contract.yaml</code> (model: mobi — 관절 수 같으면 거의 그대로)</td></tr></tbody></table></div>
   <div class="codeblock"><pre>cp -r assets/robot/openarm_v2.0 assets/robot/mobi</pre></div>
-
-  <div class="sec-head" id="p5"><span class="num">05</span><h2>설정 파일 실물</h2><a class="anchor" href="#p5">#</a></div>
+  <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">관절 한계는 코드가 아니라 이 데이터다. 기준은 오른팔이고, 왼팔은 매크로가 부호를 뒤집어 만든다.</p>
   <p class="diagram-shell__hint">config/arm/joint/joint_limits.yaml (발췌)</p>
   <div class="codeblock"><pre>joint1:
