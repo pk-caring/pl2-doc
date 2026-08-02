@@ -591,7 +591,7 @@ flowchart LR
       <p>ros2_control controller chaining 으로 컨트롤러와 모터 사이에 끼어든 차단기. 모터 명령 인터페이스를 배타적으로 claim(독점)해서 <b>우회 경로가 물리적으로 없다</b>. 정책 게이트가 죽으면 스스로 닫혀 팔을 그 자리에 정지시킨다 — fail-closed.</p></div>
     <div class="garrow"><span class="a">↓</span><div class="t">⑤ 여기까지 살아남은 값만</div></div>
     <div class="gstep"><span class="tag">하드웨어</span><b>모터</b> — DAMIAO ×16
-      <p>실제 움직임. 이 도식의 어떤 정거장도 건너뛸 수 없다.</p></div>
+      <p>실제 움직임. 위 단계는 어느 하나도 건너뛸 수 없다.</p></div>
   </div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>빠른 시작</h2><a class="anchor" href="#p5">#</a></div>
   <div class="codeblock"><pre># 1) lease 획득
