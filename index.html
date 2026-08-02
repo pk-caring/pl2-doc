@@ -531,37 +531,44 @@
 </div>
 
   <div class="sec-head"><span class="num">MAP</span><h2>패키지 구조 한눈에</h2></div>
-  <p class="p dim">계약이 resolver 로 모여 스키마가 되고, 명령은 안전 게이트를 거쳐 모터로, 카메라 데이터는 ZMQ 로 흐른다.</p>
-  <div class="codeblock" style="overflow-x:auto"><pre class="nohl">[ 선언 ]                          [ 조립 ]                      [ 산출물 ]
+  <p class="p dim">세 가지 흐름만 알면 전체가 읽힌다 — 선언이 산출물이 되는 길, 명령이 모터에 닿는 길, 데이터가 정책이 되는 길.</p>
+  <h3 style="margin-top:22px">선언 → 조립 → 산출물</h3>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">DECLARE</span><b>선언</b><p>robot/composition.yaml<br>모듈 계약 4벌<br>config/ (boards·rig·site)</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">RESOLVE</span><b>pl_resolver</b><p>선언과 계약을 합쳐 검증한다.<br>실패하면 기동 자체를 거부한다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">OUTPUT</span><b>robot/generated/</b><p>schema.json · 파라미터 · URDF<br>손으로 고치지 않는 산출물</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONSUME</span><b>수집 · 추론</b><p>schema.json 만 읽는다.<br>로봇이 바뀌어도 코드 수정 없음.</p></div>
+  </div>
 
-robot/composition.yaml ─────┐
-pl2_arm/contract ───────────┤
-pl2_leader/contract ────────┼──▶  pl_resolver  ─────▶  robot/generated/
-pl2_arm_cameras/contract ───┤     (검증 실패 =          schema.json · params · URDF
-config/ boards·rig·site ────┘      기동 거부)                  │
-                                                              ▼
-                              수집·추론(pl_imitation)은 schema.json 만 읽는다
-                              → 로봇이 바뀌어도 코드 수정 없음
+  <h3 style="margin-top:22px">명령 경로 — 모든 명령은 안전 게이트를 지난다</h3>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">SOURCES</span><b>명령 소스</b><p>studio · servo · 텔레옵 · 추론<br>전부 intent 발행자다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">POLICY</span><b>정책 게이트</b><p>lease + heartbeat 확인.<br>E-stop · 한계 초과는 거부.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">ENFORCE</span><b>집행 게이트</b><p>모터 인터페이스를 독점한다.<br>정책이 죽으면 그 자리에 정지.</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">CONTROL</span><b>컨트롤러</b><p>JTC · forward</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">MOTOR</span><b>DAMIAO 모터</b><p>CAN-FD (can0 · can1)</p></div>
+  </div>
 
+  <h3 style="margin-top:22px">데이터 경로 — 모방학습</h3>
+  <div class="chain">
+    <div class="step" style="--step-accent: var(--text-subtle)"><span class="t">OBSERVE</span><b>관측</b><p>/joint_states · leader_state (DDS)<br>카메라 프레임 (ZMQ)</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--green)"><span class="t">RECORD</span><b>recorder</b><p>에피소드 단위 녹화<br>스키마 해시를 함께 기록</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--amber)"><span class="t">TRAIN</span><b>데이터셋 → 학습</b><p>~/pl2_datasets<br>GPU 호스트에서 학습</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--cyan)"><span class="t">SERVE</span><b>policy_server</b><p>학습된 정책 서빙</p></div>
+    <div class="arrow">→</div>
+    <div class="step" style="--step-accent: var(--pink)"><span class="t">ACT</span><b>inference</b><p>액션을 intent 로 발행<br>→ 명령 경로로 합류</p></div>
+  </div>
 
-[ 명령 경로 — 모든 명령은 안전 게이트를 지난다 ]
-
-  studio · servo · teleop(pl_adapters) · inference
-        │  intent 발행 (lease + heartbeat 필요)
-        ▼
-  pl2_arm_safety ─ 정책(lease·E-stop·한계 거부) ▶ 집행(인터페이스 배타 claim)
-        │                    정책이 죽으면 그 자리에 정지 (fail-closed)
-        ▼
-  JTC · forward 컨트롤러 ──▶ pl2_arm_hardware ──▶ DAMIAO 모터 (CAN-FD)
-
-
-[ 데이터 경로 — 모방학습 ]
-
-  /joint_states · leader_state (DDS) ──┐
-                                       ├──▶ recorder ─▶ 데이터셋 ─▶ 학습
-  pl2_arm_cameras (ZMQ JPEG 스트림) ───┘                              │
-                                                                     ▼
-  intent ◀── inference ◀── policy_server (GPU) ◀─────────── 학습된 정책</pre></div>
   <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
 <div class="drawer-backdrop" id="drawer-backdrop"></div>
@@ -619,15 +626,6 @@ config/ boards·rig·site ────┘      기동 거부)                  �
 </script>
 
 </div>
-<script src="vendor/highlight.min.js"></script>
-<script>
-(function() {
-  if (!globalThis.hljs) return;
-  document.querySelectorAll('.codeblock pre:not(.nohl)').forEach(pre => {
-    const r = hljs.highlightAuto(pre.textContent, ['bash', 'python', 'yaml', 'xml']);
-    pre.innerHTML = r.value;
-  });
-})();
-</script>
+
 </body>
 </html>
