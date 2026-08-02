@@ -613,7 +613,7 @@
   <div class="tbl-wrap"><table>
     <thead><tr><th>전송</th><th>싣는 것</th><th>알아둘 것</th></tr></thead>
     <tbody>
-      <tr><td><strong>DDS (ROS 2 토픽)</strong></td><td>관절 상태 · 명령(intent) · 리더 상태</td><td>ROS 2 의 기본 통신이다. 노드끼리 서로를 자동 발견한다. 각 토픽의 QoS(신뢰성·큐 깊이)는 모듈 계약이 선언하고, 코드에 상수로 적지 않는다.</td></tr>
+      <tr><td><strong>DDS (ROS 2 토픽)</strong></td><td>관절 상태 · 명령(intent) · 리더 상태</td><td>ROS 2 의 기본 통신이다. 노드끼리 서로를 자동으로 찾는다. 각 토픽의 QoS(신뢰성·큐 깊이)는 모듈 계약이 선언하고, 코드에 상수로 적지 않는다.</td></tr>
       <tr><td><strong>ZMQ</strong></td><td>카메라 JPEG 프레임</td><td>카메라만 ROS 밖으로 돌린 이유: 영상은 크고, 필요한 건 항상 최신 한 장이다. PUB/SUB + 최신-프레임 옵션이 이 요구에 맞는다. 구독자는 몇 개든 붙을 수 있다.</td></tr>
       <tr><td><strong>CAN-FD</strong></td><td>모터 명령 · 상태</td><td>차량·로봇에서 쓰는 장치 버스다. 팔마다 버스 하나(can0 · can1). 어느 팔이 어느 버스인지는 rig 기록이 가진다.</td></tr>
     </tbody>
@@ -623,7 +623,7 @@
   <div class="tbl-wrap"><table>
     <thead><tr><th>방식</th><th>설명</th></tr></thead>
     <tbody>
-      <tr><td><strong>mDNS</strong></td><td>같은 네트워크 안에서 IP 를 몰라도 이름으로 서비스를 찾는 방식이다(멀티캐스트 DNS). 카메라 서버가 <code>_pl-cam._tcp</code> 로 자신을 광고하고, 구독자는 role 이름(top 등)으로 발견한다. IP 가 바뀌어도 설정 수정이 없다.</td></tr>
+      <tr><td><strong>mDNS</strong></td><td>같은 네트워크 안에서 IP 를 몰라도 이름으로 서비스를 찾는 방식이다(멀티캐스트 DNS). 카메라 서버가 <code>_pl-cam._tcp</code> 로 자신을 광고하고, 구독자는 role 이름(top 등)으로 발견한다. IP 가 바뀌어도 설정을 고칠 필요가 없다.</td></tr>
       <tr><td><strong>DDS discovery</strong></td><td>ROS 노드끼리는 DDS 가 자동으로 서로를 찾는다. 단 네트워크 카드가 여러 개면 발견이 엉키므로, <code>pl_supervisor</code> 가 유선 NIC 하나로 고정한다(<code>~/.ros/pl_cyclonedds.xml</code> 생성).</td></tr>
       <tr><td><strong>장치 이름</strong></td><td>리더 어댑터는 udev 규칙이 <code>/dev/openarm_leader_right</code> 같은 고정 이름을 만든다. 카메라는 USB 물리 포트 경로로 구분한다 — 같은 모델 카메라는 시리얼이 겹칠 수 있어서다.</td></tr>
     </tbody>
@@ -639,7 +639,7 @@
       <tr><td><strong>게이트 — start_episode 거부</strong></td><td>recorder 는 compute 보드가 스탬프한 <code>/joint_states</code>(100 Hz)의 "도착 시각 − 스탬프" 표본 median 을 상시 감시한다. 50 ms 를 넘거나 아예 측정되지 않으면 에피소드 시작을 <b>거부</b>한다 — 경고가 아니다.</td></tr>
     </tbody>
   </table></div>
-  <p class="p dim">50 ms 의 근거: 녹화가 30 Hz 이므로 프레임 주기가 33 ms 다 — 반 프레임을 넘는 시계 차이는 관측이 인접 프레임으로 오정렬되는 것과 같다. 판정이 median 인 이유는 단발 스파이크(디스커버리 · GC)가 녹화를 막아 조작자가 게이트를 불신하게 되는 일을 피하기 위해서다. "측정 안 됨"도 거부하는 이유는 간단하다 — 모름은 0 이 아니다.</p>
+  <p class="p dim">50 ms 의 근거: 녹화가 30 Hz 이므로 프레임 주기가 33 ms 다 — 반 프레임을 넘는 시계 차이는 관측이 옆 프레임에 잘못 붙는 것과 같다. median 으로 판정하는 이유는, 단발 스파이크(디스커버리 · GC) 하나가 녹화를 막으면 운영자가 게이트를 믿지 않게 되기 때문이다. "측정 안 됨"도 거부하는 이유는 간단하다 — 모름은 0 이 아니다.</p>
 
   <div class="sec-head" id="b5"><span class="num">05</span><h2>주요 용어</h2><a class="anchor" href="#b5">#</a></div>
   <div class="tbl-wrap"><table>
@@ -654,7 +654,7 @@
       <tr><td><strong>intent</strong></td><td>명령 후보. 소스는 모터에 직접 명령하지 못하고 intent 를 발행하며, 안전 게이트가 통과 여부를 정한다.</td></tr>
       <tr><td><strong>fail-closed</strong></td><td>감시가 사라지면 자동으로 안전한 상태(정지)가 되는 설계. 반대는 fail-open.</td></tr>
       <tr><td><strong>URDF · xacro</strong></td><td>로봇 형상(링크·관절·한계)을 적는 ROS 표준 형식. xacro 는 그걸 매크로로 조립하는 도구.</td></tr>
-      <tr><td><strong>MJCF</strong></td><td>MuJoCo 시뮬레이터의 모델 형식. URDF 와 같은 기구 값을 가져야 한다.</td></tr>
+      <tr><td><strong>MJCF</strong></td><td>MuJoCo 시뮬레이터의 모델 형식. 기구 값이 URDF 와 같아야 한다.</td></tr>
       <tr><td><strong>QoS</strong></td><td>DDS 토픽의 전달 정책(신뢰성·큐 깊이 등). 이 프로젝트에서는 계약이 선언한다.</td></tr>
       <tr><td><strong>ros2_control</strong></td><td>ROS 의 표준 제어 프레임워크. 컨트롤러와 하드웨어 드라이버(plugin)를 주기로 연결한다.</td></tr>
     </tbody>

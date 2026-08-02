@@ -527,7 +527,7 @@
   <p class="subtitle animate" style="--i:1">이 기체의 값 — 코드가 아니라 측정된 사실</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 기체 pl2m-001 · 보드 · 현장</span></div>
   <div class="animate" style="--i:3">
-  <div class="pkg-intro"><p><strong>기체마다 다른 값을 모아 두는 곳이다.</strong> 코드가 아니라 측정값·설정값이다. 호스트별 파일은 gitignore 하고, 저장소에는 .example 템플릿만 커밋한다.</p><p><code>boards/</code> 는 보드별 장치와 네트워크 예산, <code>rigs/pl2m-001/</code> 은 이 기체 한 대의 캘리브레이션·배선·카메라 기록이다. payload 커미셔닝 결과도 이 파일에 저장된다.</p><p>rig 기록의 <code>module_revision</code> 은 안전장치다. 측정 당시의 팔 모델을 기록해 두고, composition 의 모델과 다르면 기동을 거부한다. 오래된 캘리브레이션이 새 모델에 적용되는 사고를 막는다.</p></div>
+  <div class="pkg-intro"><p><strong>기체마다 다른 값을 모아 두는 곳이다.</strong> 코드가 아니라 측정값·설정값이다. 호스트별 파일은 gitignore 하고, 저장소에는 .example 템플릿만 커밋한다.</p><p><code>boards/</code> 는 보드별 장치와 네트워크 예산, <code>rigs/pl2m-001/</code> 은 이 기체 한 대의 캘리브레이션·배선·카메라 기록이다. payload 커미셔닝 결과도 이 파일에 저장된다.</p><p>rig 기록의 <code>module_revision</code> 은 안전장치다. 측정 당시의 팔 모델을 기록해 두고, composition 의 모델과 다르면 기동을 거부한다. 오래된 캘리브레이션을 새 모델에 적용하는 사고를 막는다.</p></div>
   </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
@@ -576,7 +576,7 @@ flowchart LR
   <div class="codeblock"><pre>cp config/placement.json.example config/placement.json   # 템플릿 → 이 호스트의 배치
 robot/generate.sh --layers config/rigs/pl2m-001          # 실측 레이어로 산출물 생성</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
-  <p class="p dim">이 물리적 로봇 한 대의 실측 — payload 커미셔닝이 이 파일에 직접 저장하고, resolver 가 기동 파라미터로 나른다. module_revision 은 캘리브가 측정된 모델의 자물쇠다(어긋나면 기동 거부).</p>
+  <p class="p dim">이 물리적 로봇 한 대의 실측 — payload 커미셔닝이 이 파일에 직접 저장하고, resolver 가 기동 파라미터로 나른다. module_revision 은 그 캘리브를 어느 모델에서 쟀는지 잠가 두는 자물쇠다(어긋나면 기동 거부).</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (발췌)</p>
   <div class="codeblock"><pre>meta:
   rig_id: pl2m-001
@@ -589,7 +589,7 @@ arm.right:
   torque_bias: [0.114, 0.062, 0.047, 0.187, -0.009, 0.048, 0.009]
   payload_mass: 0.211
   payload_com: [-0.003, -0.001, -0.162]</pre></div>
-  <p class="p dim">실측 기록의 머리말이다. 값만이 아니라 언제·누가·어느 도구로 쟀고 승인됐는지가 함께 산다.</p>
+  <p class="p dim">실측 기록의 머리말이다. 값만이 아니라 언제·누가·어느 도구로 쟀고 승인됐는지가 함께 남는다.</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (meta)</p>
   <div class="codeblock"><pre>meta:
   rig_id: pl2m-001
@@ -605,7 +605,7 @@ arm.right:
     status: approved
     approved_by: woolim</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
-  <p class="p dim">보드의 네트워크 사실이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
+  <p class="p dim">보드의 네트워크 실측값이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
   <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
   <div class="codeblock"><pre># links: 기가비트 유선 실측 (compute↔leader 직결):
 #   TCP 양방향 941 Mbit/s, ping RTT avg 0.41 ms.
@@ -617,7 +617,7 @@ streams:
   camera.top.rgb:           {bandwidth_mbps: 14}
   camera.right_gripper.rgb: {bandwidth_mbps: 17}
   camera.left_gripper.rgb:  {bandwidth_mbps: 17}</pre></div>
-  <p class="p dim">어떤 컴포넌트가 어느 머신에서 도는지의 템플릿이다. 복사해서 이 호스트의 값으로 채운다.</p>
+  <p class="p dim">어떤 컴포넌트를 어느 머신에서 돌릴지 적는 템플릿이다. 복사해서 이 호스트의 값으로 채운다.</p>
   <p class="diagram-shell__hint">config/placement.json.example (발췌)</p>
   <div class="codeblock"><pre>{
   "machines": {

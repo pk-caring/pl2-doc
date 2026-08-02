@@ -528,7 +528,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — DAMIAO 모터 · CAN-FD (can0 오른팔 · can1 왼팔)</span></div>
   <div class="animate" style="--i:3">
   <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_hardware — 실물 모터 구동</p>
-  <div class="pkg-intro"><p>ros2_control 의 제어 주기를 <strong>실제 DAMIAO 모터 통신</strong>으로 바꾸는 드라이버다.</p><p>실물과 시뮬레이션은 URDF 의 plugin 문자열 한 줄로 전환된다. 상위 계층(컨트롤러·계획·UI)은 어느 쪽인지 모른다.</p><p>CAN 배선 정보는 코드에 없다. rig 기록이 가지고 있고 resolver 가 파라미터로 전달한다.</p></div>
+  <div class="pkg-intro"><p>ros2_control 의 제어 주기를 <strong>실제 DAMIAO 모터 통신</strong>으로 바꾸는 드라이버다.</p><p>실물과 시뮬레이션은 URDF 의 plugin 문자열 한 줄로 갈린다. 상위 계층(컨트롤러·계획·UI)은 어느 쪽인지 모른다.</p><p>CAN 배선 정보는 코드에 없다. rig 기록이 가지고 있고 resolver 가 파라미터로 전달한다.</p></div>
   <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_can — CAN 라이브러리</p>
   <div class="pkg-intro"><p>DAMIAO 모터용 CAN/CAN-FD C++ 라이브러리와 호스트 설정 스크립트다(can0=오른팔, can1=왼팔).</p><p>enactic/openarm_can 을 그대로 가져와(subtree) 유지한다. 업스트림 변경은 명령 한 줄로 반영한다.</p></div>
   </div>
@@ -582,7 +582,7 @@ flowchart LR
   &lt;!-- &lt;plugin&gt;openarm_mujoco_hardware/OpenArmMujocoSystem&lt;/plugin&gt;  심 · MuJoCo --&gt;
 &lt;/hardware&gt;</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
-  <p class="p dim">resolver 가 생성한 실제 robot_description — rig 레코드의 결선(can0/can1)이 파라미터로 실려 온다. 손으로 쓴 게 아니라 생성물이다.</p>
+  <p class="p dim">resolver 가 생성한 실제 robot_description — rig 기록의 결선(can0/can1)이 파라미터로 실려 온다. 손으로 쓴 게 아니라 생성물이다.</p>
   <p class="diagram-shell__hint">robot/generated/robot_description.urdf (발췌)</p>
   <div class="codeblock"><pre>&lt;hardware&gt;
   &lt;param name="arm_type"&gt;v20&lt;/param&gt;

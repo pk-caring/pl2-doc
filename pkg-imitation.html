@@ -527,7 +527,7 @@
   <p class="subtitle animate" style="--i:1">모방학습 — 수집 → 학습 → 추론</p>
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 스키마만 본다 · 로봇이 바뀌어도 그대로</span></div>
   <div class="animate" style="--i:3">
-  <div class="pkg-intro"><p>데이터 수집 → 학습 → 추론을 담당한다. <strong>코드에 로봇 이름이 없다.</strong> 로봇 정보는 resolver 가 생성한 schema.json 에서만 얻는다. 로봇이 바뀌어도 이 저장소는 수정하지 않는다.</p><p>구성: lerobot_ros2(스키마를 읽어 lerobot 에 연결), recorder(에피소드 녹화), inference(정책 실행), studio(운영자 콘솔), policy_server(GPU 서버).</p><p>에피소드마다 스키마 해시를 기록한다. 로봇이 바뀌면 기존 데이터셋에 추가 녹화가 거부되고 새 데이터셋으로 시작한다. 서로 다른 로봇의 데이터가 섞이는 것을 막기 위한 장치다.</p></div>
+  <div class="pkg-intro"><p>데이터 수집 → 학습 → 추론을 담당한다. <strong>코드에 로봇 이름이 없다.</strong> 로봇 정보는 resolver 가 생성한 schema.json 에서만 얻는다. 로봇이 바뀌어도 이 저장소는 수정하지 않는다.</p><p>구성: lerobot_ros2(스키마를 읽어 lerobot 에 연결), recorder(에피소드 녹화), inference(정책 실행), studio(운영자 콘솔), policy_server(GPU 서버).</p><p>에피소드마다 스키마 해시를 기록한다. 로봇이 바뀌면 기존 데이터셋에는 추가 녹화를 거부하고 새 데이터셋으로 시작한다. 서로 다른 로봇의 데이터가 섞이는 것을 막기 위한 장치다.</p></div>
   </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
@@ -623,7 +623,7 @@ self._provenance = {
         cache_rad = dict(self._js_cache)
     return build_gr00t_obs(cache_rad, frames_rgb, self._task,
                            ages=ages, bounds=self._bounds)</pre></div>
-  <p class="p dim">녹화 연결 시점의 시계 게이트다 — 보드가 chronyc 로 자기 오프셋을 재고, 검증 불가능한 시계는 나쁜 시계와 똑같이 거부한다(기초 지식의 시간 동기화 절 참조).</p>
+  <p class="p dim">녹화 연결 시점의 시계 게이트다 — 보드가 chronyc 로 자기 오프셋을 재고, 확인이 안 되는 시계도 나쁜 시계와 똑같이 거부한다(기초 지식의 시간 동기화 절 참조).</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/gating.py</p>
   <div class="codeblock"><pre>def chrony_gate(max_ms, run=None) -&gt; Gate:
     def check() -&gt; list[str]:

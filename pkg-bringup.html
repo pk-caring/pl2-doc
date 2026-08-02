@@ -527,7 +527,7 @@
   <p class="subtitle animate" style="--i:1">팔 모듈 조립 — launch 3종 + 모듈 계약 + 컨트롤러 설정</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔 스택 기동 전체</span><span class="hw none">심 공용</span></div>
   <div class="animate" style="--i:3">
-  <div class="pkg-intro"><p>팔 모듈을 <strong>실제로 띄우는 조립 지점</strong>이다. 진입점이 셋이다: 실물(<code>pl2_arm.launch.py</code>), 시뮬레이션(<code>pl2_sim.launch.py</code>), 시뮬레이션+동작 계획(<code>pl2_sim_moveit.launch.py</code>). 셋 다 같은 컨트롤러·게이트 구조를 쓴다 — 심은 하드웨어 플러그인 한 줄만 다르다.</p><p>팔이 외부에 공개하는 것을 적은 <strong>모듈 계약</strong>(<code>contract/openarm_v1·v2</code>)과 컨트롤러 실행 설정(<code>config/controllers/</code>)이 여기 있다. resolver 는 이 계약을 읽어 로봇을 조립한다.</p><p>로봇 전체 기동에서는 로봇 진입점(<code>robot.launch.py</code>)이 compute 보드에서 이 launch 를 포함한다. 단독 기동도 된다 — 모델(v1/v2)은 rig 기록을 따라 자동 결정된다.</p></div>
+  <div class="pkg-intro"><p>팔 모듈을 <strong>실제로 띄우는 조립 지점</strong>이다. 진입점이 셋이다: 실물(<code>pl2_arm.launch.py</code>), 시뮬레이션(<code>pl2_sim.launch.py</code>), 시뮬레이션+동작 계획(<code>pl2_sim_moveit.launch.py</code>). 셋 다 같은 컨트롤러·게이트 구조를 쓴다 — 심은 하드웨어 플러그인 한 줄만 다르다.</p><p>팔이 외부에 공개하는 것을 적은 <strong>모듈 계약</strong>(<code>contract/openarm_v1·v2</code>)과 컨트롤러 실행 설정(<code>config/controllers/</code>)이 여기 있다. resolver 는 이 계약을 읽어 로봇을 조립한다.</p><p>로봇 전체 기동에서는 로봇 진입점(<code>robot.launch.py</code>)이 compute 보드에서 이 launch 를 불러온다. 단독 기동도 된다 — 모델(v1/v2)은 rig 기록을 따라 자동 결정된다.</p></div>
   </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
@@ -610,7 +610,7 @@ groups:
     command:
       topic: forward_position_controller/commands
       type: std_msgs/msg/Float64MultiArray</pre></div>
-  <p class="p dim">컨트롤러 실행 설정 — 어떤 컨트롤러가 뜨고 게이트가 어디에 끼는지의 배선이다. 게이트 클래스 문자열이 여기서 지정된다.</p>
+  <p class="p dim">컨트롤러 실행 설정 — 어떤 컨트롤러를 띄우고 게이트를 어디에 끼울지 적은 배선이다. 게이트 클래스 문자열이 여기서 지정된다.</p>
   <p class="diagram-shell__hint">config/controllers/openarm_bimanual_controllers.yaml (발췌)</p>
   <div class="codeblock"><pre>controller_manager:
   ros__parameters:

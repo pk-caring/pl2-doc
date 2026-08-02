@@ -574,10 +574,10 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>lease</strong></td><td>한 소스만 명령권 — heartbeat(200 ms)가 오는 동안만. 침묵 = 반납</td></tr><tr><td><strong>E-stop</strong></td><td>latch + lease 강탈. <code>rearm</code>은 명시 요청, rearm 만으로는 아무것도 안 움직인다</td></tr><tr><td><strong>한계</strong></td><td>한계 밖 값은 clamp 가 아니라 <strong>거부</strong> — 한계는 URDF 에서 측별로</td></tr><tr><td><strong>우회 불가</strong></td><td>집행이 명령 인터페이스를 배타 claim — 우회 시도는 resource conflict 로 성립 안 함</td></tr><tr><td><strong>이름</strong></td><td>플러그인 클래스 <code>pl2_arm_safety_controller/SafetyGateController</code> 유지 — 실행 설정이 이 이름을 본다</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>명령의 여정</h2><a class="anchor" href="#p4">#</a></div>
-  <p class="p">용어 네 개(intent · lease · 정책 게이트 · 체인 게이트)는 명령 하나가 팔에 닿기까지의 정거장 이름이다. "오른팔 관절을 여기로" — 7개 각도값 하나가 가는 길을 따라가 보자.</p>
+  <p class="p">명령 하나가 모터에 닿으려면 여러 단계를 거친다. intent · lease · 정책 게이트 · 체인 게이트는 모두 그 길목에 붙은 이름이다. 관절 각도값 일곱 개("오른팔을 여기로")가 실제로 어떤 길을 지나는지 따라가 보자.</p>
   <div class="gpath">
     <div class="gstep"><span class="tag">발행자</span><b>프로그램</b> — studio · teleop · 추론
-      <p>팔을 움직이고 싶은 쪽. 누구든 모터·컨트롤러에 직접 명령을 쓸 수는 없다.</p></div>
+      <p>팔을 움직이고 싶은 쪽. 누구도 모터·컨트롤러에 직접 명령을 쓸 수 없다.</p></div>
     <div class="garrow"><span class="a">↓</span><div class="t">① 먼저 <b>lease(명령권)</b>를 빌린다<small>한 번에 한 프로그램만 · heartbeat(0.2 초 간격 생존 신호)가 끊기면 자동 회수 — 죽은 프로그램이 명령권을 쥘 수 없다</small></div></div>
     <div class="garrow"><span class="a">↓</span><div class="t">② <b>intent(명령 후보)</b>를 발행한다 — 그냥 7관절 목표 각도값이다<small><code>right/command_intent</code> (그리퍼 · 속도용도 따로 있다) — 이 시점엔 아무것도 움직이지 않는다</small></div></div>
     <div class="gstep gate"><span class="tag">판단 · Python</span><b>정책 게이트</b>

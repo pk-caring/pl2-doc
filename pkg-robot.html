@@ -527,7 +527,7 @@
   <p class="subtitle animate" style="--i:1">로봇 진입점 — 부모 워크스페이스 소유</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — PL-2 M 완성 기체 (조립체)</span></div>
   <div class="animate" style="--i:3">
-  <div class="pkg-intro"><p><strong>로봇을 정의하는 곳이다.</strong> <code>composition.yaml</code> 한 파일이 이 로봇의 구성(팔 2개·리더·카메라 3대)을 선언한다. 나머지는 모두 이 선언에서 생성된다.</p><p>선언은 두 가지다. composition.yaml 은 어떤 모듈을 쓰는지를, <code>urdf/pl2_m.urdf.xacro</code> 는 그 모듈이 몸체 어디에 붙는지를 정한다. 좌표 같은 실제 값은 description 패키지가 가진다. 여기에는 이름만 적는다.</p><p><code>generate.sh</code> 를 실행하면 스키마·파라미터·URDF 가 <code>generated/</code> 에 생성된다. 로봇 기동은 <code>robot.launch.py</code> 한 곳이며, board 인자를 받은 머신의 컴포넌트만 뜬다.</p></div>
+  <div class="pkg-intro"><p><strong>로봇을 정의하는 곳이다.</strong> <code>composition.yaml</code> 한 파일이 이 로봇의 구성(팔 2개·리더·카메라 3대)을 선언한다. 나머지는 모두 이 선언에서 생성된다.</p><p>선언은 두 가지다. composition.yaml 은 어떤 모듈을 쓰는지를, <code>urdf/pl2_m.urdf.xacro</code> 는 그 모듈이 몸체 어디에 붙는지를 정한다. 좌표 같은 실제 값은 description 패키지에 있다. 여기에는 이름만 적는다.</p><p><code>generate.sh</code> 를 실행하면 스키마·파라미터·URDF 가 <code>generated/</code> 에 생성된다. 로봇 기동은 <code>robot.launch.py</code> 한 곳이며, board 인자를 받은 머신의 컴포넌트만 뜬다.</p></div>
   </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
