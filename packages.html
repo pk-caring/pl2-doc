@@ -452,6 +452,18 @@
   .grp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
   @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
 
+  /* ============ 네트워크 토폴로지 ============ */
+  .netmap { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: stretch; margin: 16px 0; }
+  .netlink { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 6px; }
+  .netlink .wire { font-size: 20px; color: var(--pink); letter-spacing: -2px; }
+  .netlink b { font-family: var(--font-mono); font-size: 11.5px; }
+  .netlink span { font-size: 11px; color: var(--text-subtle); display: block; }
+  .devlist { list-style: none; margin-top: 10px; }
+  .devlist li { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; padding-left: 14px; position: relative; }
+  .devlist li::before { content: "·"; position: absolute; left: 2px; color: var(--text-subtle); }
+  .devlist b { color: var(--text); font-weight: 500; }
+  @media (max-width: 760px) { .netmap { grid-template-columns: 1fr; } .netlink .wire { transform: rotate(90deg); } }
+
   /* ============ 예시 코드 ============ */
   .codeblock { background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 12px 0; }
   .codeblock pre { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: var(--text); }
@@ -468,7 +480,7 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0">패키지</h1>
@@ -478,9 +490,9 @@
     <a class="pkg-card" href="pkg-description.html"><div class="n">pl2_arm_description</div><p>URDF · 메시 · 모델별 값 — 로봇의 형상 SSOT</p></a>
     <a class="pkg-card" href="pkg-hardware-can.html"><div class="n">pl2_arm_hardware · can</div><p>실물 구동 — DAMIAO 모터 SystemInterface + CAN-FD</p></a>
     <a class="pkg-card" href="pkg-mujoco.html"><div class="n">pl2_arm_mujoco</div><p>MuJoCo 심 — 자산 + 플러그인 + 뷰어, 실물과 같은 제어법칙</p></a>
-    <a class="pkg-card" href="pkg-capabilities.html"><div class="n">팔의 능력 4종</div><p>moveit · servo · mit · payload — 서비스/토픽으로 노출</p></a>
+    <a class="pkg-card" href="pkg-capabilities.html"><div class="n">팔의 제어 4종</div><p>moveit · servo · mit · payload — 서비스/토픽으로 노출</p></a>
     <a class="pkg-card" href="pkg-cameras.html"><div class="n">pl2_arm_cameras</div><p>ZMQ 카메라 스트리밍 — 소비자 중립, 비-ROS</p></a>
-    <a class="pkg-card" href="pkg-studio.html"><div class="n">pl2_arm_studio</div><p>운영자 웹 UI — 능력의 소비자 중 하나</p></a>
+    <a class="pkg-card" href="pkg-studio.html"><div class="n">pl2_arm_studio</div><p>운영자 웹 UI — 제어 기능의 소비자 중 하나</p></a>
     <a class="pkg-card" href="pkg-leader.html"><div class="n">pl2_leader</div><p>리더 디바이스 — 교시·텔레옵 입력, backend 교체형</p></a>
     <a class="pkg-card" href="pkg-imitation.html"><div class="n">pl_imitation</div><p>모방학습 — 수집·학습·추론, 스키마만 읽는다</p></a>
     <a class="pkg-card" href="pkg-platform.html"><div class="n">pl_platform</div><p>조립 계층 — 계약 + 구성 → 파라미터·스키마 (resolver)</p></a>
