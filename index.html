@@ -452,6 +452,21 @@
   .grp.green .grp-label code { color: var(--green); }
   .grp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
   @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
+  /* ============ 계층 지도 (구조 한눈에 — 명령의 층계) ============ */
+  .laymap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; margin-top: 26px; align-items: start; }
+  .laytitle { font-size: 15px; font-weight: 600; margin: 30px 0 10px; }
+  .laytitle small { font-weight: 400; color: var(--text-dim); margin-left: 8px; font-size: 12.5px; }
+  .laycard { background: var(--surface); border: 1px solid var(--border-soft); border-left: 3px solid var(--pink); border-radius: 10px; padding: 12px 16px 11px; }
+  .laycard b { font-size: 13.5px; }
+  .laycard .pk { font-family: var(--font-mono); font-size: 11px; color: var(--pink); margin-left: 8px; }
+  .laycard p { font-size: 12px; color: var(--text-dim); line-height: 1.55; margin-top: 3px; }
+  .laycard.gate { border-left-color: var(--amber, #d9a23a); background: color-mix(in srgb, var(--surface) 88%, #d9a23a 12%); }
+  .layarrow { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-subtle); padding: 3px 0; }
+  .layarrow .a { color: var(--pink); margin-right: 6px; }
+  .layrail .laycard { border-left-color: var(--green, #58b58c); margin-bottom: 12px; }
+  .layrail .laycard .pk { color: var(--green, #58b58c); }
+  .layrail .note { font-size: 11.5px; color: var(--text-subtle); line-height: 1.6; }
+  @media (max-width: 860px) { .laymap { grid-template-columns: 1fr; } }
 
   /* ============ 네트워크 토폴로지 ============ */
   .topo { width: 100%; height: auto; display: block; margin: 16px 0 6px; }
@@ -540,8 +555,8 @@
 <div class="xleaf"><span class="xname">pl2_arm_interfaces</span><span class="xdesc">위 제어 기능의 .srv / .msg / .action</span></div>
 <div class="xgroup">뷰 · 조립</div>
 <div class="xleaf"><span class="xname">pl2_arm_studio<a class="vchip pbtn" data-panel="studio" href="#">설명</a></span><span class="xdesc">운영자 웹 UI — 상태를 보여주고 기능을 켜고 끌 뿐</span></div>
-<div class="xleaf"><span class="xname">pl2_arm_bringup</span><span class="xdesc">브링업 launch + <b>contract/</b> — 팔 계약 기술자</span></div>
-<div class="xleaf"><span class="xname">pl2_arm_cameras<a class="vchip pbtn" data-panel="cameras" href="#">설명</a></span><span class="xdesc">카메라 스트리밍 — ZMQ <b>PUB</b>·mDNS · import 는 <code>pl_camera_server</code></span></div>
+<div class="xleaf"><span class="xname">pl2_arm_bringup<a class="vchip pbtn" data-panel="bringup" href="#">설명</a></span><span class="xdesc">팔 모듈 조립 — launch 3종 + <b>contract/</b> + 컨트롤러 설정</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_cameras<a class="vchip pbtn" data-panel="cameras" href="#">설명</a></span><span class="xdesc">카메라 스트리밍 — ZMQ <b>PUB</b> · mDNS 디스커버리</span></div>
 </div></details>
 <details class="xn"><summary><span class="xname"><span class="t-repo">pl2_base/</span><a class="vchip pbtn" data-panel="base" href="#">설명</a></span><span class="xdesc"><b>주행</b> — VicPinky 베이스 (스캐폴드)</span></summary>
 <div class="xkids">
@@ -609,6 +624,33 @@
       </div>
     </div>
   </div>
+
+  <div class="laytitle">층으로 보면<small>명령은 위에서 아래로 흐르고, 전부 안전층을 지난다</small></div>
+  <div class="laymap">
+    <div class="laycol">
+      <div class="laycard"><b>운영 · 학습</b><span class="pk">pl2_arm_studio · pl_imitation · pl2_leader</span>
+        <p>사람이 보고 조작하는 화면, 교시 입력, 데이터 수집과 정책 추론 — 명령 후보(intent)를 만든다.</p></div>
+      <div class="layarrow"><span class="a">↓</span>intent — 명령 후보</div>
+      <div class="laycard"><b>제어 기능</b><span class="pk">moveit · servo · mit · payload</span>
+        <p>계획 · 조그 · 게인 · 실측. 전부 공개 ROS 인터페이스(서비스·액션·토픽)로 노출된다.</p></div>
+      <div class="layarrow"><span class="a">↓</span>명령</div>
+      <div class="laycard gate"><b>안전층</b><span class="pk">pl2_arm_safety</span>
+        <p>모든 명령의 유일한 관문. lease(명령권) · E-stop · 한계를 판단하고, 체인 게이트가 우회 경로를 물리적으로 없앤다. 판단자가 죽으면 닫힌다(fail-closed).</p></div>
+      <div class="layarrow"><span class="a">↓</span>통과한 명령만</div>
+      <div class="laycard"><b>구동</b><span class="pk">hardware + can (실물) · mujoco (심)</span>
+        <p>같은 인터페이스의 두 구현 — URDF 의 plugin 문자열 한 줄로 실물/심이 전환된다.</p></div>
+      <div class="layarrow"><span class="a">↓</span>CAN-FD · 물리</div>
+      <div class="laycard"><b>실물</b><span class="pk">DAMIAO 모터 · 리더 디바이스 · 카메라 ×3</span>
+        <p>팔 2개(관절 14 + 그리퍼 2) · 교시 장치 2대 · top RealSense + 그리퍼 카메라 2대.</p></div>
+    </div>
+    <div class="layrail">
+      <div class="laycard"><b>형상 · 값</b><span class="pk">pl2_arm_description · config/</span>
+        <p>모든 층이 읽는 데이터. 형상은 /robot_description 하나에서 파생되고, 기체 실측값은 rig 기록이 가진다.</p></div>
+      <div class="laycard"><b>조립 규칙</b><span class="pk">pl_platform + robot/</span>
+        <p>모듈 계약 + 로봇 선언 → resolver → 스키마·파라미터. 층과 층을 코드가 아니라 데이터로 잇는다.</p></div>
+      <p class="note">카메라 영상은 이 층계를 타지 않는다 — pl2_arm_cameras 가 ZMQ 로 운영 · 학습 층에 직접 스트림한다.</p>
+    </div>
+  </div>
   <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
 <div class="drawer-backdrop" id="drawer-backdrop"></div>
@@ -634,7 +676,8 @@
 <div class="panel-src" id="panel-mit" data-title="pl2_arm_mit — 게인·무중력"><p>팔의 강성(뻣뻣함)을 조절한다. 저수준 제어식은 τ = kp·Δq + kd·Δq̇ + τ_ff 이고, 이 패키지는 그 값을 안전하게 바꾸는 절차를 안다.</p><p>무중력 모드(직접 교시)와 중력 방향 관찰 노드를 포함한다. 관찰 노드는 /robot_description 에서 팔 구조를 읽으므로 로봇이 바뀌어도 코드 수정이 없다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
 <div class="panel-src" id="panel-payload" data-title="pl2_arm_payload — 쥔 물건 실측"><p>팔이 쥔 물건의 무게와 무게중심을 측정한다. 몇 개 자세에서 토크 오차를 재고 회귀로 계산한다.</p><p>CalibratePayload 액션으로 실행하며, 결과는 rig 기록에 저장되어 다음 기동부터 반영된다.</p><a class="more-btn" href="pkg-capabilities.html">자세히 보기 →</a></div>
 <div class="panel-src" id="panel-studio" data-title="pl2_arm_studio — 운영자 화면"><p>텔레메트리, 3D 뷰, 동작 계획, 조그, 임피던스 실험, payload 실측을 한 화면에서 다루는 데스크톱 앱이다.</p><p><strong>특별한 권한은 없다.</strong> 모든 동작이 공개 ROS 인터페이스 호출이다. 팔을 움직이려면 다른 프로그램과 똑같이 lease 를 얻어야 한다.</p><p>실물이 없으면 미리보기 모드로 열리고, 관절 제어에 들어가면 시뮬레이션을 자동으로 띄운다.</p><a class="more-btn" href="pkg-studio.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-cameras" data-title="pl2_arm_cameras — 카메라 스트리밍"><p>카메라 장치는 <strong>이 서버만 연다</strong>. 데이터가 필요한 쪽(녹화·추론·비전 기능)은 전부 ZMQ 구독자로 받는다. 장치를 직접 여는 것은 금지다.</p><p>서버는 항상 켜져 있다. 구독자가 생기거나 사라져도 장치를 다시 열지 않으므로, 용도 전환(추론 → 비전 기능)이 끊김 없이 된다.</p><p>디렉터리 이름과 달리 import 이름은 pl_camera_server 다. 이 이름이 데이터셋 기록에 들어가 있어 바꾸면 기존 데이터셋과 호환이 깨지기 때문에 유지한다.</p><a class="more-btn" href="pkg-cameras.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-cameras" data-title="pl2_arm_cameras — 카메라 스트리밍"><p>카메라 장치는 <strong>이 서버만 연다</strong>. 데이터가 필요한 쪽(녹화·추론·비전 기능)은 전부 ZMQ 구독자로 받는다. 장치를 직접 여는 것은 금지다.</p><p>서버는 항상 켜져 있다. 구독자가 생기거나 사라져도 장치를 다시 열지 않으므로, 용도 전환(추론 → 비전 기능)이 끊김 없이 된다.</p><p>colcon 패키지가 아니라 워크스페이스 venv 에 pip(editable)로 설치되는 순수 python 서비스다. ROS 없이도 단독으로 뜨고, 서버 이름은 provider 로 생성 스키마와 데이터셋 기록에 남는다.</p><a class="more-btn" href="pkg-cameras.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-bringup" data-title="pl2_arm_bringup — 팔 모듈 조립"><p>팔 모듈을 <strong>실제로 띄우는 조립 지점</strong>이다. 진입점이 셋이다: 실물(<code>pl2_arm.launch.py</code>), 시뮬레이션(<code>pl2_sim.launch.py</code>), 시뮬레이션+동작 계획(<code>pl2_demo.launch.py</code>). 셋 다 같은 컨트롤러·게이트 구조를 쓴다 — 심은 하드웨어 플러그인 한 줄만 다르다.</p><p>팔이 외부에 공개하는 것을 적은 <strong>모듈 계약</strong>(<code>contract/openarm_v1·v2</code>)과 컨트롤러 실행 설정(<code>config/controllers/</code>)이 여기 있다. resolver 는 이 계약을 읽어 로봇을 조립한다.</p><p>로봇 전체 기동에서는 로봇 진입점(<code>robot.launch.py</code>)이 compute 보드에서 이 launch 를 포함한다. 단독 기동도 된다 — 모델(v1/v2)은 rig 기록을 따라 자동 결정된다.</p><a class="more-btn" href="pkg-bringup.html">자세히 보기 →</a></div>
 </div>
 <script>
 (function() {

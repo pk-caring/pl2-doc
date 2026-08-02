@@ -452,6 +452,21 @@
   .grp.green .grp-label code { color: var(--green); }
   .grp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
   @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
+  /* ============ 계층 지도 (구조 한눈에 — 명령의 층계) ============ */
+  .laymap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; margin-top: 26px; align-items: start; }
+  .laytitle { font-size: 15px; font-weight: 600; margin: 30px 0 10px; }
+  .laytitle small { font-weight: 400; color: var(--text-dim); margin-left: 8px; font-size: 12.5px; }
+  .laycard { background: var(--surface); border: 1px solid var(--border-soft); border-left: 3px solid var(--pink); border-radius: 10px; padding: 12px 16px 11px; }
+  .laycard b { font-size: 13.5px; }
+  .laycard .pk { font-family: var(--font-mono); font-size: 11px; color: var(--pink); margin-left: 8px; }
+  .laycard p { font-size: 12px; color: var(--text-dim); line-height: 1.55; margin-top: 3px; }
+  .laycard.gate { border-left-color: var(--amber, #d9a23a); background: color-mix(in srgb, var(--surface) 88%, #d9a23a 12%); }
+  .layarrow { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-subtle); padding: 3px 0; }
+  .layarrow .a { color: var(--pink); margin-right: 6px; }
+  .layrail .laycard { border-left-color: var(--green, #58b58c); margin-bottom: 12px; }
+  .layrail .laycard .pk { color: var(--green, #58b58c); }
+  .layrail .note { font-size: 11.5px; color: var(--text-subtle); line-height: 1.6; }
+  @media (max-width: 860px) { .laymap { grid-template-columns: 1fr; } }
 
   /* ============ 네트워크 토폴로지 ============ */
   .topo { width: 100%; height: auto; display: block; margin: 16px 0 6px; }
@@ -497,6 +512,7 @@
     <a class="pkg-card" href="pkg-hardware-can.html"><div class="n">pl2_arm_hardware · can</div><p>실물 구동 — DAMIAO 모터 SystemInterface + CAN-FD</p></a>
     <a class="pkg-card" href="pkg-mujoco.html"><div class="n">pl2_arm_mujoco</div><p>MuJoCo 심 — 자산 + 플러그인 + 뷰어, 실물과 같은 제어법칙</p></a>
     <a class="pkg-card" href="pkg-capabilities.html"><div class="n">팔의 제어 4종</div><p>moveit · servo · mit · payload — 서비스/토픽으로 노출</p></a>
+    <a class="pkg-card" href="pkg-bringup.html"><div class="n">pl2_arm_bringup</div><p>팔 모듈 조립 — launch 3종 + 모듈 계약 + 컨트롤러 설정</p></a>
     <a class="pkg-card" href="pkg-cameras.html"><div class="n">pl2_arm_cameras</div><p>ZMQ 카메라 스트리밍 — 소비자 중립, 비-ROS</p></a>
     <a class="pkg-card" href="pkg-studio.html"><div class="n">pl2_arm_studio</div><p>운영자 웹 UI — 제어 기능의 소비자 중 하나</p></a>
     <a class="pkg-card" href="pkg-leader.html"><div class="n">pl2_leader</div><p>리더 디바이스 — 교시·텔레옵 입력, backend 교체형</p></a>
