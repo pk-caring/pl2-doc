@@ -535,14 +535,19 @@
     <rect x="670" y="202" width="260" height="56" rx="8" style="fill: var(--bg); stroke: var(--border-soft)"/>
     <text x="800" y="225" text-anchor="middle" style="fill: var(--text); font-size: 13px">카메라 서버</text>
     <text x="800" y="244" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">역할별 프로세스 · ZMQ PUB</text>
-    <line x1="336" y1="150" x2="644" y2="150" marker-start="url(#aC)" marker-end="url(#aC)" style="stroke: var(--cyan); stroke-width: 2"/>
-    <text x="490" y="138" text-anchor="middle" class="mono" style="fill: var(--cyan); font-size: 11.5px">DDS — ROS 토픽</text>
-    <text x="490" y="168" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">leader_state → · intent → · ← /joint_states 100 Hz</text>
-    <line x1="336" y1="212" x2="644" y2="212" marker-start="url(#aG)" style="stroke: var(--green); stroke-width: 2"/>
-    <text x="490" y="200" text-anchor="middle" class="mono" style="fill: var(--green); font-size: 11.5px">ZMQ — 카메라 JPEG</text>
-    <text x="490" y="230" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">← 14 + 17 + 17 Mb/s (30 fps)</text>
-    <text x="490" y="262" text-anchor="middle" class="mono" style="fill: var(--text); font-size: 11.5px">GbE 직결 — 실측 941 Mb/s · RTT 0.41 ms</text>
-    <text x="490" y="279" text-anchor="middle" class="mono" style="fill: var(--text-subtle); font-size: 10.5px">예산: 800 Mb/s · 편도 1 ms (resolver 가 검사)</text>
+    <text x="490" y="112" text-anchor="middle" class="mono" style="fill: var(--cyan); font-size: 11.5px">DDS — ROS 토픽</text>
+    <text x="490" y="129" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">leader_state → · intent → · ← /joint_states 100 Hz</text>
+    <line x1="336" y1="150" x2="436" y2="150" marker-start="url(#aC)" style="stroke: var(--cyan); stroke-width: 2"/>
+    <line x1="544" y1="150" x2="644" y2="150" marker-end="url(#aC)" style="stroke: var(--cyan); stroke-width: 2"/>
+    <line x1="336" y1="212" x2="436" y2="212" marker-start="url(#aG)" style="stroke: var(--green); stroke-width: 2"/>
+    <line x1="544" y1="212" x2="644" y2="212" style="stroke: var(--green); stroke-width: 2"/>
+    <rect x="440" y="138" width="100" height="88" rx="10" style="fill: var(--bg); stroke: var(--amber); stroke-width: 1.5"/>
+    <text x="490" y="176" text-anchor="middle" style="fill: var(--text); font-size: 12.5px">스위치 허브</text>
+    <text x="490" y="193" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">GbE</text>
+    <text x="490" y="243" text-anchor="middle" class="mono" style="fill: var(--green); font-size: 11.5px">ZMQ — 카메라 JPEG</text>
+    <text x="490" y="259" text-anchor="middle" style="fill: var(--text-dim); font-size: 10.5px">← 14 + 17 + 17 Mb/s (30 fps)</text>
+    <text x="490" y="284" text-anchor="middle" class="mono" style="fill: var(--text); font-size: 11.5px">유선 GbE — 실측 941 Mb/s · RTT 0.41 ms</text>
+    <text x="490" y="301" text-anchor="middle" class="mono" style="fill: var(--text-subtle); font-size: 10.5px">예산: 800 Mb/s · 편도 1 ms (resolver 가 검사)</text>
     <line x1="180" y1="280" x2="180" y2="366" style="stroke: var(--text-subtle); stroke-width: 1.5"/>
     <text x="192" y="330" class="mono" style="fill: var(--text-subtle); font-size: 10.5px">serial/USB — udev 고정 이름</text>
     <rect x="70" y="366" width="220" height="58" rx="8" style="fill: var(--bg); stroke: var(--amber)"/>
@@ -602,7 +607,19 @@
     </tbody>
   </table></div>
 
-  <div class="sec-head" id="b5"><span class="num">05</span><h2>자주 나오는 용어</h2><a class="anchor" href="#b5">#</a></div>
+  <div class="sec-head" id="b5"><span class="num">05</span><h2>시간 동기화 — 두 보드, 하나의 타임라인</h2><a class="anchor" href="#b5">#</a></div>
+  <p class="p">한 에피소드의 관측은 두 보드의 시계로 찍힌다. 팔 상태(<code>/joint_states</code>)는 compute 보드가, 리더 상태와 프레임 조립은 leader 보드가 스탬프한다. 두 시계가 갈라지면 프레임 정렬이 조용히 틀어지는데, 이 결함은 데이터에서는 보이지 않다가 학습 결과에서야 드러난다. 그래서 이 프로젝트는 시계를 맞추는 것과 별개로, <b>안 맞으면 녹화를 시작하지 못하게 막는다.</b></p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>단계</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td><strong>동기 — chrony (NTP)</strong></td><td>두 보드 모두 chrony 로 시계를 맞춘다. 기준 서버는 사이트 기록(<code>config/sites/lab.yaml</code> 의 <code>chrony_server</code>, 유선 IP)이 지정한다. 유선 네트워크의 정상 동기는 1 ms 미만이다.</td></tr>
+      <tr><td><strong>점검 — netcheck</strong></td><td><code>python -m tools.netcheck</code> 가 <code>chronyc tracking</code> 오프셋을 검사한다(5 ms 이상이면 경고). NIC · DDS 도메인 · mDNS 와 함께 네트워크 일관성 점검의 일부다.</td></tr>
+      <tr><td><strong>게이트 — start_episode 거부</strong></td><td>recorder 는 compute 보드가 스탬프한 <code>/joint_states</code>(100 Hz)의 "도착 시각 − 스탬프" 표본 median 을 상시 감시한다. 50 ms 를 넘거나 아예 측정되지 않으면 에피소드 시작을 <b>거부</b>한다 — 경고가 아니다.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="p dim">50 ms 의 근거: 녹화가 30 Hz 이므로 프레임 주기가 33 ms 다 — 반 프레임을 넘는 시계 차이는 관측이 인접 프레임으로 오정렬되는 것과 같다. 판정이 median 인 이유는 단발 스파이크(디스커버리 · GC)가 녹화를 막아 조작자가 게이트를 불신하게 되는 일을 피하기 위해서다. "측정 안 됨"도 거부하는 이유는 간단하다 — 모름은 0 이 아니다.</p>
+
+  <div class="sec-head" id="b6"><span class="num">06</span><h2>자주 나오는 용어</h2><a class="anchor" href="#b6">#</a></div>
   <div class="tbl-wrap"><table>
     <thead><tr><th>용어</th><th>뜻</th></tr></thead>
     <tbody>
