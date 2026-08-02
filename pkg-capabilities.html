@@ -423,6 +423,34 @@
   .xname .vchip { vertical-align: 1px; }
   .t-group-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-subtle); }
 
+  /* ============ 워크스페이스 구성도 (계층 박스) ============ */
+  .wsmap { margin: 16px 0 6px; }
+  .wstier { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 14px; padding: 18px 20px; }
+  .wstier-head { margin-bottom: 14px; }
+  .wstier-head b { font-size: 14.5px; }
+  .wstier-head span { display: block; font-size: 12px; color: var(--text-subtle); margin-top: 2px; }
+  .ws2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .wcard { background: var(--bg); border: 1.5px solid var(--border-soft); border-radius: 10px; padding: 14px 16px; }
+  .wcard b { font-family: var(--font-mono); font-size: 15px; }
+  .wcard p { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
+  .wcard.main { border: 2px solid var(--pink); }
+  .wcard.dashed { border-style: dashed; }
+  .wsarrows { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 6px 0; }
+  .wsarrow { text-align: center; font-size: 12px; color: var(--text-dim); }
+  .wsarrow .a { display: block; font-size: 20px; line-height: 1.1; color: var(--pink); }
+  .wsarrow b { font-family: var(--font-mono); font-size: 11.5px; color: var(--text); }
+  .wsarrow span { display: block; font-size: 11px; color: var(--text-subtle); }
+  .wsarrow.dashed .a { color: var(--text-subtle); }
+  .grp { border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px 16px; margin-top: 12px; }
+  .grp.pink { background: var(--pink-dim); }
+  .grp.green { background: var(--green-dim); }
+  .grp-label { font-size: 13px; margin-bottom: 10px; }
+  .grp-label code { background: transparent; border: none; font-weight: 700; padding: 0; }
+  .grp.pink .grp-label code { color: var(--pink); }
+  .grp.green .grp-label code { color: var(--green); }
+  .grp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  @media (max-width: 760px) { .ws2col, .wsarrows { grid-template-columns: 1fr; } }
+
   /* ============ 예시 코드 ============ */
   .codeblock { background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 12px 0; }
   .codeblock pre { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: var(--text); }
