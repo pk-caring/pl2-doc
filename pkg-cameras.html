@@ -397,10 +397,10 @@
   .xtree summary, .xleaf { display: flex; gap: 18px; align-items: baseline; padding: 4px 8px; border-radius: 6px; font-size: 13px; }
   .xtree summary { cursor: pointer; list-style: none; color: var(--text-dim); }
   .xtree summary::-webkit-details-marker { display: none; }
-  .xtree summary::before { content: "▸"; color: var(--pink); font-size: 11px; flex: 0 0 12px; transition: transform .15s; transform-origin: 40% 50%; }
+  .xtree summary::before { content: "▶"; color: var(--pink); font-size: 13px; flex: 0 0 22px; transition: transform .15s; transform-origin: 40% 50%; line-height: 1; align-self: center; }
   .xtree details[open] > summary::before { transform: rotate(90deg); }
   .xtree summary:hover { background: var(--surface2); color: var(--text); }
-  .xleaf::before { content: "·"; color: var(--text-subtle); flex: 0 0 12px; }
+  .xleaf::before { content: "·"; color: var(--text-subtle); font-size: 15px; flex: 0 0 22px; text-align: left; }
   .xname { font-family: var(--font-mono); color: var(--text); min-width: 230px; flex-shrink: 0; }
   .xname .t-dir { color: var(--cyan); font-weight: 500; }
   .xname .t-repo { color: var(--pink); font-weight: 600; }
