@@ -468,6 +468,8 @@
   .devlist b { color: var(--text); font-weight: 500; }
   @media (max-width: 760px) { .netmap { grid-template-columns: 1fr; } .netlink .wire { transform: rotate(90deg); } }
 
+  .pkg-intro p { font-size: 14.5px; line-height: 1.75; color: var(--text); max-width: 78ch; margin-bottom: 10px; }
+
   /* ============ 예시 코드 ============ */
   .codeblock { background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 12px 0; }
   .codeblock pre { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: var(--text); }
@@ -490,7 +492,9 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl_platform</code></h1>
   <p class="subtitle animate" style="--i:1">조립 계층 — 어떤 로봇인지 몰라도 로봇을 조립한다</p>
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 제품명 문자열이 나오면 CI 실패</span></div>
-  <p class="lead animate" style="--i:3">각 모듈이 계약을 <strong>선언</strong>하면, resolver 가 로봇 구성과 합쳐 파라미터·스키마를 <strong>생성</strong>한다. 검증 실패 = 기동 거부 — 어긋난 로봇은 아예 뜨지 않는다.</p>
+  <div class="animate" style="--i:3">
+  <div class="pkg-intro"><p><strong>로봇 종류와 무관한 조립 계층이다.</strong> 모듈 계약 + 로봇 선언 + 설정을 읽어 파라미터와 스키마를 생성한다(resolver).</p><p>resolver 는 순수 함수다. 같은 입력이면 같은 출력이 나오고, 검증에 실패하면 로봇이 아예 기동하지 않는다.</p><p>로봇 무관 원칙은 CI 가 강제한다. 이 저장소에 제품명 문자열이 들어오면 빌드가 실패한다. 자체 검증은 reference_robots/ 의 가상 로봇 3종으로 한다.</p></div>
+  </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
   <div class="xtree" style="margin:14px 0">

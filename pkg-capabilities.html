@@ -468,6 +468,8 @@
   .devlist b { color: var(--text); font-weight: 500; }
   @media (max-width: 760px) { .netmap { grid-template-columns: 1fr; } .netlink .wire { transform: rotate(90deg); } }
 
+  .pkg-intro p { font-size: 14.5px; line-height: 1.75; color: var(--text); max-width: 78ch; margin-bottom: 10px; }
+
   /* ============ 예시 코드 ============ */
   .codeblock { background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 12px 0; }
   .codeblock pre { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: var(--text); }
@@ -490,7 +492,16 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">팔의 제어 4종</code></h1>
   <p class="subtitle animate" style="--i:1">moveit · servo · mit · payload — 전부 ROS 인터페이스</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔의 제어 기능</span></div>
-  <p class="lead animate" style="--i:3">팔이 <strong>할 수 있는 일</strong>은 전부 서비스/토픽으로 노출된다 — 스튜디오는 소비자 중 하나일 뿐이고, 어떤 앱이든 같은 문으로 들어온다.</p>
+  <div class="animate" style="--i:3">
+  <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_moveit — 동작 계획</p>
+  <div class="pkg-intro"><p>목표 자세를 주면 경로를 계획하고 실행한다. MoveIt 2 설정(v1/v2)과 호출 방법에 대한 지식을 담는다.</p><p>별도 노드는 없다. move_group 이 이미 서비스를 제공하므로 설정과 클라이언트만 가진다.</p></div>
+  <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_servo — 방향 조그</p>
+  <div class="pkg-intro"><p>팔 끝을 지정한 방향으로 계속 미는 기능이다. 정지 명령까지 방향을 유지한다.</p><p>서비스 호출로 켜고 끈다. 스튜디오 없이 다른 프로그램에서도 그대로 쓸 수 있다.</p></div>
+  <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_mit — 게인·무중력</p>
+  <div class="pkg-intro"><p>팔의 강성(뻣뻣함)을 조절한다. 저수준 제어식은 τ = kp·Δq + kd·Δq̇ + τ_ff 이고, 이 패키지는 그 값을 안전하게 바꾸는 절차를 안다.</p><p>무중력 모드(직접 교시)와 중력 방향 관찰 노드를 포함한다. 관찰 노드는 /robot_description 에서 팔 구조를 읽으므로 로봇이 바뀌어도 코드 수정이 없다.</p></div>
+  <p class="diagram-shell__hint" style="margin-top:14px">pl2_arm_payload — 쥔 물건 실측</p>
+  <div class="pkg-intro"><p>팔이 쥔 물건의 무게와 무게중심을 측정한다. 몇 개 자세에서 토크 오차를 재고 회귀로 계산한다.</p><p>CalibratePayload 액션으로 실행하며, 결과는 rig 기록에 저장되어 다음 기동부터 반영된다.</p></div>
+  </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
   <div class="xtree" style="margin:14px 0">

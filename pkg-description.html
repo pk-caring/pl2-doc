@@ -468,6 +468,8 @@
   .devlist b { color: var(--text); font-weight: 500; }
   @media (max-width: 760px) { .netmap { grid-template-columns: 1fr; } .netlink .wire { transform: rotate(90deg); } }
 
+  .pkg-intro p { font-size: 14.5px; line-height: 1.75; color: var(--text); max-width: 78ch; margin-bottom: 10px; }
+
   /* ============ 예시 코드 ============ */
   .codeblock { background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 12px 0; }
   .codeblock pre { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: var(--text); }
@@ -490,7 +492,9 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl2_arm_description</code></h1>
   <p class="subtitle animate" style="--i:1">URDF · 메시 · 모델별 값 — 로봇 형상의 SSOT</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔 기구·형상 (openarm v1/v2)</span></div>
-  <p class="lead animate" style="--i:3">팔이 <strong>어떻게 생겼는가</strong>를 담는 데이터 패키지. 여기서 나온 <code>/robot_description</code> 하나에서 중력보상·안전 한계·심·MoveIt 이 전부 파생된다.</p>
+  <div class="animate" style="--i:3">
+  <div class="pkg-intro"><p>팔의 <strong>형상 데이터</strong>다. URDF, 3D 메시, 모델별 값(v1/v2)을 가진다.</p><p>여기서 만들어진 /robot_description 하나에서 모든 것이 파생된다. 중력보상, 안전 한계, 시뮬레이션, MoveIt 이 전부 이 문서를 읽는다. 형상이 바뀌어도 소비하는 쪽 코드는 수정할 필요가 없다.</p><p>관절 한계는 <code>joint_limits.yaml</code> 에 있다. 기준은 오른팔이고 왼팔은 부호를 뒤집어 자동 생성한다(거울상).</p></div>
+  </div>
 
   <div class="sec-head" id="p1"><span class="num">01</span><h2>패키지 안 구조</h2><a class="anchor" href="#p1">#</a></div>
   <div class="xtree" style="margin:14px 0">
