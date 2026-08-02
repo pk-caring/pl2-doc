@@ -418,6 +418,9 @@
   .panel-drawer { width: min(500px, 92vw); }
   .drawer-body .rich p { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 12px; }
   .drawer-body .rich .more-btn { margin-top: 4px; }
+  .pbtn { cursor: pointer; margin-left: 8px; }
+  .pbtn:hover { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
+  .xname .vchip { vertical-align: 1px; }
   .t-group-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-subtle); }
 
   /* ============ 예시 코드 ============ */
@@ -444,69 +447,88 @@
   <div class="tree-key animate" style="--i:2">
     <span><span class="k-pink">pl2_*</span> = PL-2 제품의 것</span>
     <span><span class="k-cyan">pl_*</span> = 어느 로봇에나 적용</span>
-    <span><span class="vchip" style="margin-left:0;vertical-align:0">설명</span> 행 클릭 = 우측 패널 → [자세히 보기]로 상세 페이지</span>
+    <span>▸ 행 클릭 = 트리 펼치기 · <span class="vchip" style="margin-left:0;vertical-align:0">설명</span> 클릭 = 우측 패널 → [자세히 보기]</span>
   </div>
-<div class="tree-wrap"><div class="tree">
-<div class="t-row"><span class="t-name"><span class="b"></span><span class="t-dir">pl2_m/</span></span><span class="t-desc"><b>부모 저장소 = colcon 워크스페이스 그 자체</b> — 도메인은 소유하지 않는다</span></div>
-<div class="t-row"><span class="t-name"><span class="b">├─ </span>pl2.repos</span><span class="t-desc">조립 매니페스트 — 아래 저장소 5개를 <code>src/</code>로 당긴다 (vcstool)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">├─ </span>versions.lock</span><span class="t-desc">전 리포 SHA + python 환경 고정 (재현 빌드)</span></div>
-<a class="t-row" data-panel="robot" href="#"><span class="t-name"><span class="b">├─ </span><span class="t-dir">robot/</span><span class="vchip">설명</span></span><span class="t-desc">로봇 진입점 — 선언과 산출물</span></a>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>composition.yaml</span><span class="t-desc"><b>이 로봇이 무엇으로 이루어지는가</b> — 팔 ×2 · 리더 · 카메라 ×3 선언</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>urdf/pl2_m.urdf.xacro</span><span class="t-desc">기구 조립 선언 — 어느 링크의 어느 마운트에 무엇이 붙는가</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>generate.sh</span><span class="t-desc">resolver 실행 → <code>generated/</code> 재생성</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span><span class="t-gen">generated/</span></span><span class="t-desc">schema.json · params · robot_description.urdf — 전부 산출물</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>placement.yaml</span><span class="t-desc">보드 어휘 SSOT — 어떤 컴포넌트가 어느 보드 몫인가</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  └─ </span>launch/robot.launch.py</span><span class="t-desc"><b>유일한 기동 진입점</b> — board 인자에 해당하는 머신의 컴포넌트만 기동</span></div>
-<a class="t-row" data-panel="config" href="#"><span class="t-name"><span class="b">├─ </span><span class="t-dir">config/</span><span class="vchip">설명</span></span><span class="t-desc">이 기체의 값 — placement · boards · rig 실측 · site</span></a>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>placement.json</span><span class="t-desc">어떤 컴포넌트가 어느 머신에서 도는가 (호스트별 · .example)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>boards/</span><span class="t-desc">보드 사실 — 장치 · 링크 예산 · 스트림 실측</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  ├─ </span>rigs/pl2m-001/</span><span class="t-desc">이 기체의 실측 기록 — rig.yaml · cameras.json · board.yaml</span></div>
-<div class="t-row"><span class="t-name"><span class="b">│  └─ </span>sites/lab.yaml</span><span class="t-desc">현장 값</span></div>
-<div class="t-row"><span class="t-name"><span class="b">├─ </span>config.env</span><span class="t-desc">호스트 사실 (bash 전용 · gitignore + .example)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">├─ </span><span class="t-dir">tests/</span> · <span class="t-dir">tools/</span> · <span class="t-dir">scripts/</span></span><span class="t-desc">워크스페이스 게이트 · 잠금 도구 · 점검 스크립트</span></div>
-<div class="t-row"><span class="t-name"><span class="b">├─ </span>build_workspace.sh</span><span class="t-desc">조립 + 빌드 한 번에</span></div>
-<div class="t-row"><span class="t-name"><span class="b">└─ </span><span class="t-dir">src/</span></span><span class="t-desc">← <code>vcs import</code> 결과 — 부모 git 은 이 아래를 추적하지 않는다</span></div>
-<a class="t-row" data-panel="arm" href="#"><span class="t-name"><span class="b">   ├─ </span><span class="t-repo">pl2_arm/</span><span class="tag">저장소</span><span class="vchip">설명</span></span><span class="t-desc"><b>팔</b> — OpenArm v2 · 패키지 13개</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  </span><span class="t-group-label">로봇을 기술하는 데이터</span></span><span class="t-desc"></span></div>
-<a class="t-row" data-panel="description" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_description<span class="vchip">설명</span></span><span class="t-desc">URDF · 메시 · 모델별 값 (openarm v1/v2)</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  </span><span class="t-group-label">장치를 움직이는 층 — ros2_control</span></span><span class="t-desc"></span></div>
-<a class="t-row" data-panel="hardware" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_hardware<span class="vchip">설명</span></span><span class="t-desc">실물 플러그인 — DAMIAO 모터</span></a>
-<a class="t-row" data-panel="mujoco" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_mujoco<span class="vchip">설명</span></span><span class="t-desc">MuJoCo 심 — 자산(v1·v2) + 플러그인 + 3D 뷰어</span></a>
-<a class="t-row" data-panel="can" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_can<span class="vchip">설명</span></span><span class="t-desc">SocketCAN 라이브러리 + CAN-FD 프로비저닝</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  </span><span class="t-group-label">안전 — 명령은 전부 여기를 지난다</span></span><span class="t-desc"></span></div>
-<a class="t-row" data-panel="safety" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_safety<span class="vchip">설명</span></span><span class="t-desc">정책(rclpy) + 집행(C++ 체인 게이트) · fail-closed</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  </span><span class="t-group-label">팔의 능력 — ROS 서비스·토픽으로 노출</span></span><span class="t-desc"></span></div>
-<a class="t-row" data-panel="moveit" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_moveit<span class="vchip">설명</span></span><span class="t-desc">목표 자세 계획·실행 (IK · SRDF)</span></a>
-<a class="t-row" data-panel="servo" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_servo<span class="vchip">설명</span></span><span class="t-desc">팔 끝을 방향으로 밀기 (MoveIt Servo)</span></a>
-<a class="t-row" data-panel="mit" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_mit<span class="vchip">설명</span></span><span class="t-desc">무르게/뻣뻣하게 — kp · kd · τ_ff (무중력)</span></a>
-<a class="t-row" data-panel="payload" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_payload<span class="vchip">설명</span></span><span class="t-desc">집은 물건의 무게·무게중심 커미셔닝</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_interfaces</span><span class="t-desc">위 능력의 .srv / .msg / .action</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  </span><span class="t-group-label">뷰 · 조립</span></span><span class="t-desc"></span></div>
-<a class="t-row" data-panel="studio" href="#"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_studio<span class="vchip">설명</span></span><span class="t-desc">운영자 웹 UI — 상태를 보여주고 기능을 켜고 끌 뿐</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl2_arm_bringup</span><span class="t-desc">브링업 launch + <b>contract/</b> — 팔 계약 기술자</span></div>
-<a class="t-row" data-panel="cameras" href="#"><span class="t-name"><span class="b">   │  └─ </span>pl2_arm_cameras<span class="vchip">설명</span></span><span class="t-desc">카메라 스트리밍 — ZMQ <b>PUB</b>·mDNS · import 는 <code>pl_camera_server</code></span></a>
-<a class="t-row" data-panel="base" href="#"><span class="t-name"><span class="b">   ├─ </span><span class="t-repo">pl2_base/</span><span class="tag">저장소</span><span class="vchip">설명</span></span><span class="t-desc"><b>주행</b> — VicPinky 베이스 (스캐폴드)</span></a>
-<a class="t-row" data-panel="leader" href="#"><span class="t-name"><span class="b">   ├─ </span><span class="t-repo">pl2_leader/</span><span class="tag">저장소</span><span class="vchip">설명</span></span><span class="t-desc"><b>리더 디바이스</b> — 교시·텔레옵 입력</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>contract/</span><span class="t-desc">리더 계약 — 관측 스트림 · 관절 그룹 선언</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl2_leader/</span><span class="t-desc">leader_node + <b>backends/</b> — mini · dynamixel · bandi · mock</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl2_leader_interfaces/</span><span class="t-desc">.msg</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  └─ </span>setup/</span><span class="t-desc">어댑터 udev 규칙</span></div>
-<a class="t-row" data-panel="imitation" href="#"><span class="t-name"><span class="b">   ├─ </span><span class="t-repo">pl_imitation/</span><span class="tag">저장소</span><span class="vchip">설명</span></span><span class="t-desc"><b>모방학습</b> — 수집·학습·추론 · 로봇 무관</span></a>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>lerobot_ros2/</span><span class="t-desc">스키마 주입형 로봇 어댑터</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl_imitation_recorder/</span><span class="t-desc">수집 노드 — 에피소드 녹화</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl_imitation_inference/</span><span class="t-desc">추론 노드 — 정책 어댑터</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl_imitation_studio/</span><span class="t-desc">운영자 콘솔 (TUI · 웹)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>pl_imitation_interfaces/</span><span class="t-desc">.srv / .msg</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  ├─ </span>services/</span><span class="t-desc">colcon 밖 — <b>policy_server</b> (정책 서빙)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">   │  └─ </span>scripts/</span><span class="t-desc">학습 (비-ROS) — 산출물은 리포 밖</span></div>
-<a class="t-row" data-panel="platform" href="#"><span class="t-name"><span class="b">   └─ </span><span class="t-repo">pl_platform/</span><span class="tag">저장소</span><span class="vchip">설명</span></span><span class="t-desc"><b>조립 규칙</b> — 계약·resolver·스키마 · 로봇 무관</span></a>
-<div class="t-row"><span class="t-name"><span class="b">      ├─ </span>pl_composition/</span><span class="t-desc">계약·구성의 JSON Schema</span></div>
-<div class="t-row"><span class="t-name"><span class="b">      ├─ </span>pl_resolver/</span><span class="t-desc"><b>계약 + 구성 → 파라미터 · 스키마</b> (순수 함수)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">      ├─ </span>pl_adapters/</span><span class="t-desc">리더→팔 매핑 relay (enable/align 상태기계)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">      ├─ </span>pl_supervisor/</span><span class="t-desc">doctor · 네트워크/DDS 설정</span></div>
-<div class="t-row"><span class="t-name"><span class="b">      ├─ </span>reference_robots/</span><span class="t-desc">참조 구성 3종 (mock)</span></div>
-<div class="t-row"><span class="t-name"><span class="b">      └─ </span>ci/ · tests/</span><span class="t-desc">경계 게이트 — 제품명 문자열 금지</span></div>
-</div></div>
+<div class="xtree">
+<div class="xleaf"><span class="xname"><span class="t-dir">pl2_m/</span></span><span class="xdesc"><b>부모 저장소 = colcon 워크스페이스 그 자체</b> — 도메인은 소유하지 않는다</span></div>
+<div class="xkids">
+<div class="xleaf"><span class="xname">pl2.repos</span><span class="xdesc">조립 매니페스트 — 아래 저장소 5개를 <code>src/</code>로 당긴다 (vcstool)</span></div>
+<div class="xleaf"><span class="xname">versions.lock</span><span class="xdesc">전 리포 SHA + python 환경 고정 (재현 빌드)</span></div>
+<details class="xn"><summary><span class="xname"><span class="t-dir">robot/</span><a class="vchip pbtn" data-panel="robot" href="#">설명</a></span><span class="xdesc">로봇 진입점 — 선언과 산출물</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">composition.yaml</span><span class="xdesc"><b>이 로봇이 무엇으로 이루어지는가</b> — 팔 ×2 · 리더 · 카메라 ×3 선언</span></div>
+<div class="xleaf"><span class="xname">urdf/pl2_m.urdf.xacro</span><span class="xdesc">기구 조립 선언 — 어느 링크의 어느 마운트에 무엇이 붙는가</span></div>
+<div class="xleaf"><span class="xname">generate.sh</span><span class="xdesc">resolver 실행 → <code>generated/</code> 재생성</span></div>
+<div class="xleaf"><span class="xname"><span class="t-gen">generated/</span></span><span class="xdesc">schema.json · params · robot_description.urdf — 전부 산출물</span></div>
+<div class="xleaf"><span class="xname">placement.yaml</span><span class="xdesc">보드 어휘 SSOT — 어떤 컴포넌트가 어느 보드 몫인가</span></div>
+<div class="xleaf"><span class="xname">launch/robot.launch.py</span><span class="xdesc"><b>유일한 기동 진입점</b> — board 인자에 해당하는 머신의 컴포넌트만 기동</span></div>
+</div></details>
+<details class="xn"><summary><span class="xname"><span class="t-dir">config/</span><a class="vchip pbtn" data-panel="config" href="#">설명</a></span><span class="xdesc">이 기체의 값 — placement · boards · rig 실측 · site</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">placement.json</span><span class="xdesc">어떤 컴포넌트가 어느 머신에서 도는가 (호스트별 · .example)</span></div>
+<div class="xleaf"><span class="xname">boards/</span><span class="xdesc">보드 사실 — 장치 · 링크 예산 · 스트림 실측</span></div>
+<div class="xleaf"><span class="xname">rigs/pl2m-001/</span><span class="xdesc">이 기체의 실측 기록 — rig.yaml · cameras.json · board.yaml</span></div>
+<div class="xleaf"><span class="xname">sites/lab.yaml</span><span class="xdesc">현장 값</span></div>
+</div></details>
+<div class="xleaf"><span class="xname">config.env</span><span class="xdesc">호스트 사실 (bash 전용 · gitignore + .example)</span></div>
+<div class="xleaf"><span class="xname"><span class="t-dir">tests/</span> · <span class="t-dir">tools/</span> · <span class="t-dir">scripts/</span></span><span class="xdesc">워크스페이스 게이트 · 잠금 도구 · 점검 스크립트</span></div>
+<div class="xleaf"><span class="xname">build_workspace.sh</span><span class="xdesc">조립 + 빌드 한 번에</span></div>
+<details class="xn" open><summary><span class="xname"><span class="t-dir">src/</span></span><span class="xdesc">← <code>vcs import</code> 결과 — 부모 git 은 이 아래를 추적하지 않는다</span></summary>
+<div class="xkids">
+<details class="xn"><summary><span class="xname"><span class="t-repo">pl2_arm/</span><a class="vchip pbtn" data-panel="arm" href="#">설명</a></span><span class="xdesc"><b>팔</b> — OpenArm v2 · 패키지 13개</span></summary>
+<div class="xkids">
+<div class="xgroup">로봇을 기술하는 데이터</div>
+<div class="xleaf"><span class="xname">pl2_arm_description<a class="vchip pbtn" data-panel="description" href="#">설명</a></span><span class="xdesc">URDF · 메시 · 모델별 값 (openarm v1/v2)</span></div>
+<div class="xgroup">장치를 움직이는 층 — ros2_control</div>
+<div class="xleaf"><span class="xname">pl2_arm_hardware<a class="vchip pbtn" data-panel="hardware" href="#">설명</a></span><span class="xdesc">실물 플러그인 — DAMIAO 모터</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_mujoco<a class="vchip pbtn" data-panel="mujoco" href="#">설명</a></span><span class="xdesc">MuJoCo 심 — 자산(v1·v2) + 플러그인 + 3D 뷰어</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_can<a class="vchip pbtn" data-panel="can" href="#">설명</a></span><span class="xdesc">SocketCAN 라이브러리 + CAN-FD 프로비저닝</span></div>
+<div class="xgroup">안전 — 명령은 전부 여기를 지난다</div>
+<div class="xleaf"><span class="xname">pl2_arm_safety<a class="vchip pbtn" data-panel="safety" href="#">설명</a></span><span class="xdesc">정책(rclpy) + 집행(C++ 체인 게이트) · fail-closed</span></div>
+<div class="xgroup">팔의 능력 — ROS 서비스·토픽으로 노출</div>
+<div class="xleaf"><span class="xname">pl2_arm_moveit<a class="vchip pbtn" data-panel="moveit" href="#">설명</a></span><span class="xdesc">목표 자세 계획·실행 (IK · SRDF)</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_servo<a class="vchip pbtn" data-panel="servo" href="#">설명</a></span><span class="xdesc">팔 끝을 방향으로 밀기 (MoveIt Servo)</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_mit<a class="vchip pbtn" data-panel="mit" href="#">설명</a></span><span class="xdesc">무르게/뻣뻣하게 — kp · kd · τ_ff (무중력)</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_payload<a class="vchip pbtn" data-panel="payload" href="#">설명</a></span><span class="xdesc">집은 물건의 무게·무게중심 커미셔닝</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_interfaces</span><span class="xdesc">위 능력의 .srv / .msg / .action</span></div>
+<div class="xgroup">뷰 · 조립</div>
+<div class="xleaf"><span class="xname">pl2_arm_studio<a class="vchip pbtn" data-panel="studio" href="#">설명</a></span><span class="xdesc">운영자 웹 UI — 상태를 보여주고 기능을 켜고 끌 뿐</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_bringup</span><span class="xdesc">브링업 launch + <b>contract/</b> — 팔 계약 기술자</span></div>
+<div class="xleaf"><span class="xname">pl2_arm_cameras<a class="vchip pbtn" data-panel="cameras" href="#">설명</a></span><span class="xdesc">카메라 스트리밍 — ZMQ <b>PUB</b>·mDNS · import 는 <code>pl_camera_server</code></span></div>
+</div></details>
+<details class="xn"><summary><span class="xname"><span class="t-repo">pl2_base/</span><a class="vchip pbtn" data-panel="base" href="#">설명</a></span><span class="xdesc"><b>주행</b> — VicPinky 베이스 (스캐폴드)</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">README.md</span><span class="xdesc">계약이 생기면 composition.yaml 에 <code>drive</code> 모듈로 합류</span></div>
+</div></details>
+<details class="xn"><summary><span class="xname"><span class="t-repo">pl2_leader/</span><a class="vchip pbtn" data-panel="leader" href="#">설명</a></span><span class="xdesc"><b>리더 디바이스</b> — 교시·텔레옵 입력</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">contract/</span><span class="xdesc">리더 계약 — 관측 스트림 · 관절 그룹 선언</span></div>
+<div class="xleaf"><span class="xname">pl2_leader/</span><span class="xdesc">leader_node + <b>backends/</b> — mini · dynamixel · bandi · mock</span></div>
+<div class="xleaf"><span class="xname">pl2_leader_interfaces/</span><span class="xdesc">.msg</span></div>
+<div class="xleaf"><span class="xname">setup/</span><span class="xdesc">어댑터 udev 규칙</span></div>
+</div></details>
+<details class="xn"><summary><span class="xname"><span class="t-repo">pl_imitation/</span><a class="vchip pbtn" data-panel="imitation" href="#">설명</a></span><span class="xdesc"><b>모방학습</b> — 수집·학습·추론 · 로봇 무관</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">lerobot_ros2/</span><span class="xdesc">스키마 주입형 로봇 어댑터</span></div>
+<div class="xleaf"><span class="xname">pl_imitation_recorder/</span><span class="xdesc">수집 노드 — 에피소드 녹화</span></div>
+<div class="xleaf"><span class="xname">pl_imitation_inference/</span><span class="xdesc">추론 노드 — 정책 어댑터</span></div>
+<div class="xleaf"><span class="xname">pl_imitation_studio/</span><span class="xdesc">운영자 콘솔 (TUI · 웹)</span></div>
+<div class="xleaf"><span class="xname">pl_imitation_interfaces/</span><span class="xdesc">.srv / .msg</span></div>
+<div class="xleaf"><span class="xname">services/</span><span class="xdesc">colcon 밖 — <b>policy_server</b> (정책 서빙)</span></div>
+<div class="xleaf"><span class="xname">scripts/</span><span class="xdesc">학습 (비-ROS) — 산출물은 리포 밖</span></div>
+</div></details>
+<details class="xn"><summary><span class="xname"><span class="t-repo">pl_platform/</span><a class="vchip pbtn" data-panel="platform" href="#">설명</a></span><span class="xdesc"><b>조립 규칙</b> — 계약·resolver·스키마 · 로봇 무관</span></summary>
+<div class="xkids">
+<div class="xleaf"><span class="xname">pl_composition/</span><span class="xdesc">계약·구성의 JSON Schema</span></div>
+<div class="xleaf"><span class="xname">pl_resolver/</span><span class="xdesc"><b>계약 + 구성 → 파라미터 · 스키마</b> (순수 함수)</span></div>
+<div class="xleaf"><span class="xname">pl_adapters/</span><span class="xdesc">리더→팔 매핑 relay (enable/align 상태기계)</span></div>
+<div class="xleaf"><span class="xname">pl_supervisor/</span><span class="xdesc">doctor · 네트워크/DDS 설정</span></div>
+<div class="xleaf"><span class="xname">reference_robots/</span><span class="xdesc">참조 구성 3종 (mock)</span></div>
+<div class="xleaf"><span class="xname">ci/ · tests/</span><span class="xdesc">경계 게이트 — 제품명 문자열 금지</span></div>
+</div></details>
+</div></details>
+</div>
+</div>
 
   <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
@@ -553,8 +575,11 @@
     drawer.classList.remove('open');
     backdrop.classList.remove('open');
   }
-  document.querySelectorAll('[data-panel]').forEach(el =>
-    el.addEventListener('click', e => { e.preventDefault(); openPanel(el.dataset.panel); }));
+  document.querySelectorAll('.pbtn[data-panel]').forEach(el =>
+    el.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      openPanel(el.dataset.panel);
+    }));
   backdrop.addEventListener('click', closePanel);
   drawer.querySelector('.drawer-close').addEventListener('click', closePanel);
   addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
