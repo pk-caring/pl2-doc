@@ -540,24 +540,25 @@ flowchart LR
   <div class="codeblock"><pre># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)
 python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전에서 — 시스템이 실제로 쓰는 코드</h2><a class="anchor" href="#p5">#</a></div>
-  <p class="p dim">심 스택이 자산과 게인을 얻는 실제 코드 — MJCF 는 이 패키지 share 에서, MIT 게인은 실물과 같은 control.yaml SSOT 에서 온다. 그래서 sim == real 이 파일 하나로 성립한다.</p>
+  <p class="p dim">심 스택이 자산과 게인을 얻는 실제 코드 — MJCF 는 이 패키지 share 에서, 게인은 실물 xacro 가 굽는 것과 같은 모델별 control_gains.yaml 에서 온다. 그래서 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
   <div class="codeblock"><pre>def _mjcf_path(model: str) -&gt; str:
     base = get_package_share_directory("pl2_arm_mujoco")
     return os.path.join(base, *_cfg(model)["mjcf_sub"])
 
-# MIT gains (mirror openarm_hardware OpenArmHW); same for both arms.
-# The gain scales and gravity feed-forward come from control.yaml — the SAME
-# pl2_arm gains SSOT the real description's ros2_control macros load —
-# so sim == real from one file.</pre></div>
-  <p class="p dim">시뮬레이션 게인의 출처다. 실물 description 의 control.yaml 을 그대로 읽으므로 sim == real 이 파일 하나로 성립한다.</p>
+# 관절 kp/kd·hand·안전 봉투는 실물과 같은 모델별 control_gains.yaml
+# 이 유일 출처다(경로 철자는 pl2_arm_description.gains 한 곳).
+def _load_base_gains(model: str):
+    data = pl2_control_gains.load(model)</pre></div>
+  <p class="p dim">심 전용 robot_description 을 만드는 곳이다. 게인의 출처는 여기가 아니라 description 의 모델별 control_gains.yaml — 실물 xacro 가 하드웨어 블록에 굽는 바로 그 파일을 심도 읽으므로 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
-  <div class="codeblock"><pre># MIT gains (mirror openarm_hardware OpenArmHW); same for both arms.
-# The gain scales and gravity feed-forward come from control.yaml —
-# the SAME pl2_arm gains SSOT the real description loads —
-# so sim == real from one file.
-_KP_BASE = [70.0, 70.0, 70.0, 60.0, 10.0, 10.0, 10.0]
-_KD_BASE = [2.75, 2.5, 2.0, 2.0, 0.7, 0.6, 0.5]</pre></div>
+  <div class="codeblock"><pre># 관절 kp/kd·hand·안전 봉투는 전부 실물과 같은 모델별
+# control_gains.yaml 이 유일 출처다(경로 철자는 pl2_arm_description.gains).
+# 갈라놓으면 심 테스트가 심이 쓰지도 않는 값을 검증하게 된다.
+def _load_base_gains(model: str):
+    data = pl2_control_gains.load(model)
+    kp = [float(data[f"joint{i}"]["kp"]) for i in range(1, 8)]
+    kd = [float(data[f"joint{i}"]["kd"]) for i in range(1, 8)]</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">sim 레이어의 rig 값이다. 가짜지만 스키마를 온전히 만족한다 — 하드웨어 없이 resolver 검증과 CI 를 돌리기 위한 값이고, 실물 값은 config/rigs/ 가 가진다.</p>
   <p class="diagram-shell__hint">robot/layers/sim/rig.yaml (발췌)</p>
