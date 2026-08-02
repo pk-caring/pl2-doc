@@ -442,9 +442,9 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl2_arm_cameras</code></h1>
   <p class="subtitle animate" style="--i:1">카메라 스트리밍 — 비-ROS · 소비자 중립</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 카메라 ×3 (top RealSense · 그리퍼 V4L2 ×2)</span><span class="hw none">소비자 중립 — 수집·추론·기능이 같은 스트림</span></div>
-  <p class="lead animate" style="--i:3">카메라 장치는 <strong>서버 혼자 소유</strong>하고, 모든 소비자는 ZMQ 구독자다. 서버는 상시 구동 — 소비자가 붙고 떨어져도 장치를 다시 열지 않는다.</p>
+  <p class="lead animate" style="--i:3">카메라 장치는 <strong>서버가 단독으로 소유</strong>하고, 모든 소비자는 ZMQ 구독자다. 서버는 항상 켜져 있어서 소비자가 생기거나 사라져도 장치를 다시 열지 않는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -492,7 +492,7 @@ frame, stamp = feed.get_latest()              # 항상 최신 프레임 (np.ndar
     from pl_camera_server.config import resolve_cameras_json
     return str(resolve_cameras_json())</pre></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_cameras/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_cameras/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

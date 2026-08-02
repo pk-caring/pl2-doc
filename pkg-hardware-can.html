@@ -444,7 +444,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — DAMIAO 모터 · CAN-FD (can0 오른팔 · can1 왼팔)</span></div>
   <p class="lead animate" style="--i:3">controller_manager 의 read/write 주기를 <strong>실제 모터 트랜잭션</strong>으로 바꾸는 층. URDF 의 plugin 문자열 하나로 실물 ↔ 심이 갈린다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -498,7 +498,7 @@ flowchart LR
   <p class="p dim">새 모델 mobi 가 와도 관절 수·모터가 같으면 <strong>0줄</strong>이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>모터 구동</strong></td><td>URDF param(arm_type·can_interface)으로 조정 — 기구가 바뀌어도 CAN 트랜잭션은 동일</td></tr><tr><td><strong>결선</strong></td><td>바뀌면 rig 레코드(board.yaml)만 갱신</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_hardware/README.md · src/pl2_arm/pl2_arm_can/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_hardware/README.md · src/pl2_arm/pl2_arm_can/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

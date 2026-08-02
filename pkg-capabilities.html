@@ -444,7 +444,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔의 동작 능력</span></div>
   <p class="lead animate" style="--i:3">팔이 <strong>할 수 있는 일</strong>은 전부 서비스/토픽으로 노출된다 — 스튜디오는 소비자 중 하나일 뿐이고, 어떤 앱이든 같은 문으로 들어온다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -497,10 +497,10 @@ goal = CalibratePayload.Goal()
 goal.side = side                 # "right" / "left"
 goal.bidirectional = bidirectional</pre></div>
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">새 모델 mobi 에서 능력 쪽이 받는 일 — MoveIt config 한 벌과 커미셔닝 재실행뿐, 코드는 0줄.</p>
+  <p class="p dim">새 모델 mobi 에서 능력 패키지들이 해야 하는 일 — MoveIt config 한 벌과 커미셔닝 재실행뿐, 코드는 0줄.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl2_arm_moveit</strong></td><td>계획까지 쓰면 mobi config 한 벌 (v1/v2 옆 — SRDF·조인트 그룹)</td></tr><tr><td><strong>payload</strong></td><td>모델 교체 후 <code>CalibratePayload</code> 재실행 — rig 자물쇠가 강제한다</td></tr><tr><td><strong>servo · mit</strong></td><td><strong>0줄</strong> — /robot_description 과 게인 SSOT 에서 재파생</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_{moveit,servo,mit,payload}/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_{moveit,servo,mit,payload}/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

@@ -444,7 +444,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔 기구·형상 (openarm v1/v2)</span></div>
   <p class="lead animate" style="--i:3">팔이 <strong>어떻게 생겼는가</strong>를 담는 데이터 패키지. 여기서 나온 <code>/robot_description</code> 하나에서 중력보상·안전 한계·심·MoveIt 이 전부 파생된다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -489,11 +489,11 @@ xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/u
 side = LaunchConfiguration("side").perform(context)
 params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울상이라 공유 불가</pre></div>
   <h3 id="p4-newmodel">새 모델(mobi)을 추가할 때</h3>
-  <p class="p dim">겉 형상·관절 길이가 다른 새 팔 <strong>mobi</strong> 를 추가할 때 이 패키지가 받는 일 — 전부 데이터다.</p>
+  <p class="p dim">겉 형상·관절 길이가 다른 새 팔 <strong>mobi</strong> 를 추가할 때 이 패키지에서 해야 하는 일 — 전부 데이터 작업이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>mobi/urdf/…</strong></td><td>메시 참조 · 관절 길이</td></tr><tr><td><strong>mobi/config/arm/joint/<br>joint_limits.yaml</strong></td><td>관절 한계 — canonical 우측, 좌측은 거울상 자동</td></tr><tr><td><strong>관성값</strong></td><td>CAD 재산출 — 중력보상 정확도가 여기서 나온다</td></tr><tr><td><strong>pl2_arm_bringup/contract/</strong></td><td><code>openarm_v2.contract.yaml</code> 사본 → <code>mobi.contract.yaml</code> (model: mobi — 관절 수 같으면 거의 그대로)</td></tr></tbody></table></div>
   <div class="codeblock"><pre>cp -r assets/robot/openarm_v2.0 assets/robot/mobi</pre></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_description/</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_description/</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

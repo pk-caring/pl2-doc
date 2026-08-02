@@ -440,11 +440,11 @@
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl_platform</code></h1>
-  <p class="subtitle animate" style="--i:1">조립 계층 — 로봇을 모르는 채로 로봇을 조립한다</p>
+  <p class="subtitle animate" style="--i:1">조립 계층 — 어떤 로봇인지 몰라도 로봇을 조립한다</p>
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 제품명 문자열이 나오면 CI 실패</span></div>
   <p class="lead animate" style="--i:3">각 모듈이 계약을 <strong>선언</strong>하면, resolver 가 로봇 구성과 합쳐 파라미터·스키마를 <strong>생성</strong>한다. 검증 실패 = 기동 거부 — 어긋난 로봇은 아예 뜨지 않는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -497,7 +497,7 @@ ros2 run pl_supervisor doctor --kill               # 고아 노드 정리</pre><
   <p class="p dim">새 모델 mobi 가 와도 <strong>0줄</strong> — resolver 는 계약·선언만 읽는다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — mobi.contract.yaml + composition 의 model: mobi 로 같은 파이프라인이 돈다</td></tr><tr><td><strong>검증</strong></td><td>계약 대조 · rig 자물쇠 · 링크 예산이 새 모델에 자동 적용</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl_platform/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl_platform/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

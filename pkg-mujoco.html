@@ -444,7 +444,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 디지털 트윈 · 같은 MIT 토크 제어법칙</span></div>
   <p class="lead animate" style="--i:3">실물과 <strong>같은 ros2_control 인터페이스</strong>를 노출하되 모터 대신 MuJoCo 물리를 돌린다. 위층(컨트롤러·플래닝·UI)에서 보면 실물과 구분되지 않는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -475,7 +475,7 @@ flowchart LR
   </section>
 
   <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>자산</strong></td><td>MJCF/메시 트리 v1·v2 — share 설치, <code>get_package_share_directory(&quot;pl2_arm_mujoco&quot;)</code></td></tr><tr><td><strong>함께 릴리스</strong></td><td>자산과 그것을 구동하는 플러그인은 함께 깨진다 — 그래서 한 패키지</td></tr><tr><td><strong>클래스명</strong></td><td><code>openarm_mujoco_hardware/OpenArmMujocoSystem</code> — 벤더링 정체성 그대로</td></tr><tr><td><strong>빌드 함정</strong></td><td>CMake 가 venv 의 mujoco 를 찾는다 — venv 활성화 상태로 빌드 (build_workspace.sh 가 처리)</td></tr></tbody></table></div>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>자산</strong></td><td>MJCF/메시 트리 v1·v2 — share 설치, <code>get_package_share_directory(&quot;pl2_arm_mujoco&quot;)</code></td></tr><tr><td><strong>한 패키지인 이유</strong></td><td>자산과 그것을 구동하는 플러그인은 항상 짝이 맞아야 한다 — 따로 두면 한쪽만 갱신되는 사고가 난다</td></tr><tr><td><strong>클래스명</strong></td><td><code>openarm_mujoco_hardware/OpenArmMujocoSystem</code> — 벤더링 정체성 그대로</td></tr><tr><td><strong>빌드 함정</strong></td><td>CMake 가 venv 의 mujoco 를 찾는다 — venv 활성화 상태로 빌드 (build_workspace.sh 가 처리)</td></tr></tbody></table></div>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
   <div class="codeblock"><pre># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)
 python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
@@ -494,7 +494,7 @@ python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
   <p class="p dim">새 모델 mobi 의 디지털 트윈 — description 과 같은 기구 값의 MJCF 트리가 v1·v2 옆에 선다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/ · v2/ · <strong>mobi/</strong></strong></td><td>새 자산 트리 — 관절 길이·관성은 description 과 동일해야 한다 (어긋나면 심이 거짓말을 한다)</td></tr><tr><td><strong>소비자</strong></td><td>무변경 — share 아래에서 모델명으로 찾는다</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_mujoco/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_mujoco/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

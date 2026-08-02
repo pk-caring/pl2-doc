@@ -440,11 +440,11 @@
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">config/</code></h1>
-  <p class="subtitle animate" style="--i:1">이 기체의 값 — 코드가 아니라 사실</p>
+  <p class="subtitle animate" style="--i:1">이 기체의 값 — 코드가 아니라 측정된 사실</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 기체 pl2m-001 · 보드 · 현장</span></div>
   <p class="lead animate" style="--i:3">같은 코드가 어느 기체·어느 현장에서도 돌도록, <strong>기체마다 다른 값</strong>은 전부 여기 모인다. 호스트별 파일은 gitignore + <code>.example</code> 템플릿.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -498,7 +498,7 @@ arm.right:
   <p class="p dim">module_revision 자물쇠 — 모델을 바꾸면 낡은 실측이 이름만 같은 파라미터로 넘어오지 못하게 resolver 가 기동을 거부한다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>rigs/&lt;rig&gt;/rig.yaml</strong></td><td><code>module_revision: openarm_v2</code> → <code>mobi</code> — 어긋난 동안은 기동 거부 (fail-closed)</td></tr><tr><td><strong>커미셔닝 재실행</strong></td><td><code>CalibratePayload</code> → torque_bias · payload 가 mobi 기준으로 새로 저장</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>config/ 각 디렉터리 · robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>config/ 각 디렉터리 · robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

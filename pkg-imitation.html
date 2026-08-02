@@ -442,9 +442,9 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl_imitation</code></h1>
   <p class="subtitle animate" style="--i:1">모방학습 — 수집 → 학습 → 추론</p>
   <div class="hw-line animate" style="--i:2"><span class="hw none">실물 대응 없음 — 스키마만 본다 · 로봇이 바뀌어도 그대로</span></div>
-  <p class="lead animate" style="--i:3">로봇을 <strong>이름으로 모른다</strong>. resolver 가 만든 <code>schema.json</code> 이 유일한 로봇 정의이고, 그 위에서 녹화·학습·추론이 돈다.</p>
+  <p class="lead animate" style="--i:3">코드 어디에도 <strong>로봇 이름이 등장하지 않는다</strong>. 로봇이 무엇인지는 resolver 가 만든 <code>schema.json</code> 으로만 알고, 그 위에서 녹화·학습·추론이 돈다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -495,7 +495,7 @@ self._provenance = {
   <p class="p dim">새 모델 mobi 전환 시 이 도메인은 <strong>0줄</strong> — 다만 데이터셋 에폭이 갈린다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>코드</strong></td><td>0줄 — 스키마만 본다</td></tr><tr><td><strong>데이터셋</strong></td><td>schema hash 변경 → 기존 append 거부, mobi 는 새 에폭. 보호 장치다 — 기구가 다른 로봇의 데이터를 섞으면 학습이 조용히 오염된다</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl_imitation/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl_imitation/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

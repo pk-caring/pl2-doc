@@ -442,9 +442,9 @@
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl2_leader</code></h1>
   <p class="subtitle animate" style="--i:1">리더 디바이스 — 교시·텔레옵 입력 (→ PL-2 LEADER)</p>
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — Feetech OpenArm Mini ×2 (기존 공급분) · 판매 제품 PL-2 LEADER 는 dynamixel 스텁</span></div>
-  <p class="lead animate" style="--i:3">사람이 잡고 움직이는 <strong>입력 장치</strong>. 관절을 읽어 <code>leader_state</code> 로 발행할 뿐 — 팔을 어떻게 따라가게 할지는 이 리포가 모른다(조립 계층의 일).</p>
+  <p class="lead animate" style="--i:3">사람이 잡고 움직이는 <strong>입력 장치</strong>. 관절을 읽어 <code>leader_state</code> 로 발행하는 것까지가 이 저장소의 일이다 — 팔을 어떻게 따라 움직이게 할지는 조립 계층이 정한다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -475,7 +475,7 @@ flowchart LR
   </section>
 
   <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>backend 교체형</strong></td><td><code>LeaderBackend</code> ABC — 구현이 제품 라인과 1:1. 선택은 <code>backend</code> 파라미터 한 줄</td></tr><tr><td><strong>팔로워 어휘 없음</strong></td><td>리더→팔 매핑은 <code>pl_adapters</code> 가 두 계약에서 파생 — 이 리포는 팔을 모른다</td></tr><tr><td><strong>계약</strong></td><td><code>contract/leader.contract.yaml</code> — 관측 스트림·관절 그룹 선언</td></tr><tr><td><strong>bandi</strong></td><td>자체 웨어러블 — stub 준비됨, MCU 전송 확정 후 구현</td></tr></tbody></table></div>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>backend 교체형</strong></td><td><code>LeaderBackend</code> ABC — 구현이 제품 라인과 1:1. 선택은 <code>backend</code> 파라미터 한 줄</td></tr><tr><td><strong>팔로워 어휘 없음</strong></td><td>리더→팔 매핑은 <code>pl_adapters</code> 가 두 계약에서 파생한다 — 이 저장소에는 팔 관련 어휘가 아예 없다</td></tr><tr><td><strong>계약</strong></td><td><code>contract/leader.contract.yaml</code> — 관측 스트림·관절 그룹 선언</td></tr><tr><td><strong>bandi</strong></td><td>자체 웨어러블 — stub 준비됨, MCU 전송 확정 후 구현</td></tr></tbody></table></div>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
   <div class="codeblock"><pre>ros2 run pl2_leader leader_node --ros-args -p backend:=mock    # 실물 없이
 ros2 topic echo leader_state                                    # 리더 좌표계 관측</pre></div>
@@ -493,7 +493,7 @@ def make_backend(kind: str, *, port_right: str = "", port_left: str = "",
                  teleop_id: str = "mini", v2_wrist_fix: bool = False,
                  interactive_calibration: bool = True) -&gt; LeaderBackend:</pre></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_leader/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_leader/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

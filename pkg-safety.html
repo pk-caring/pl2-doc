@@ -444,7 +444,7 @@
   <div class="hw-line animate" style="--i:2"><span class="hw">실물 대응 — 팔 명령 경로 전체</span><span class="hw none">fail-closed</span></div>
   <p class="lead animate" style="--i:3">팔에 명령을 보내려면 누구든 <strong>lease 를 얻고, 살아 있음을 증명하는 동안만</strong> 통과한다. 정책(python)이 판단하고, 집행(C++ 컨트롤러)이 물리적으로 막는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -512,7 +512,7 @@ ros2 topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray "{data: [
   <p class="p dim">새 모델 mobi 가 와도 이 패키지는 <strong>0줄</strong>이다.</p>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>한계</strong></td><td>전개된 URDF 에서 측별로 다시 읽는다 — mobi 의 joint_limits.yaml → URDF → 게이트</td></tr><tr><td><strong>게이트 배선</strong></td><td>lease · E-stop · 체인 게이트는 이름 기준이라 모델과 무관</td></tr></tbody></table></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_safety/README.md — 실물 검증 절차 포함</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_safety/README.md — 실물 검증 절차 포함</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>

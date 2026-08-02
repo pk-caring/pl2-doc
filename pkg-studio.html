@@ -440,11 +440,11 @@
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl2_arm_studio</code></h1>
-  <p class="subtitle animate" style="--i:1">운영자 웹 UI — 보여주고 토글만</p>
-  <div class="hw-line animate" style="--i:2"><span class="hw none">능력의 소비자 — 특권 없음</span></div>
+  <p class="subtitle animate" style="--i:1">운영자 웹 UI — 상태를 보여주고 기능을 켜고 끌 뿐</p>
+  <div class="hw-line animate" style="--i:2"><span class="hw none">능력을 쓰는 소비자일 뿐 — 특별한 권한 없음</span></div>
   <p class="lead animate" style="--i:3">텔레메트리·3D·IK·서보·임피던스 실험을 한 화면에서. 하는 일 전부가 <strong>공개 ROS 인터페이스 호출</strong>이라, 팔을 움직이려면 다른 소스처럼 lease 를 얻는다.</p>
 
-  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 것과 어떻게 만나나</h2><a class="anchor" href="#p1">#</a></div>
+  <div class="sec-head" id="p1"><span class="num">01</span><h2>다른 패키지와 어떻게 연결되나</h2><a class="anchor" href="#p1">#</a></div>
   <section class="diagram-shell">
     <p class="diagram-shell__hint">Ctrl/Cmd + 휠 = 줌 · 드래그 = 이동 · 더블클릭 = 맞춤 · ⛶ = 새 탭에 크게</p>
     <div class="mermaid-wrap">
@@ -475,11 +475,11 @@ flowchart LR
   </section>
 
   <div class="sec-head" id="p2"><span class="num">02</span><h2>핵심</h2><a class="anchor" href="#p2">#</a></div>
-  <div class="tbl-wrap"><table><tbody><tr><td><strong>특권 없음</strong></td><td>게이트 입장에서 studio 는 여느 명령 소스와 동급</td></tr><tr><td><strong>실물 없이</strong></td><td>kinematic 프리뷰로 전 기능 둘러보기 — 관절 제어 진입 시 심이 실제 물리 제공</td></tr><tr><td><strong>설계 상세</strong></td><td><code>docs/DESIGN.md</code> — 데이터소스·ROS 인터페이스 매핑</td></tr></tbody></table></div>
+  <div class="tbl-wrap"><table><tbody><tr><td><strong>특별한 권한 없음</strong></td><td>게이트 입장에서 studio 는 여느 명령 소스와 동급</td></tr><tr><td><strong>실물 없이</strong></td><td>kinematic 프리뷰로 전 기능 둘러보기 — 관절 제어 진입 시 심이 실제 물리 제공</td></tr><tr><td><strong>설계 상세</strong></td><td><code>docs/DESIGN.md</code> — 데이터소스·ROS 인터페이스 매핑</td></tr></tbody></table></div>
   <div class="sec-head" id="p3"><span class="num">03</span><h2>바로 써보기</h2><a class="anchor" href="#p3">#</a></div>
   <div class="codeblock"><pre>python -m pl2_arm_studio     # 실물 없으면 kinematic 프리뷰로 열린다</pre></div>
 
-  <footer><span>정본 · 더 깊이: <code>src/pl2_arm/pl2_arm_studio/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
+  <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_studio/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
 </div>
 <script src="vendor/mermaid.min.js"></script>
