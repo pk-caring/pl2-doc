@@ -582,11 +582,11 @@ flowchart LR
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim"><strong>pl_composition</strong> — 스키마는 데이터일 뿐이고, 적용하는 손은 resolver 의 validate.py 다. pl_composition/schema/ 의 *.schema.json 을 읽어 계약·구성·placement 를 검사하고, 위반은 첫 건에서 멈추지 않고 전부 모아 한 번에 보고한다 — 실패 메시지가 곧 수리 목록이 된다.</p>
   <p class="diagram-shell__hint">src/pl_platform/pl_resolver/pl_resolver/validate.py</p>
-  <div class="codeblock"><pre>def load_schema(schema_dir: Path, name: str) -> dict:
-    path = schema_dir / f"{name}.schema.json"   # pl_composition/schema/ 가 단일 출처
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">load_schema</span>(<span class="hljs-params">schema_dir: Path, name: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    path = schema_dir / <span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>.schema.json&quot;</span>   <span class="hljs-comment"># pl_composition/schema/ 가 단일 출처</span>
 
-def iter_errors(instance, schema: dict) -> list[str]:
-    """Every violation as a stable, human-readable line (never just the first)."""
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">iter_errors</span>(<span class="hljs-params">instance, schema: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Every violation as a stable, human-readable line (never just the first).&quot;&quot;&quot;</span>
     validator = jsonschema.Draft7Validator(schema)</pre></div>
   <p class="p dim"><strong>pl_resolver</strong> — 로봇 선언을 생성물로 바꾸는 실제 호출. generate.sh 가 resolver 를 이렇게 부른다. 계약·선언·레이어가 입력의 전부이고, 출력이 robot/generated/ 다.</p>
   <p class="diagram-shell__hint">robot/generate.sh</p>
@@ -602,29 +602,29 @@ def iter_errors(instance, schema: dict) -> list[str]:
 <span class="hljs-comment"># 실물 기동은 --layers config/rigs/&lt;rig&gt; — robot.launch.py 가 매 기동 이 호출을 돌린다</span></pre></div>
   <p class="p dim"><strong>pl_resolver — rig 자물쇠</strong>. 레이어 파일의 meta 는 값이 아니라 기록의 머리말이고, module_revision 이 composition 과 어긋나면 resolver 가 기록 자체를 거부한다.</p>
   <p class="diagram-shell__hint">src/pl_platform/pl_resolver/pl_resolver/layers.py</p>
-  <div class="codeblock"><pre># module_revision names the model each role's values were taken on,
-# and the resolver refuses a record whose revision no longer matches
-# the composition — swapping an arm model must not quietly inherit
-# the old arm's calibration through a shared parameter name.
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># module_revision names the model each role&#x27;s values were taken on,</span>
+<span class="hljs-comment"># and the resolver refuses a record whose revision no longer matches</span>
+<span class="hljs-comment"># the composition — swapping an arm model must not quietly inherit</span>
+<span class="hljs-comment"># the old arm&#x27;s calibration through a shared parameter name.</span>
 
-LAYER_SOURCES = ("board", "rig", "site", "variant")
-META_KEY = "meta"   # 모든 레이어 파일의 예약 키 — 역할이 아니라 기록 머리말</pre></div>
+LAYER_SOURCES = (<span class="hljs-string">&quot;board&quot;</span>, <span class="hljs-string">&quot;rig&quot;</span>, <span class="hljs-string">&quot;site&quot;</span>, <span class="hljs-string">&quot;variant&quot;</span>)
+META_KEY = <span class="hljs-string">&quot;meta&quot;</span>   <span class="hljs-comment"># 모든 레이어 파일의 예약 키 — 역할이 아니라 기록 머리말</span></pre></div>
   <p class="p dim"><strong>pl_adapters</strong> — teleop 어댑터의 입력은 생성 스키마의 teleop 표다. robot.launch.py 의 leader_board 절차가 schema_path 로 물려 스폰하고, 명령이 흐르기 시작하는 것(enable)은 bringup 이 아니라 명시적 행위다.</p>
   <p class="diagram-shell__hint">robot/launch/robot.launch.py — leader_board 절차</p>
-  <div class="codeblock"><pre>Node(package="pl_adapters", executable="teleop_adapter",
-     name="teleop_adapter", output="screen",
-     parameters=[{"schema_path":
-                  str(root / "robot" / "generated" / "schema.json")}]),</pre></div>
+  <div class="codeblock"><pre class="nohl">Node(package=<span class="hljs-string">&quot;pl_adapters&quot;</span>, executable=<span class="hljs-string">&quot;teleop_adapter&quot;</span>,
+     name=<span class="hljs-string">&quot;teleop_adapter&quot;</span>, output=<span class="hljs-string">&quot;screen&quot;</span>,
+     parameters=[{<span class="hljs-string">&quot;schema_path&quot;</span>:
+                  <span class="hljs-built_in">str</span>(root / <span class="hljs-string">&quot;robot&quot;</span> / <span class="hljs-string">&quot;generated&quot;</span> / <span class="hljs-string">&quot;schema.json&quot;</span>)}]),</pre></div>
   <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 활성화는 명시적 행위 — bringup 은 절대 모션을 시작하지 않는다</span>
 <span class="hljs-title">ros2</span> service call /teleop_adapter/enable std_srvs/srv/SetBool <span class="hljs-string">"{data: true}"</span></pre></div>
   <p class="p dim"><strong>pl_supervisor</strong> — NIC 자동감지·DDS 핀은 launch 안의 dds_setup 한 번이다. 팔·리더·수집 launch 가 같은 헬퍼를 불러, 노드가 하나라도 뜨기 전에 ~/.ros/pl_cyclonedds.xml 을 쓰고 환경을 심는다. 고아 수거(doctor)는 04 빠른 시작에 있다.</p>
   <p class="diagram-shell__hint">src/pl_platform/pl_supervisor/pl_supervisor/dds.py — pl2_arm.launch.py · leader.launch.py 공용</p>
-  <div class="codeblock"><pre>from pl_supervisor.dds import dds_setup      # launch 파일들의 import
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">from</span> pl_supervisor.dds <span class="hljs-keyword">import</span> dds_setup      <span class="hljs-comment"># launch 파일들의 import</span>
 
 mode, iface = resolve_net(net, detect_wired_iface())
-cfg = write_dds_config(mode, iface)          # ~/.ros/pl_cyclonedds.xml
-os.environ["RMW_IMPLEMENTATION"] = "rmw_cyclonedds_cpp"
-os.environ["CYCLONEDDS_URI"] = f"file://{cfg}"</pre></div>
+cfg = write_dds_config(mode, iface)          <span class="hljs-comment"># ~/.ros/pl_cyclonedds.xml</span>
+os.environ[<span class="hljs-string">&quot;RMW_IMPLEMENTATION&quot;</span>] = <span class="hljs-string">&quot;rmw_cyclonedds_cpp&quot;</span>
+os.environ[<span class="hljs-string">&quot;CYCLONEDDS_URI&quot;</span>] = <span class="hljs-string">f&quot;file://<span class="hljs-subst">{cfg}</span>&quot;</span></pre></div>
   <p class="p dim"><strong>reference_robots</strong> — 로봇 없이 조립 기계를 돌려보는 경로. ci/run.sh 승인 게이트가 도는 검증이 바로 이것이고, 같은 mock 구성을 손으로도 resolve 해 볼 수 있다.</p>
   <p class="diagram-shell__hint">src/pl_platform (저장소 루트에서)</p>
   <div class="codeblock"><pre class="nohl"><span class="hljs-title">python3</span> -m pytest            <span class="hljs-comment"># ci/run.sh 와 같은 승인 게이트 — 참조 구성 셋 전부 검증</span>
@@ -637,17 +637,17 @@ os.environ["CYCLONEDDS_URI"] = f"file://{cfg}"</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">플랫폼이 자기 검증에 쓰는 가짜 로봇이다. mock 계약으로 존재하지 않는 로봇을 조립해 본다 — 여기서 성공하면 조립 기계가 로봇과 무관하다는 증명이 된다.</p>
   <p class="diagram-shell__hint">reference_robots/ref_bimanual/composition.yaml (발췌)</p>
-  <div class="codeblock"><pre>robot_id: ref_bimanual
-description: mock bimanual fixed rig
-modules:
-  - role: arm.right
-    provider: mock_arm
-    model: mock6
-    namespace: right
-    mount: {parent: rig_frame, xyz: [0.0, -0.2, 0.8]}
-  - role: leader
-    provider: mock_leader
-    optional: true</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">robot_id:</span> <span class="hljs-string">ref_bimanual</span>
+<span class="hljs-attr">description:</span> <span class="hljs-string">mock</span> <span class="hljs-string">bimanual</span> <span class="hljs-string">fixed</span> <span class="hljs-string">rig</span>
+<span class="hljs-attr">modules:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">arm.right</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">mock_arm</span>
+    <span class="hljs-attr">model:</span> <span class="hljs-string">mock6</span>
+    <span class="hljs-attr">namespace:</span> <span class="hljs-string">right</span>
+    <span class="hljs-attr">mount:</span> {<span class="hljs-attr">parent:</span> <span class="hljs-string">rig_frame</span>, <span class="hljs-attr">xyz:</span> [<span class="hljs-number">0.0</span>, <span class="hljs-number">-0.2</span>, <span class="hljs-number">0.8</span>]}
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">leader</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">mock_leader</span>
+    <span class="hljs-attr">optional:</span> <span class="hljs-literal">true</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl_platform/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
