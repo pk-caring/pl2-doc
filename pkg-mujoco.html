@@ -573,36 +573,36 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>자산</strong></td><td>MJCF/메시 트리 v1·v2 — share 설치, <code>get_package_share_directory(&quot;pl2_arm_mujoco&quot;)</code></td></tr><tr><td><strong>한 패키지인 이유</strong></td><td>자산과 그것을 구동하는 플러그인은 항상 짝이 맞아야 한다 — 따로 두면 한쪽만 갱신되는 사고가 난다</td></tr><tr><td><strong>클래스명</strong></td><td><code>openarm_mujoco_hardware/OpenArmMujocoSystem</code> — 벤더링 정체성 그대로</td></tr><tr><td><strong>빌드 함정</strong></td><td>CMake 가 venv 의 mujoco 를 찾는다 — venv 활성화 상태로 빌드 (build_workspace.sh 가 처리)</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)
-python -m pl2_arm_mujoco.mujoco_viewer</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># /joint_states 를 3D 로 비추는 패시브 뷰어 (실물이든 심이든)</span>
+<span class="hljs-title">python</span> <span class="hljs-attr">-m</span> pl2_arm_mujoco.mujoco_viewer</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">심 스택이 자산과 게인을 얻는 실제 코드 — MJCF 는 이 패키지 share 에서, 게인은 실물 xacro 가 굽는 것과 같은 모델별 control_gains.yaml 에서 온다. 그래서 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
-  <div class="codeblock"><pre>def _mjcf_path(model: str) -&gt; str:
-    base = get_package_share_directory("pl2_arm_mujoco")
-    return os.path.join(base, *_cfg(model)["mjcf_sub"])
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_mjcf_path</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    base = get_package_share_directory(<span class="hljs-string">&quot;pl2_arm_mujoco&quot;</span>)
+    <span class="hljs-keyword">return</span> os.path.join(base, *_cfg(model)[<span class="hljs-string">&quot;mjcf_sub&quot;</span>])
 
-# 관절 kp/kd·hand·안전 봉투는 실물과 같은 모델별 control_gains.yaml
-# 이 유일 출처다(경로 철자는 pl2_arm_description.gains 한 곳).
-def _load_base_gains(model: str):
+<span class="hljs-comment"># 관절 kp/kd·hand·안전 봉투는 실물과 같은 모델별 control_gains.yaml</span>
+<span class="hljs-comment"># 이 유일 출처다(경로 철자는 pl2_arm_description.gains 한 곳).</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_base_gains</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span></span>):
     data = pl2_control_gains.load(model)</pre></div>
   <p class="p dim">심 전용 robot_description 을 만드는 곳이다. 게인의 출처는 여기가 아니라 description 의 모델별 control_gains.yaml — 실물 xacro 가 하드웨어 블록에 굽는 바로 그 파일을 심도 읽으므로 sim == real 이 파일 하나로 성립한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/pl2_sim_description.py</p>
-  <div class="codeblock"><pre># 관절 kp/kd·hand·안전 봉투는 전부 실물과 같은 모델별
-# control_gains.yaml 이 유일 출처다(경로 철자는 pl2_arm_description.gains).
-# 갈라놓으면 심 테스트가 심이 쓰지도 않는 값을 검증하게 된다.
-def _load_base_gains(model: str):
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 관절 kp/kd·hand·안전 봉투는 전부 실물과 같은 모델별</span>
+<span class="hljs-comment"># control_gains.yaml 이 유일 출처다(경로 철자는 pl2_arm_description.gains).</span>
+<span class="hljs-comment"># 갈라놓으면 심 테스트가 심이 쓰지도 않는 값을 검증하게 된다.</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_base_gains</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span></span>):
     data = pl2_control_gains.load(model)
-    kp = [float(data[f"joint{i}"]["kp"]) for i in range(1, 8)]
-    kd = [float(data[f"joint{i}"]["kd"]) for i in range(1, 8)]</pre></div>
+    kp = [<span class="hljs-built_in">float</span>(data[<span class="hljs-string">f&quot;joint<span class="hljs-subst">{i}</span>&quot;</span>][<span class="hljs-string">&quot;kp&quot;</span>]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">8</span>)]
+    kd = [<span class="hljs-built_in">float</span>(data[<span class="hljs-string">f&quot;joint<span class="hljs-subst">{i}</span>&quot;</span>][<span class="hljs-string">&quot;kd&quot;</span>]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">8</span>)]</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">sim 레이어의 rig 값이다. 가짜지만 스키마를 온전히 만족한다 — 하드웨어 없이 resolver 검증과 CI 를 돌리기 위한 값이고, 실물 값은 config/rigs/ 가 가진다.</p>
   <p class="diagram-shell__hint">robot/layers/sim/rig.yaml (발췌)</p>
-  <div class="codeblock"><pre>arm.right:
-  joint_zero_offset: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-  torque_bias:       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-  payload_mass: 0.0          # 0 = 미보정과 같은 의미
-  payload_com:  [0.0, 0.0, 0.0]</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">arm.right:</span>
+  <span class="hljs-attr">joint_zero_offset:</span> [<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>]
+  <span class="hljs-attr">torque_bias:</span>       [<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>]
+  <span class="hljs-attr">payload_mass:</span> <span class="hljs-number">0.0</span>          <span class="hljs-comment"># 0 = 미보정과 같은 의미</span>
+  <span class="hljs-attr">payload_com:</span>  [<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>]</pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_mujoco/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

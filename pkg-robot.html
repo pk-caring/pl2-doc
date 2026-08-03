@@ -575,67 +575,67 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td>이 로봇이 무엇으로 이루어지는가 — 조건 분기도 스크립트도 없는 선언</td></tr><tr><td><strong>generate.sh</strong></td><td>계약·선언·레이어 수정 후 재실행 — <code>generated/</code> 를 다시 만든다</td></tr><tr><td><strong>generated/</strong></td><td>전부 산출물 — 손으로 고치지 않는다. 수집·추론이 보는 유일한 로봇 정의</td></tr><tr><td><strong>robot.launch.py</strong></td><td>유일한 기동 진입점 — <code>board</code> 인자는 placement 어휘와 대조되고, 그 머신 몫의 컴포넌트만 뜬다</td></tr><tr><td><strong>urdf/</strong></td><td>마운트 선언 — 베이스 어느 링크에 팔이 붙는가 (좌표값은 description 소유)</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre>robot/generate.sh                                   # 선언 → generated/ (sim 레이어)
-robot/generate.sh --layers config/rigs/pl2m-001     # 이 기체의 실측 레이어로
-ros2 launch pl2_m_bringup robot.launch.py board:=compute   # 이 머신의 컴포넌트만 기동</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-title">robot/generate.sh</span>                                   <span class="hljs-comment"># 선언 → generated/ (sim 레이어)</span>
+<span class="hljs-title">robot/generate.sh</span> <span class="hljs-attr">--layers</span> config/rigs/pl2m-001     <span class="hljs-comment"># 이 기체의 실측 레이어로</span>
+<span class="hljs-title">ros2</span> launch pl2_m_bringup robot.launch.py board:=compute   <span class="hljs-comment"># 이 머신의 컴포넌트만 기동</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">선언이 실제로 어떻게 생겼는지 — 조건 분기도 스크립트도 없다. 팔 둘·리더·카메라 셋이 이 로봇의 전부고, resolver 가 이걸 모듈 계약과 합쳐 산출물을 만든다.</p>
   <p class="diagram-shell__hint">robot/composition.yaml (발췌)</p>
-  <div class="codeblock"><pre>robot_id: pl2_m
-description: OpenArm v2 bimanual on the VicPinky base
-modules:
-  - role: arm.right
-    provider: pl2_arm
-    model: openarm_v2
-    namespace: right
-  - role: arm.left
-    provider: pl2_arm
-    model: openarm_v2
-    namespace: left
-  - role: leader
-    provider: pl2_leader
-    backend: mini
-    optional: true
-  - role: camera.top
-    provider: pl2_arm_cameras
-    model: jpeg_stream</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">robot_id:</span> <span class="hljs-string">pl2_m</span>
+<span class="hljs-attr">description:</span> <span class="hljs-string">OpenArm</span> <span class="hljs-string">v2</span> <span class="hljs-string">bimanual</span> <span class="hljs-string">on</span> <span class="hljs-string">the</span> <span class="hljs-string">VicPinky</span> <span class="hljs-string">base</span>
+<span class="hljs-attr">modules:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">arm.right</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">pl2_arm</span>
+    <span class="hljs-attr">model:</span> <span class="hljs-string">openarm_v2</span>
+    <span class="hljs-attr">namespace:</span> <span class="hljs-string">right</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">arm.left</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">pl2_arm</span>
+    <span class="hljs-attr">model:</span> <span class="hljs-string">openarm_v2</span>
+    <span class="hljs-attr">namespace:</span> <span class="hljs-string">left</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">leader</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">pl2_leader</span>
+    <span class="hljs-attr">backend:</span> <span class="hljs-string">mini</span>
+    <span class="hljs-attr">optional:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">role:</span> <span class="hljs-string">camera.top</span>
+    <span class="hljs-attr">provider:</span> <span class="hljs-string">pl2_arm_cameras</span>
+    <span class="hljs-attr">model:</span> <span class="hljs-string">jpeg_stream</span></pre></div>
   <p class="p dim">기동 시 board 어휘를 검증하고 합성 문서를 다시 만드는 코드다. 어휘의 원본은 placement.yaml 하나 — 여기 사본을 두지 않는다.</p>
   <p class="diagram-shell__hint">robot/launch/robot.launch.py</p>
-  <div class="codeblock"><pre>def _boards(root):
-    """The board vocabulary — placement.yaml's, never a copy here."""
-    doc = yaml.safe_load((root / "robot" / "placement.yaml").read_text())
-    return set(doc["placement"])
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_boards</span>(<span class="hljs-params">root</span>):
+    <span class="hljs-string">&quot;&quot;&quot;The board vocabulary — placement.yaml&#x27;s, never a copy here.&quot;&quot;&quot;</span>
+    doc = yaml.safe_load((root / <span class="hljs-string">&quot;robot&quot;</span> / <span class="hljs-string">&quot;placement.yaml&quot;</span>).read_text())
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">set</span>(doc[<span class="hljs-string">&quot;placement&quot;</span>])
 
-def _compose_robot_description(root):
-    """합성 robot_description 을 매 기동 생성해 generated/ 에 둔다.
-    하드웨어 블록에는 rig 레코드의 실측이 실린다."""
-    doc = xacro.process_file(str(root / "robot" / "urdf" / "pl2_m.urdf.xacro"),
-        mappings={"ros2_control": "true",
-                  "generated_params_dir": str(root / "robot" / "generated" / "params")})</pre></div>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_compose_robot_description</span>(<span class="hljs-params">root</span>):
+    <span class="hljs-string">&quot;&quot;&quot;합성 robot_description 을 매 기동 생성해 generated/ 에 둔다.
+    하드웨어 블록에는 rig 레코드의 실측이 실린다.&quot;&quot;&quot;</span>
+    doc = xacro.process_file(<span class="hljs-built_in">str</span>(root / <span class="hljs-string">&quot;robot&quot;</span> / <span class="hljs-string">&quot;urdf&quot;</span> / <span class="hljs-string">&quot;pl2_m.urdf.xacro&quot;</span>),
+        mappings={<span class="hljs-string">&quot;ros2_control&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+                  <span class="hljs-string">&quot;generated_params_dir&quot;</span>: <span class="hljs-built_in">str</span>(root / <span class="hljs-string">&quot;robot&quot;</span> / <span class="hljs-string">&quot;generated&quot;</span> / <span class="hljs-string">&quot;params&quot;</span>)})</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">어느 노드가 어느 보드 역할에서 도는지 선언한다. 실제 hostname 은 여기 없다 — 그것은 배포 단계 config/ 의 몫이다.</p>
   <p class="diagram-shell__hint">robot/placement.yaml</p>
-  <div class="codeblock"><pre>schema_version: 1
-imitation_board: leader        # 녹화·재생이 붙는 보드
-placement:
-  compute: [arm_hardware, arm_safety, arm_controllers, camera_server]
-  leader:  [leader_driver]</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">schema_version:</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">imitation_board:</span> <span class="hljs-string">leader</span>        <span class="hljs-comment"># 녹화·재생이 붙는 보드</span>
+<span class="hljs-attr">placement:</span>
+  <span class="hljs-attr">compute:</span> [<span class="hljs-string">arm_hardware</span>, <span class="hljs-string">arm_safety</span>, <span class="hljs-string">arm_controllers</span>, <span class="hljs-string">camera_server</span>]
+  <span class="hljs-attr">leader:</span>  [<span class="hljs-string">leader_driver</span>]</pre></div>
   <p class="p dim">생성 스키마의 관측 항목이다. 토픽·타입·관절 목록까지 전부 선언에서 계산된 결과이며, 수집·추론은 이것만 읽는다.</p>
   <p class="diagram-shell__hint">robot/generated/schema.json (관측 항목 하나)</p>
-  <div class="codeblock"><pre>{
-  "key": "arm.left.cmd.executed",
-  "module_role": "arm.left",
-  "semantics": "executed_action",
-  "source": {
-    "kind": "topic",
-    "topic": "left/command_executed",
-    "type": "std_msgs/msg/Float64MultiArray",
-    "groups": ["arm"],
-    "joints": ["joint1", "joint2", "joint3", "joint4",
-               "joint5", "joint6", "joint7"]
-  },
-  "unit": "rad"
-}</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;key&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;arm.left.cmd.executed&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;module_role&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;arm.left&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;semantics&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;executed_action&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;topic&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;left/command_executed&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;std_msgs/msg/Float64MultiArray&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;groups&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;arm&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;joints&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;joint1&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;joint2&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;joint3&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;joint4&quot;</span><span class="hljs-punctuation">,</span>
+               <span class="hljs-string">&quot;joint5&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;joint6&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;joint7&quot;</span><span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;rad&quot;</span>
+<span class="hljs-punctuation">}</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

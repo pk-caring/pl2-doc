@@ -620,53 +620,53 @@ flowchart LR
     </tbody>
   </table></div>
   <div class="sec-head" id="p7"><span class="num">07</span><h2>빠른 시작</h2><a class="anchor" href="#p7">#</a></div>
-  <div class="codeblock"><pre># 1) lease 획득
-LEASE=$(ros2 service call /right/command_lease \
-        pl2_arm_interfaces/srv/AcquireCommandLease "{source: my_app}" | grep -o "lease_id='[^']*'" | cut -d"'" -f2)
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 1) lease 획득</span>
+<span class="hljs-variable">LEASE</span>=$(ros2 service call /right/command_lease \
+        pl2_arm_interfaces/srv/AcquireCommandLease <span class="hljs-string">"{source: my_app}"</span> | grep <span class="hljs-attr">-o</span> <span class="hljs-string">"lease_id='[^']*'"</span> | cut -d"'" -f2)
 
-# 2) heartbeat 유지 (이게 멈추면 200 ms 뒤 게이트가 닫힌다)
-ros2 topic pub -r 20 /right/lease_heartbeat \
-     pl2_arm_interfaces/msg/LeaseHeartbeat "{lease_id: '$LEASE'}" &amp;
+<span class="hljs-comment"># 2) heartbeat 유지 (이게 멈추면 200 ms 뒤 게이트가 닫힌다)</span>
+<span class="hljs-title">ros2</span> topic pub <span class="hljs-attr">-r</span> 20 /right/lease_heartbeat \
+     pl2_arm_interfaces/msg/LeaseHeartbeat <span class="hljs-string">"{lease_id: '$LEASE'}"</span> &amp;
 
-# 3) 이제야 intent 가 팔에 닿는다 (7관절 rad)
-ros2 topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray "{data: [0.0, ...]}"</pre></div>
+<span class="hljs-comment"># 3) 이제야 intent 가 팔에 닿는다 (7관절 rad)</span>
+<span class="hljs-title">ros2</span> topic pub -1 /right/command_intent std_msgs/msg/Float64MultiArray <span class="hljs-string">"{data: [0.0, ...]}"</span></pre></div>
   <div class="sec-head" id="p8"><span class="num">08</span><h2>실전 코드</h2><a class="anchor" href="#p8">#</a></div>
   <p class="p dim">bringup 이 게이트를 띄우는 실제 코드 — 실물이든 심이든 같은 함수 하나로, 측별 한계를 URDF 에서 읽어 두 게이트를 세운다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/pl2_arm_bringup/safety_gates.py</p>
-  <div class="codeblock"><pre>def safety_gate_nodes(robot_description: str) -&gt; list[Node]:
-    """Both sides' gates, each with ITS OWN side's limits from the URDF."""
-    return [
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">safety_gate_nodes</span>(<span class="hljs-params">robot_description: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">list</span>[Node]:
+    <span class="hljs-string">&quot;&quot;&quot;Both sides&#x27; gates, each with ITS OWN side&#x27;s limits from the URDF.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> [
         Node(
-            package="pl2_arm_safety",
-            executable="safety_node",
+            package=<span class="hljs-string">&quot;pl2_arm_safety&quot;</span>,
+            executable=<span class="hljs-string">&quot;safety_node&quot;</span>,
             namespace=side,
             remappings=[
-                ("forward_position_controller/commands",
-                 f"/{side}_forward_position_controller/commands"),
-                # 체인 게이트 컨트롤러가 ~/gate_command 를 구독한다 —
-                # 정책 노드의 열림 명령이 여기로 간다.
-                ("gate_command", f"/{side}_safety_gate/gate_command"),
+                (<span class="hljs-string">&quot;forward_position_controller/commands&quot;</span>,
+                 <span class="hljs-string">f&quot;/<span class="hljs-subst">{side}</span>_forward_position_controller/commands&quot;</span>),
+                <span class="hljs-comment"># 체인 게이트 컨트롤러가 ~/gate_command 를 구독한다 —</span>
+                <span class="hljs-comment"># 정책 노드의 열림 명령이 여기로 간다.</span>
+                (<span class="hljs-string">&quot;gate_command&quot;</span>, <span class="hljs-string">f&quot;/<span class="hljs-subst">{side}</span>_safety_gate/gate_command&quot;</span>),
             ],
             parameters=[gate_params_from_urdf(robot_description, side)],
         )
-        for side in ("right", "left")
+        <span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;left&quot;</span>)
     ]</pre></div>
   <p class="p dim">게이트 규칙의 본체다. 순수 파이썬 core 라 노드 없이 테스트되고, 속도 거부에는 zero_now 신호가 붙는다 — 스트림을 끊은 거부는 워치독을 기다리지 않고 즉시 0 을 명령해야 한다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_safety/pl2_arm_safety/gate_core.py</p>
-  <div class="codeblock"><pre>def gate_arm(self, values, now):
-    return self._gate(values, self.config.lower, self.config.upper, now, "arm")
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">gate_arm</span>(<span class="hljs-params">self, values, now</span>):
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._gate(values, <span class="hljs-variable language_">self</span>.config.lower, <span class="hljs-variable language_">self</span>.config.upper, now, <span class="hljs-string">&quot;arm&quot;</span>)
 
-def gate_velocity(self, values, now):
-    """-&gt; (ok, reason, zero_now).
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">gate_velocity</span>(<span class="hljs-params">self, values, now</span>):
+    <span class="hljs-string">&quot;&quot;&quot;-&gt; (ok, reason, zero_now).
     zero_now 는 이 거부가 활성 스트림을 끊었을 때 True 다 —
-    셸은 워치독을 기다리지 말고 즉시 0 을 명령해야 한다."""
-    limits = self.config.velocity_limits
-    ok, reason = (self._reject("velocity: no velocity limits configured")
-                  if not limits else self._gate_velocity(values, limits, now))
-    if ok:
-        self._vel_last_pass = now
-        return True, "", False
-    zero_now = self._vel_last_pass is not None</pre></div>
+    셸은 워치독을 기다리지 말고 즉시 0 을 명령해야 한다.&quot;&quot;&quot;</span>
+    limits = <span class="hljs-variable language_">self</span>.config.velocity_limits
+    ok, reason = (<span class="hljs-variable language_">self</span>._reject(<span class="hljs-string">&quot;velocity: no velocity limits configured&quot;</span>)
+                  <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> limits <span class="hljs-keyword">else</span> <span class="hljs-variable language_">self</span>._gate_velocity(values, limits, now))
+    <span class="hljs-keyword">if</span> ok:
+        <span class="hljs-variable language_">self</span>._vel_last_pass = now
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-literal">False</span>
+    zero_now = <span class="hljs-variable language_">self</span>._vel_last_pass <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_safety/README.md — 실물 검증 절차 포함</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

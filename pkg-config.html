@@ -575,70 +575,70 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>placement.json</strong></td><td>머신 배치 — 호스트별(gitignore), 커밋본은 <code>.example</code> 템플릿</td></tr><tr><td><strong>boards/</strong></td><td>보드 사실 — 장치 목록·링크 대역/지연 예산·카메라 스트림 실측. resolver 가 링크 예산을 검사한다</td></tr><tr><td><strong>rigs/&lt;rig&gt;/</strong></td><td>기체 실측 기록 — payload 커미셔닝이 직접 저장, <code>module_revision</code> 이 모델 자물쇠</td></tr><tr><td><strong>config.env</strong></td><td>bash 점검 스크립트 전용 호스트 사실 — 파이썬은 읽지 않는다</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre>cp config/placement.json.example config/placement.json   # 템플릿 → 이 호스트의 배치
-robot/generate.sh --layers config/rigs/pl2m-001          # 실측 레이어로 산출물 생성</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-title">cp</span> config/placement.json.example config/placement.json   <span class="hljs-comment"># 템플릿 → 이 호스트의 배치</span>
+<span class="hljs-title">robot/generate.sh</span> <span class="hljs-attr">--layers</span> config/rigs/pl2m-001          <span class="hljs-comment"># 실측 레이어로 산출물 생성</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">이 물리적 로봇 한 대의 실측 — payload 커미셔닝이 이 파일에 직접 저장하고, resolver 가 기동 파라미터로 나른다. module_revision 은 그 캘리브를 어느 모델에서 쟀는지 잠가 두는 자물쇠다(어긋나면 기동 거부).</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (발췌)</p>
-  <div class="codeblock"><pre>meta:
-  rig_id: pl2m-001
-  robot_id: pl2_m
-  module_revision:
-    arm.right: openarm_v2     # 이 값들이 측정된 모델 — composition 과 어긋나면 거부
-    arm.left: openarm_v2
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">meta:</span>
+  <span class="hljs-attr">rig_id:</span> <span class="hljs-string">pl2m-001</span>
+  <span class="hljs-attr">robot_id:</span> <span class="hljs-string">pl2_m</span>
+  <span class="hljs-attr">module_revision:</span>
+    <span class="hljs-attr">arm.right:</span> <span class="hljs-string">openarm_v2</span>     <span class="hljs-comment"># 이 값들이 측정된 모델 — composition 과 어긋나면 거부</span>
+    <span class="hljs-attr">arm.left:</span> <span class="hljs-string">openarm_v2</span>
 
-arm.right:
-  torque_bias: [0.114, 0.062, 0.047, 0.187, -0.009, 0.048, 0.009]
-  payload_mass: 0.211
-  payload_com: [-0.003, -0.001, -0.162]</pre></div>
+<span class="hljs-attr">arm.right:</span>
+  <span class="hljs-attr">torque_bias:</span> [<span class="hljs-number">0.114</span>, <span class="hljs-number">0.062</span>, <span class="hljs-number">0.047</span>, <span class="hljs-number">0.187</span>, <span class="hljs-number">-0.009</span>, <span class="hljs-number">0.048</span>, <span class="hljs-number">0.009</span>]
+  <span class="hljs-attr">payload_mass:</span> <span class="hljs-number">0.211</span>
+  <span class="hljs-attr">payload_com:</span> [<span class="hljs-number">-0.003</span>, <span class="hljs-number">-0.001</span>, <span class="hljs-number">-0.162</span>]</pre></div>
   <p class="p dim">실측 기록의 머리말이다. 값만이 아니라 언제·누가·어느 도구로 쟀고 승인됐는지가 함께 남는다.</p>
   <p class="diagram-shell__hint">config/rigs/pl2m-001/rig.yaml (meta)</p>
-  <div class="codeblock"><pre>meta:
-  rig_id: pl2m-001
-  robot_id: pl2_m
-  module_revision:
-    arm.right: openarm_v2      # 이 값이 측정된 모델 — 어긋나면 기동 거부
-    arm.left: openarm_v2
-  measurement:
-    measured_at: 2026-07-31
-    tool_version: payload_calib
-    operator_id: woolim
-  approval:
-    status: approved
-    approved_by: woolim</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">meta:</span>
+  <span class="hljs-attr">rig_id:</span> <span class="hljs-string">pl2m-001</span>
+  <span class="hljs-attr">robot_id:</span> <span class="hljs-string">pl2_m</span>
+  <span class="hljs-attr">module_revision:</span>
+    <span class="hljs-attr">arm.right:</span> <span class="hljs-string">openarm_v2</span>      <span class="hljs-comment"># 이 값이 측정된 모델 — 어긋나면 기동 거부</span>
+    <span class="hljs-attr">arm.left:</span> <span class="hljs-string">openarm_v2</span>
+  <span class="hljs-attr">measurement:</span>
+    <span class="hljs-attr">measured_at:</span> <span class="hljs-number">2026-07-31</span>
+    <span class="hljs-attr">tool_version:</span> <span class="hljs-string">payload_calib</span>
+    <span class="hljs-attr">operator_id:</span> <span class="hljs-string">woolim</span>
+  <span class="hljs-attr">approval:</span>
+    <span class="hljs-attr">status:</span> <span class="hljs-string">approved</span>
+    <span class="hljs-attr">approved_by:</span> <span class="hljs-string">woolim</span></pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">보드의 네트워크 실측값이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
   <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
-  <div class="codeblock"><pre># links: 기가비트 유선 실측 (compute↔leader 직결):
-#   TCP 양방향 941 Mbit/s, ping RTT avg 0.41 ms.
-#   예산은 측정치보다 보수적으로 잡는다.
-devices: [socketcan]
-links:
-  leader: {bandwidth_mbps: 800, latency_ms: 1}
-streams:
-  camera.top.rgb:           {bandwidth_mbps: 14}
-  camera.right_gripper.rgb: {bandwidth_mbps: 17}
-  camera.left_gripper.rgb:  {bandwidth_mbps: 17}</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># links: 기가비트 유선 실측 (compute↔leader 직결):</span>
+<span class="hljs-comment">#   TCP 양방향 941 Mbit/s, ping RTT avg 0.41 ms.</span>
+<span class="hljs-comment">#   예산은 측정치보다 보수적으로 잡는다.</span>
+<span class="hljs-attr">devices:</span> [<span class="hljs-string">socketcan</span>]
+<span class="hljs-attr">links:</span>
+  <span class="hljs-attr">leader:</span> {<span class="hljs-attr">bandwidth_mbps:</span> <span class="hljs-number">800</span>, <span class="hljs-attr">latency_ms:</span> <span class="hljs-number">1</span>}
+<span class="hljs-attr">streams:</span>
+  <span class="hljs-attr">camera.top.rgb:</span>           {<span class="hljs-attr">bandwidth_mbps:</span> <span class="hljs-number">14</span>}
+  <span class="hljs-attr">camera.right_gripper.rgb:</span> {<span class="hljs-attr">bandwidth_mbps:</span> <span class="hljs-number">17</span>}
+  <span class="hljs-attr">camera.left_gripper.rgb:</span>  {<span class="hljs-attr">bandwidth_mbps:</span> <span class="hljs-number">17</span>}</pre></div>
   <p class="p dim">어떤 컴포넌트를 어느 머신에서 돌릴지 적는 템플릿이다. 복사해서 이 호스트의 값으로 채운다.</p>
   <p class="diagram-shell__hint">config/placement.json.example (발췌)</p>
-  <div class="codeblock"><pre>{
-  "machines": {
-    "leaderbox": {
-      "hostname": "192.168.0.10",
-      "components": {
-        "leader":   {"type": "leader",   "args": ["--backend", "mini"]},
-        "recorder": {"type": "recorder", "args": ["--schema", "..."]}
-      }
-    },
-    "followerbox": {
-      "hostname": "192.168.0.11",
-      "components": {
-        "follower": {"type": "follower"},
-        "cameras":  {"type": "cameras"}
-      }
-    }
-  }
-}</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;machines&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;leaderbox&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;hostname&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;192.168.0.10&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;components&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;leader&quot;</span><span class="hljs-punctuation">:</span>   <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;leader&quot;</span><span class="hljs-punctuation">,</span>   <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;--backend&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;mini&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;recorder&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;recorder&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;--schema&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;...&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;followerbox&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;hostname&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;192.168.0.11&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;components&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;follower&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;follower&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;cameras&quot;</span><span class="hljs-punctuation">:</span>  <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;cameras&quot;</span><span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>config/ 각 디렉터리 · robot/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

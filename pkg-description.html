@@ -576,38 +576,38 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>v1/v2 나란히</strong></td><td>모델별 xacro — composition 의 <code>model:</code> 필드가 고른다</td></tr><tr><td><strong>단일 RSP</strong></td><td>합성 robot_description 은 하나 — 소비자는 파일이 아니라 토픽에서 형상을 얻는다</td></tr><tr><td><strong>거울상</strong></td><td>joint1·joint2·그리퍼 envelope 는 좌우 부호 거울상 — 한 세트를 양측에 쓰면 안 된다</td></tr><tr><td><strong>마운트는 여기 없다</strong></td><td>팔이 로봇 어디에 붙는지는 로봇 워크스페이스 <code>robot/urdf</code> 소유</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre># 안전 게이트·심이 실제로 쓰는 그 URDF 를 눈으로 확인
-xacro $(ros2 pkg prefix --share pl2_arm_description)/assets/robot/openarm_v2.0/urdf/openarm_v20.urdf.xacro</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 안전 게이트·심이 실제로 쓰는 그 URDF 를 눈으로 확인</span>
+xacro $(ros2 pkg prefix <span class="hljs-attr">--share</span> pl2_arm_description)/assets/robot/openarm_v2.0/urdf/openarm_v20.urdf.xacro</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">안전 게이트 launch 가 한계를 얻는 실제 코드 — description 의 xacro 를 전개해 측별 파라미터를 파생한다. 파일 경로가 아니라 패키지 share 로 찾는다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_safety/launch/safety.launch.py</p>
-  <div class="codeblock"><pre>urdf = xacro.process_file(
-    str(Path(get_package_share_directory("pl2_arm_description"))
-        / "assets" / "robot" / folder / "urdf" / entry)).toxml()
-side = LaunchConfiguration("side").perform(context)
-params = gate_params_from_urdf(urdf, side)   # 측별 한계 — 좌우 거울상이라 공유 불가</pre></div>
+  <div class="codeblock"><pre class="nohl">urdf = xacro.process_file(
+    <span class="hljs-built_in">str</span>(Path(get_package_share_directory(<span class="hljs-string">&quot;pl2_arm_description&quot;</span>))
+        / <span class="hljs-string">&quot;assets&quot;</span> / <span class="hljs-string">&quot;robot&quot;</span> / folder / <span class="hljs-string">&quot;urdf&quot;</span> / entry)).toxml()
+side = LaunchConfiguration(<span class="hljs-string">&quot;side&quot;</span>).perform(context)
+params = gate_params_from_urdf(urdf, side)   <span class="hljs-comment"># 측별 한계 — 좌우 거울상이라 공유 불가</span></pre></div>
   <p class="p dim">팔 매크로의 시그니처다. 관절 길이·한계·관성이 전부 인자로 주입된다 — 매크로는 형식이고 값은 데이터 파일이 가진다.</p>
   <p class="diagram-shell__hint">assets/robot/openarm_v2.0/urdf/utils/openarm_v20_arm.xacro</p>
-  <div class="codeblock"><pre>&lt;xacro:macro name="openarm_v20_arm"
-  params="index links prefix joint_origins joint_axes joint_limits
+  <div class="codeblock"><pre class="nohl"><span class="hljs-tag">&lt;<span class="hljs-name">xacro:macro</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;openarm_v20_arm&quot;</span>
+  <span class="hljs-attr">params</span>=<span class="hljs-string">&quot;index links prefix joint_origins joint_axes joint_limits
           inertials visuals collisions
           reflect_x:=1 reflect_y:=1 reflect_z:=1
-          limit_override_joints:=^ mirror_limit_sign ..."&gt;</pre></div>
+          limit_override_joints:=^ mirror_limit_sign ...&quot;</span>&gt;</span></pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">관절 한계는 코드가 아니라 이 데이터다. 기준은 오른팔이고, 왼팔은 매크로가 부호를 뒤집어 만든다.</p>
   <p class="diagram-shell__hint">config/arm/joint/joint_limits.yaml (발췌)</p>
-  <div class="codeblock"><pre>joint1:
-  limit:
-    lower: -1.3963
-    upper: 3.4907
-    effort: 40
-    velocity: 16.755
-joint2:
-  limit:
-    lower: -0.17453
-    upper: 3.3161
-    effort: 40
-    velocity: 16.755</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">joint1:</span>
+  <span class="hljs-attr">limit:</span>
+    <span class="hljs-attr">lower:</span> <span class="hljs-number">-1.3963</span>
+    <span class="hljs-attr">upper:</span> <span class="hljs-number">3.4907</span>
+    <span class="hljs-attr">effort:</span> <span class="hljs-number">40</span>
+    <span class="hljs-attr">velocity:</span> <span class="hljs-number">16.755</span>
+<span class="hljs-attr">joint2:</span>
+  <span class="hljs-attr">limit:</span>
+    <span class="hljs-attr">lower:</span> <span class="hljs-number">-0.17453</span>
+    <span class="hljs-attr">upper:</span> <span class="hljs-number">3.3161</span>
+    <span class="hljs-attr">effort:</span> <span class="hljs-number">40</span>
+    <span class="hljs-attr">velocity:</span> <span class="hljs-number">16.755</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_description/</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

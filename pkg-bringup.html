@@ -577,53 +577,53 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>세 진입점</strong></td><td>실물 <code>pl2_arm</code> · 심 <code>pl2_sim</code> · 심+계획 <code>pl2_sim_moveit</code> — 전부 같은 컨트롤러·게이트 구조, 심은 하드웨어 plugin 한 줄만 다르다</td></tr><tr><td><strong>모듈 계약</strong></td><td><code>contract/</code> 가 팔의 공개 인터페이스(그룹·토픽·QoS)를 데이터로 선언 — resolver 의 입력</td></tr><tr><td><strong>컨트롤러 설정</strong></td><td><code>config/controllers/</code> 가 JTC · 게이트 체인 · 브로드캐스터의 실행 배선을 가진다</td></tr><tr><td><strong>게인 로더</strong></td><td><code>pl2_control_gains</code> 가 description 소유 <code>control_gains.yaml</code> 을 읽는 한 철자 — 심도 같은 파일을 본다</td></tr><tr><td><strong>모델 자동 결정</strong></td><td>단독 기동 시 rig 기록(<code>module_revision</code>)을 따라 v1/v2 결정 — env 는 명시 오버라이드일 뿐</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre># 실물 팔 스택 (모델은 rig 기록이 결정)
-ros2 launch pl2_arm_bringup pl2_arm.launch.py
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 실물 팔 스택 (모델은 rig 기록이 결정)</span>
+<span class="hljs-title">ros2</span> launch pl2_arm_bringup pl2_arm.launch.py
 
-# 심 — MuJoCo 물리로 같은 컨트롤러 구조
-ros2 launch pl2_arm_bringup pl2_sim.launch.py model:=v2
+<span class="hljs-comment"># 심 — MuJoCo 물리로 같은 컨트롤러 구조</span>
+<span class="hljs-title">ros2</span> launch pl2_arm_bringup pl2_sim.launch.py model:=v2
 
-# 심 + move_group 풀스택 (앱이 sim 세션에 자동 선택)
-ros2 launch pl2_arm_bringup pl2_sim_moveit.launch.py model:=v2</pre></div>
+<span class="hljs-comment"># 심 + move_group 풀스택 (앱이 sim 세션에 자동 선택)</span>
+<span class="hljs-title">ros2</span> launch pl2_arm_bringup pl2_sim_moveit.launch.py model:=v2</pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">단독 기동에서도 "이 로봇이 무엇인가"의 답은 rig 기록 하나다 — launch 의 모델 기본값이 캘리브레이션·스튜디오와 같은 해석(rig 기록 → v1/v2)을 따른다. 조립 경로(robot.launch.py)는 파생된 description 을 명시로 넘긴다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_bringup/launch/pl2_arm.launch.py</p>
-  <div class="codeblock"><pre># The model default follows the rig record (env override -&gt; record -&gt; v2),
-# the same resolution the calibration and the studio monitor use — one
-# answer to "which robot is this" for a standalone launch.
-from pl2_arm_payload.solver import active_model
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># The model default follows the rig record (env override -&gt; record -&gt; v2),</span>
+<span class="hljs-comment"># the same resolution the calibration and the studio monitor use — one</span>
+<span class="hljs-comment"># answer to &quot;which robot is this&quot; for a standalone launch.</span>
+<span class="hljs-keyword">from</span> pl2_arm_payload.solver <span class="hljs-keyword">import</span> active_model
 
-# The user-facing `model:=v1|v2` arg maps to the description arm_type.
-# Variant is data (config/openarm_v&lt;n&gt;), not a per-robot launch file.
-_MODEL_TO_ARM_TYPE = {"v1": "openarm_v1.0", "v2": "openarm_v2.0"}</pre></div>
+<span class="hljs-comment"># The user-facing `model:=v1|v2` arg maps to the description arm_type.</span>
+<span class="hljs-comment"># Variant is data (config/openarm_v&lt;n&gt;), not a per-robot launch file.</span>
+_MODEL_TO_ARM_TYPE = {<span class="hljs-string">&quot;v1&quot;</span>: <span class="hljs-string">&quot;openarm_v1.0&quot;</span>, <span class="hljs-string">&quot;v2&quot;</span>: <span class="hljs-string">&quot;openarm_v2.0&quot;</span>}</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">팔 모듈 계약의 머리다. 이 팔이 무엇이고(provider · model · 자유도) 어떤 그룹을 공개하는지가 데이터로 선언된다 — resolver 의 입력.</p>
   <p class="diagram-shell__hint">contract/openarm_v2.contract.yaml (발췌)</p>
-  <div class="codeblock"><pre>contract_version: 1
-module: arm
-provider: pl2_arm
-model: openarm_v2
-dof_per_arm: 7
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">contract_version:</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">module:</span> <span class="hljs-string">arm</span>
+<span class="hljs-attr">provider:</span> <span class="hljs-string">pl2_arm</span>
+<span class="hljs-attr">model:</span> <span class="hljs-string">openarm_v2</span>
+<span class="hljs-attr">dof_per_arm:</span> <span class="hljs-number">7</span>
 
-groups:
-  arm:
-    joints: [joint1, joint2, joint3, joint4, joint5, joint6, joint7]
-    unit: rad
-    command:
-      topic: forward_position_controller/commands
-      type: std_msgs/msg/Float64MultiArray</pre></div>
+<span class="hljs-attr">groups:</span>
+  <span class="hljs-attr">arm:</span>
+    <span class="hljs-attr">joints:</span> [<span class="hljs-string">joint1</span>, <span class="hljs-string">joint2</span>, <span class="hljs-string">joint3</span>, <span class="hljs-string">joint4</span>, <span class="hljs-string">joint5</span>, <span class="hljs-string">joint6</span>, <span class="hljs-string">joint7</span>]
+    <span class="hljs-attr">unit:</span> <span class="hljs-string">rad</span>
+    <span class="hljs-attr">command:</span>
+      <span class="hljs-attr">topic:</span> <span class="hljs-string">forward_position_controller/commands</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">std_msgs/msg/Float64MultiArray</span></pre></div>
   <p class="p dim">컨트롤러 실행 설정 — 어떤 컨트롤러를 띄우고 게이트를 어디에 끼울지 적은 배선이다. 게이트 클래스 문자열이 여기서 지정된다.</p>
   <p class="diagram-shell__hint">config/controllers/openarm_bimanual_controllers.yaml (발췌)</p>
-  <div class="codeblock"><pre>controller_manager:
-  ros__parameters:
-    joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-    left_safety_gate:
-      type: pl2_arm_safety_controller/SafetyGateController
-    right_safety_gate:
-      type: pl2_arm_safety_controller/SafetyGateController
-    left_joint_trajectory_controller:
-      type: joint_trajectory_controller/JointTrajectoryController</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">controller_manager:</span>
+  <span class="hljs-attr">ros__parameters:</span>
+    <span class="hljs-attr">joint_state_broadcaster:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">joint_state_broadcaster/JointStateBroadcaster</span>
+    <span class="hljs-attr">left_safety_gate:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">pl2_arm_safety_controller/SafetyGateController</span>
+    <span class="hljs-attr">right_safety_gate:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">pl2_arm_safety_controller/SafetyGateController</span>
+    <span class="hljs-attr">left_joint_trajectory_controller:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">joint_trajectory_controller/JointTrajectoryController</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_bringup/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

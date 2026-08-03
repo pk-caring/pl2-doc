@@ -578,93 +578,93 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>lerobot_ros2</strong></td><td>토픽·QoS·피처를 전부 스키마에서 파생 — 코드에 로봇 이름 없음</td></tr><tr><td><strong>recorder</strong></td><td>에피소드 판정(전 스트림 도착 강제) · lease 소스 검증 · provenance(schema hash) 기록</td></tr><tr><td><strong>inference</strong></td><td>policy server 의 액션 청크를 intent 로 — 게이트 통과 필수</td></tr><tr><td><strong>studio</strong></td><td>녹화·추론의 정식 경로 — 순서 강제 + 단계별 프로브</td></tr><tr><td><strong>산출물</strong></td><td>데이터셋·모델은 리포 밖 (<code>~/pl2_datasets</code> · <code>~/pl2_models</code>)</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre>python -m pl_imitation_studio      # 콘솔 하나 — 메인 메뉴: 녹화 / 추론</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-title">python</span> <span class="hljs-attr">-m</span> pl_imitation_studio      <span class="hljs-comment"># 콘솔 하나 — 메인 메뉴: 녹화 / 추론</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">recorder 가 에피소드마다 기록하는 실제 provenance — 어떤 로봇 정의(스키마 해시)에서 수집됐는지가 데이터셋에 박힌다. 로봇이 바뀌면 append 가 거부되는 근거다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/recorder.py</p>
-  <div class="codeblock"><pre>doc = robot.schema_doc
-self._provenance = {
-    "robot_id": doc["robot_id"],
-    "schema_hash": doc["hash"],
-    "composition_hash": doc["composition_hash"],
-    "modules": {role: {k: m[k] for k in ("provider", "model", "contract_version")}
-                for role, m in doc["modules"].items()},
-    "expected_lease_source": expected_lease_source,
+  <div class="codeblock"><pre class="nohl">doc = robot.schema_doc
+<span class="hljs-variable language_">self</span>._provenance = {
+    <span class="hljs-string">&quot;robot_id&quot;</span>: doc[<span class="hljs-string">&quot;robot_id&quot;</span>],
+    <span class="hljs-string">&quot;schema_hash&quot;</span>: doc[<span class="hljs-string">&quot;hash&quot;</span>],
+    <span class="hljs-string">&quot;composition_hash&quot;</span>: doc[<span class="hljs-string">&quot;composition_hash&quot;</span>],
+    <span class="hljs-string">&quot;modules&quot;</span>: {role: {k: m[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;provider&quot;</span>, <span class="hljs-string">&quot;model&quot;</span>, <span class="hljs-string">&quot;contract_version&quot;</span>)}
+                <span class="hljs-keyword">for</span> role, m <span class="hljs-keyword">in</span> doc[<span class="hljs-string">&quot;modules&quot;</span>].items()},
+    <span class="hljs-string">&quot;expected_lease_source&quot;</span>: expected_lease_source,
 }</pre></div>
   <p class="p dim">스키마 문서에서 로봇이 조립되는 지점이다. 피처 맵·필수 스트림·버퍼가 전부 스키마에서 계산된다 — 로봇 이름은 어디에도 없다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/robot.py</p>
-  <div class="codeblock"><pre>class SchemaRobot(Robot):
-    def __init__(self, config, *, transport, schema_doc=None, params=None, ...):
-        if schema_doc is None:
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SchemaRobot</span>(<span class="hljs-title class_ inherited__">Robot</span>):
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, config, *, transport, schema_doc=<span class="hljs-literal">None</span>, params=<span class="hljs-literal">None</span>, ...</span>):
+        <span class="hljs-keyword">if</span> schema_doc <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
             schema_doc = json.loads(Path(config.schema_path).read_text())
-        self.schema_doc = schema_doc
-        self.features: FeatureMap = feature_map(schema_doc, params)
-        self._buffer = SnapshotBuffer(
-            self.features.required_keys | self.features.recording_keys,
-            required=self.features.required_keys)</pre></div>
+        <span class="hljs-variable language_">self</span>.schema_doc = schema_doc
+        <span class="hljs-variable language_">self</span>.features: FeatureMap = feature_map(schema_doc, params)
+        <span class="hljs-variable language_">self</span>._buffer = SnapshotBuffer(
+            <span class="hljs-variable language_">self</span>.features.required_keys | <span class="hljs-variable language_">self</span>.features.recording_keys,
+            required=<span class="hljs-variable language_">self</span>.features.required_keys)</pre></div>
   <p class="p dim">GPU 정책 서버(services/policy_server)가 관측을 받아 액션 청크를 내는 지점이다. 학습 서버(thor)에서 도는 독립 프로세스이고, GR00T·ACT 서버가 같은 wire 규약(ServedPolicy)을 구현해 클라이언트는 모델 종류를 모른다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/services/policy_server/lerobot_groot_server.py</p>
-  <div class="codeblock"><pre>def _get_action_impl(self, observation, options):
-    # RTC 사이드채널을 먼저 분리하고, 관측을 lerobot 배치로 변환
-    previous_action = observation.pop("previous_action", None)
-    batch = grouped_to_lerobot(observation, self.device,
-                               letter_box=self._letter_box)
-    with torch.no_grad():
-        processed = self.preprocessor(batch)  # 예측 시점 raw state 캐시
-        if self.serve_mode == "absolute_rtc":
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_get_action_impl</span>(<span class="hljs-params">self, observation, options</span>):
+    <span class="hljs-comment"># RTC 사이드채널을 먼저 분리하고, 관측을 lerobot 배치로 변환</span>
+    previous_action = observation.pop(<span class="hljs-string">&quot;previous_action&quot;</span>, <span class="hljs-literal">None</span>)
+    batch = grouped_to_lerobot(observation, <span class="hljs-variable language_">self</span>.device,
+                               letter_box=<span class="hljs-variable language_">self</span>._letter_box)
+    <span class="hljs-keyword">with</span> torch.no_grad():
+        processed = <span class="hljs-variable language_">self</span>.preprocessor(batch)  <span class="hljs-comment"># 예측 시점 raw state 캐시</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.serve_mode == <span class="hljs-string">&quot;absolute_rtc&quot;</span>:
             ...</pre></div>
   <p class="p dim">추론이 관측을 조립하는 실제 코드 — 카메라는 ZMQ 원시 JPEG 를 받아 GPU(CUDA)에서 디코드하고, 관절은 /joint_states 캐시에서 온다. 소스마다 나이(age)를 함께 실어 오래된 관측을 걸러낸다.</p>
   <p class="diagram-shell__hint">src/pl_imitation/pl_imitation_inference/pl_imitation_inference/inference_node.py</p>
-  <div class="codeblock"><pre>def _build_obs(self) -&gt; dict:
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_build_obs</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:
     frames_rgb, ages = {}, {}
-    for role in SETTINGS.camera_roles:
-        raw_jpeg, age = self._cam_client.get_frame_bytes(role)
-        frames_rgb[role] = decode_jpeg_cuda(raw_jpeg)  # GPU 디코드 — RGB
+    <span class="hljs-keyword">for</span> role <span class="hljs-keyword">in</span> SETTINGS.camera_roles:
+        raw_jpeg, age = <span class="hljs-variable language_">self</span>._cam_client.get_frame_bytes(role)
+        frames_rgb[role] = decode_jpeg_cuda(raw_jpeg)  <span class="hljs-comment"># GPU 디코드 — RGB</span>
         ages[role] = age
-    with self._js_lock:
-        cache_rad = dict(self._js_cache)
-    return build_gr00t_obs(cache_rad, frames_rgb, self._task,
-                           ages=ages, bounds=self._bounds)</pre></div>
+    <span class="hljs-keyword">with</span> <span class="hljs-variable language_">self</span>._js_lock:
+        cache_rad = <span class="hljs-built_in">dict</span>(<span class="hljs-variable language_">self</span>._js_cache)
+    <span class="hljs-keyword">return</span> build_gr00t_obs(cache_rad, frames_rgb, <span class="hljs-variable language_">self</span>._task,
+                           ages=ages, bounds=<span class="hljs-variable language_">self</span>._bounds)</pre></div>
   <p class="p dim">녹화 연결 시점의 시계 게이트다 — 보드가 chronyc 로 자기 오프셋을 재고, 확인이 안 되는 시계도 나쁜 시계와 똑같이 거부한다(기초 지식의 시간 동기화 절 참조).</p>
   <p class="diagram-shell__hint">src/pl_imitation/lerobot_ros2/lerobot_ros2/gating.py</p>
-  <div class="codeblock"><pre>def chrony_gate(max_ms, run=None) -&gt; Gate:
-    def check() -&gt; list[str]:
-        try:
-            offset = parse_chronyc_tracking((run or _run_chronyc)())
-        except Exception as exc:
-            return [f"clock sync unverifiable: {exc}"]
-        if abs(offset) &gt; max_ms:
-            return [f"clock offset {offset:+.2f} ms exceeds "
-                    f"the {max_ms:.1f} ms budget"]
-        return []
-    return check</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">chrony_gate</span>(<span class="hljs-params">max_ms, run=<span class="hljs-literal">None</span></span>) -&gt; Gate:
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">check</span>() -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]:
+        <span class="hljs-keyword">try</span>:
+            offset = parse_chronyc_tracking((run <span class="hljs-keyword">or</span> _run_chronyc)())
+        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> exc:
+            <span class="hljs-keyword">return</span> [<span class="hljs-string">f&quot;clock sync unverifiable: <span class="hljs-subst">{exc}</span>&quot;</span>]
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">abs</span>(offset) &gt; max_ms:
+            <span class="hljs-keyword">return</span> [<span class="hljs-string">f&quot;clock offset <span class="hljs-subst">{offset:+<span class="hljs-number">.2</span>f}</span> ms exceeds &quot;</span>
+                    <span class="hljs-string">f&quot;the <span class="hljs-subst">{max_ms:<span class="hljs-number">.1</span>f}</span> ms budget&quot;</span>]
+        <span class="hljs-keyword">return</span> []
+    <span class="hljs-keyword">return</span> check</pre></div>
   <p class="p dim">콘솔이 수집 스택을 스폰하는 방법 — 컴포넌트 이름을 argv 목록으로 푼다. 카메라는 cameras.json 의 역할별로 프로세스 하나씩, 모르는 타입은 fail-closed 로 거부.</p>
   <p class="diagram-shell__hint">src/pl_imitation/pl_imitation_studio/pl_imitation_studio/launch_spec.py</p>
-  <div class="codeblock"><pre>def resolve_procs(component_name, spec):
-    if comp_type == "recorder":
-        return [[VENV_PYTHON, "-m",
-                 "pl_imitation_recorder.recorder.recorder_node"] + args]
-    if comp_type == "cameras":
-        roles = [role] if role else camera_roles()
-        return [[VENV_PYTHON, "-m", "pl2_arm_cameras.camera_server",
-                 "--role", r] for r in roles]
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">resolve_procs</span>(<span class="hljs-params">component_name, spec</span>):
+    <span class="hljs-keyword">if</span> comp_type == <span class="hljs-string">&quot;recorder&quot;</span>:
+        <span class="hljs-keyword">return</span> [[VENV_PYTHON, <span class="hljs-string">&quot;-m&quot;</span>,
+                 <span class="hljs-string">&quot;pl_imitation_recorder.recorder.recorder_node&quot;</span>] + args]
+    <span class="hljs-keyword">if</span> comp_type == <span class="hljs-string">&quot;cameras&quot;</span>:
+        roles = [role] <span class="hljs-keyword">if</span> role <span class="hljs-keyword">else</span> camera_roles()
+        <span class="hljs-keyword">return</span> [[VENV_PYTHON, <span class="hljs-string">&quot;-m&quot;</span>, <span class="hljs-string">&quot;pl2_arm_cameras.camera_server&quot;</span>,
+                 <span class="hljs-string">&quot;--role&quot;</span>, r] <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> roles]
     ...
-    raise ValueError(f"unknown component type: {comp_type!r}")</pre></div>
+    <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">f&quot;unknown component type: <span class="hljs-subst">{comp_type!r}</span>&quot;</span>)</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">recorder 가 읽는 관측 선언이다. 어느 토픽의 어느 관절을 어떤 의미로 기록할지가 코드가 아니라 데이터로 온다.</p>
   <p class="diagram-shell__hint">robot/generated/schema.json (관측 항목 하나)</p>
-  <div class="codeblock"><pre>{
-  "key": "arm.left.cmd.intent",
-  "module_role": "arm.left",
-  "semantics": "demonstrator_action",
-  "source": {
-    "kind": "topic",
-    "topic": "left/command_intent",
-    "type": "std_msgs/msg/Float64MultiArray",
-    "groups": ["arm"]
-  },
-  "unit": "rad"
-}</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;key&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;arm.left.cmd.intent&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;module_role&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;arm.left&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;semantics&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;demonstrator_action&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;topic&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;left/command_intent&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;std_msgs/msg/Float64MultiArray&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;groups&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;arm&quot;</span><span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;rad&quot;</span>
+<span class="hljs-punctuation">}</span></pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl_imitation/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

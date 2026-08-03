@@ -590,51 +590,51 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>moveit</strong></td><td>MoveIt 설정(v1/v2) + 부르는 쪽의 지식. 노드 아님 — move_group 이 이미 서비스를 내놓는다</td></tr><tr><td><strong>servo</strong></td><td>트위스트를 래치해 반복 발행 → 미분 IK → forward 컨트롤러. JTC ⇄ forward 전환 포함</td></tr><tr><td><strong>mit</strong></td><td>τ = kp·Δq + kd·Δq̇ + τ_ff — MitGains(안전 규칙) · ZeroG(직접교시) · gravity_pub(관찰자)</td></tr><tr><td><strong>payload</strong></td><td>정지 자세 tau_pd 잔차 회귀로 질량·무게중심 실측 — <code>CalibratePayload</code> action, 결과는 rig 레코드로</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre># 조그: 팔 끝을 방향으로 밀기 (스튜디오 없이)
-ros2 launch pl2_arm_servo servo.launch.py model:=v2
-ros2 service call /arm_servo/set_servo_mode std_srvs/srv/SetBool "{data: true}"
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># 조그: 팔 끝을 방향으로 밀기 (스튜디오 없이)</span>
+<span class="hljs-title">ros2</span> launch pl2_arm_servo servo.launch.py model:=v2
+<span class="hljs-title">ros2</span> service call /arm_servo/set_servo_mode std_srvs/srv/SetBool <span class="hljs-string">"{data: true}"</span>
 
-# 무중력 직접교시·게인은 mit, 쥔 물건 실측은 payload 의 action 으로 — 각 README 참고</pre></div>
+<span class="hljs-comment"># 무중력 직접교시·게인은 mit, 쥔 물건 실측은 payload 의 action 으로 — 각 README 참고</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">스튜디오가 payload 실측을 요청하는 실제 코드 — 제어 기능은 action 서버로 노출돼 있고, 스튜디오도 여느 클라이언트처럼 ActionClient 로 부른다(다른 소스가 lease 를 쥐고 있으면 거절당한다).</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_studio/pl2_arm_studio/ros/payload_client.py</p>
-  <div class="codeblock"><pre>from pl2_arm_interfaces.action import CalibratePayload
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">from</span> pl2_arm_interfaces.action <span class="hljs-keyword">import</span> CalibratePayload
 
-client = ActionClient(node, CalibratePayload, "calibrate_payload")
-if not client.wait_for_server(timeout_sec=5.0):
-    raise RuntimeError("payload_server unreachable — is the compute "
-                       "board's arm stack up?")
+client = ActionClient(node, CalibratePayload, <span class="hljs-string">&quot;calibrate_payload&quot;</span>)
+<span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> client.wait_for_server(timeout_sec=<span class="hljs-number">5.0</span>):
+    <span class="hljs-keyword">raise</span> RuntimeError(<span class="hljs-string">&quot;payload_server unreachable — is the compute &quot;</span>
+                       <span class="hljs-string">&quot;board&#x27;s arm stack up?&quot;</span>)
 goal = CalibratePayload.Goal()
-goal.side = side                 # "right" / "left"
+goal.side = side                 <span class="hljs-comment"># &quot;right&quot; / &quot;left&quot;</span>
 goal.bidirectional = bidirectional</pre></div>
   <p class="p dim">무중력 진입·복귀의 실제 순서다. 목표=현재 동기화가 먼저다 — 순서를 바꾸면 게인이 돌아오는 순간 팔이 튄다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_mit/pl2_arm_mit/zero_g.py</p>
-  <div class="codeblock"><pre>def engage(self):
-    """FLOAT 진입: 목표=현재 동기화 후 kp=0 (끌면 끌리는 대로)."""
-    cur = self._robot.positions()
-    self._robot.move_to_joint_positions({n: cur.get(n, 0.0) for n in self._arm})
-    ok = self._robot.set_mit_config(
-        kp={i: 0.0 for i in range(7)},
-        kd={i: KD_FLOAT[i] for i in range(7)},
-        side=self._side, gravity_comp=True)
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">engage</span>(<span class="hljs-params">self</span>):
+    <span class="hljs-string">&quot;&quot;&quot;FLOAT 진입: 목표=현재 동기화 후 kp=0 (끌면 끌리는 대로).&quot;&quot;&quot;</span>
+    cur = <span class="hljs-variable language_">self</span>._robot.positions()
+    <span class="hljs-variable language_">self</span>._robot.move_to_joint_positions({n: cur.get(n, <span class="hljs-number">0.0</span>) <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._arm})
+    ok = <span class="hljs-variable language_">self</span>._robot.set_mit_config(
+        kp={i: <span class="hljs-number">0.0</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>)},
+        kd={i: KD_FLOAT[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>)},
+        side=<span class="hljs-variable language_">self</span>._side, gravity_comp=<span class="hljs-literal">True</span>)
 
-def _restore_gains(self):
-    """기본 게인 복귀: JTC 목표=현재 → 게인 복귀 (순서 중요)."""
-    cur = self._robot.positions()
-    self._robot.move_to_joint_positions({n: cur.get(n, 0.0) for n in self._arm})
-    self._robot.set_mit_config(kp={i: None for i in range(7)},   # None=NaN → URDF 기본
-                               kd={i: None for i in range(7)}, side=self._side)</pre></div>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_restore_gains</span>(<span class="hljs-params">self</span>):
+    <span class="hljs-string">&quot;&quot;&quot;기본 게인 복귀: JTC 목표=현재 → 게인 복귀 (순서 중요).&quot;&quot;&quot;</span>
+    cur = <span class="hljs-variable language_">self</span>._robot.positions()
+    <span class="hljs-variable language_">self</span>._robot.move_to_joint_positions({n: cur.get(n, <span class="hljs-number">0.0</span>) <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._arm})
+    <span class="hljs-variable language_">self</span>._robot.set_mit_config(kp={i: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>)},   <span class="hljs-comment"># None=NaN → URDF 기본</span>
+                               kd={i: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>)}, side=<span class="hljs-variable language_">self</span>._side)</pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">제어가 쓰는 명령 토픽도 계약이 선언한다. 어느 그룹이 어떤 토픽·QoS 로 명령을 받는지가 데이터로 고정된다.</p>
   <p class="diagram-shell__hint">pl2_arm_bringup/contract/openarm_v2.contract.yaml (발췌)</p>
-  <div class="codeblock"><pre>groups:
-  arm:
-    joints: [joint1, joint2, joint3, joint4, joint5, joint6, joint7]
-    unit: rad
-    command:
-      topic: forward_position_controller/commands
-      type: std_msgs/msg/Float64MultiArray
-      qos: {reliability: reliable, durability: volatile, depth: 1}</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-attr">groups:</span>
+  <span class="hljs-attr">arm:</span>
+    <span class="hljs-attr">joints:</span> [<span class="hljs-string">joint1</span>, <span class="hljs-string">joint2</span>, <span class="hljs-string">joint3</span>, <span class="hljs-string">joint4</span>, <span class="hljs-string">joint5</span>, <span class="hljs-string">joint6</span>, <span class="hljs-string">joint7</span>]
+    <span class="hljs-attr">unit:</span> <span class="hljs-string">rad</span>
+    <span class="hljs-attr">command:</span>
+      <span class="hljs-attr">topic:</span> <span class="hljs-string">forward_position_controller/commands</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">std_msgs/msg/Float64MultiArray</span>
+      <span class="hljs-attr">qos:</span> {<span class="hljs-attr">reliability:</span> <span class="hljs-string">reliable</span>, <span class="hljs-attr">durability:</span> <span class="hljs-string">volatile</span>, <span class="hljs-attr">depth:</span> <span class="hljs-number">1</span>}</pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_{moveit,servo,mit,payload}/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 

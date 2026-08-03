@@ -573,20 +573,20 @@ flowchart LR
   <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>특별한 권한 없음</strong></td><td>게이트 입장에서 studio 는 여느 명령 소스와 동급</td></tr><tr><td><strong>실물 없이</strong></td><td>kinematic 프리뷰로 전 기능 둘러보기 — 관절 제어 진입 시 심이 실제 물리 제공</td></tr><tr><td><strong>설계 상세</strong></td><td><code>docs/DESIGN.md</code> — 데이터소스·ROS 인터페이스 매핑</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
-  <div class="codeblock"><pre>python -m pl2_arm_studio     # 실물 없으면 kinematic 프리뷰로 열린다</pre></div>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-title">python</span> <span class="hljs-attr">-m</span> pl2_arm_studio     <span class="hljs-comment"># 실물 없으면 kinematic 프리뷰로 열린다</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">스튜디오가 동작 계획 스택을 자동 선택하는 코드 — 실물 세션이면 실 bringup 위에 move_group 만(real:=true), sim 이면 MuJoCo+move_group 풀스택(pl2_sim_moveit)을 띄운다.</p>
   <p class="diagram-shell__hint">src/pl2_arm/pl2_arm_studio/pl2_arm_studio/ros/moveit_proc.py</p>
-  <div class="codeblock"><pre>def _select_launch() -&gt; tuple[str, str]:
-    base = "pl2_movegroup" if _real_mode() else "pl2_sim_moveit"
-    return _LAUNCH_PKG, f"{base}.launch.py"
+  <div class="codeblock"><pre class="nohl"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_select_launch</span>() -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>]:
+    base = <span class="hljs-string">&quot;pl2_movegroup&quot;</span> <span class="hljs-keyword">if</span> _real_mode() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;pl2_sim_moveit&quot;</span>
+    <span class="hljs-keyword">return</span> _LAUNCH_PKG, <span class="hljs-string">f&quot;<span class="hljs-subst">{base}</span>.launch.py&quot;</span>
 
-def _launch_args() -&gt; list[str]:
-    from .arm_model import get_profile
-    args = [f"model:={get_profile().name}"]
-    if _real_mode():
-        args.append("real:=true")
-    return args</pre></div>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_launch_args</span>() -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]:
+    <span class="hljs-keyword">from</span> .arm_model <span class="hljs-keyword">import</span> get_profile
+    args = [<span class="hljs-string">f&quot;model:=<span class="hljs-subst">{get_profile().name}</span>&quot;</span>]
+    <span class="hljs-keyword">if</span> _real_mode():
+        args.append(<span class="hljs-string">&quot;real:=true&quot;</span>)
+    <span class="hljs-keyword">return</span> args</pre></div>
 
   <footer><span>정본 · 더 자세한 내용: <code>src/pl2_arm/pl2_arm_studio/README.md</code></span><span><a href="packages.html" style="color:inherit">← 패키지 목록</a></span></footer>
 
