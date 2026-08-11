@@ -1,6 +1,6 @@
 # pl2-doc — PL-2 M 플랫폼 문서 사이트
 
-PL-2 M 워크스페이스(pk-caring/pl2_m)의 구조를 처음 보는 사람에게 설명하는 정적 사이트.
+PL-2 M 워크스페이스(pk-caring/pl_2m)의 구조를 처음 보는 사람에게 설명하는 정적 사이트.
 
 - `index.html` — 접이식 폴더 트리 (전체 구조 → 펼치면 설명 + 상세 링크)
 - `packages.html` — 패키지 목록
@@ -8,4 +8,4 @@ PL-2 M 워크스페이스(pk-caring/pl2_m)의 구조를 처음 보는 사람에�
 - `vendor/` — mermaid · highlight.js 동봉 (네트워크 불필요, 오프라인 동작)
 
 전부 생성물이다 — 손으로 고치지 말고 원 워크스페이스의 문서를 갱신한 뒤 재생성해서 통째로 갈아끼운다.
-정본은 pl2_m 의 `wiki/` 와 각 저장소 README.
+정본은 pl_2m 의 `wiki/` 와 각 저장소 README.

@@ -526,21 +526,21 @@
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0">PL-2 M 폴더 구조</h1>
-  <p class="subtitle animate" style="--i:1">기준일 2026-08-02 <span class="dot">·</span> pk-caring/pl2_m</p>
+  <p class="subtitle animate" style="--i:1">기준일 2026-08-02 <span class="dot">·</span> pk-caring/pl_2m</p>
   <div class="tree-key animate" style="--i:2">
     <span><span class="k-pink">pl2_*</span> = PL-2 제품의 것</span>
     <span><span class="k-cyan">pl_*</span> = 어느 로봇에나 적용</span>
     <span>▸ 행 클릭 = 트리 펼치기 · <span class="vchip" style="margin-left:0;vertical-align:0">설명</span> 클릭 = 우측 패널 → [자세히 보기]</span>
   </div>
 <div class="xtree">
-<div class="xleaf"><span class="xname"><span class="t-dir">pl2_m/</span></span><span class="xdesc"><b>부모 저장소 = colcon 워크스페이스 그 자체</b> — 도메인은 소유하지 않는다</span></div>
+<div class="xleaf"><span class="xname"><span class="t-dir">pl_2m/</span></span><span class="xdesc"><b>부모 저장소 = colcon 워크스페이스 그 자체</b> — 도메인은 소유하지 않는다</span></div>
 <div class="xkids">
 <div class="xleaf"><span class="xname">pl2.repos</span><span class="xdesc">조립 매니페스트 — 아래 저장소 5개를 <code>src/</code>로 당긴다 (vcstool)</span></div>
 <div class="xleaf"><span class="xname">versions.lock</span><span class="xdesc">전 리포 SHA + python 환경 고정 (재현 빌드)</span></div>
 <details class="xn"><summary><span class="xname"><span class="t-dir">robot/</span><a class="vchip pbtn" data-panel="robot" href="#">설명</a></span><span class="xdesc">로봇 진입점 — 선언과 산출물</span></summary>
 <div class="xkids">
 <div class="xleaf"><span class="xname">composition.yaml</span><span class="xdesc"><b>이 로봇이 무엇으로 이루어지는가</b> — 팔 ×2 · 리더 · 카메라 ×3 선언</span></div>
-<div class="xleaf"><span class="xname">urdf/pl2_m.urdf.xacro</span><span class="xdesc">기구 조립 선언 — 어느 링크의 어느 마운트에 무엇이 붙는가</span></div>
+<div class="xleaf"><span class="xname">urdf/pl_2m.urdf.xacro</span><span class="xdesc">기구 조립 선언 — 어느 링크의 어느 마운트에 무엇이 붙는가</span></div>
 <div class="xleaf"><span class="xname">generate.sh</span><span class="xdesc">resolver 실행 → <code>generated/</code> 재생성</span></div>
 <div class="xleaf"><span class="xname"><span class="t-gen">generated/</span></span><span class="xdesc">schema.json · params · robot_description.urdf — 전부 산출물</span></div>
 <div class="xleaf"><span class="xname">placement.yaml</span><span class="xdesc">보드 어휘 SSOT — 어떤 컴포넌트가 어느 보드 몫인가</span></div>
@@ -550,7 +550,7 @@
 <div class="xkids">
 <div class="xleaf"><span class="xname">placement.json</span><span class="xdesc">어떤 컴포넌트가 어느 머신에서 도는가 (호스트별 · .example)</span></div>
 <div class="xleaf"><span class="xname">boards/</span><span class="xdesc">보드 사실 — 장치 · 링크 예산 · 스트림 실측</span></div>
-<div class="xleaf"><span class="xname">rigs/pl2m-001/</span><span class="xdesc">이 기체의 실측 기록 — rig.yaml · cameras.json · board.yaml</span></div>
+<div class="xleaf"><span class="xname">rigs/pl_2m-001/</span><span class="xdesc">이 기체의 실측 기록 — rig.yaml · cameras.json · board.yaml</span></div>
 <div class="xleaf"><span class="xname">sites/lab.yaml</span><span class="xdesc">현장 값</span></div>
 </div></details>
 <div class="xleaf"><span class="xname">config.env</span><span class="xdesc">호스트 사실 (bash 전용 · gitignore + .example)</span></div>
@@ -619,7 +619,7 @@
     <div class="lband">
       <div class="lname"><b>워크스페이스</b><span>colcon 루트</span></div>
       <div class="lcards">
-        <div class="lchip"><span class="r">pk-caring/pl2_m</span><b>PL-2 M</b><div class="d">robot/ 로봇 선언 · config/ 기체 값 · src/ 조립</div></div>
+        <div class="lchip"><span class="r">pk-caring/pl_2m</span><b>PL-2 M</b><div class="d">robot/ 로봇 선언 · config/ 기체 값 · src/ 조립</div></div>
         <div class="lchip dashedc"><span class="r">caring_m</span><b>케어링 M · 예정</b><div class="d">공유 저장소를 다시 조립하는 형제 워크스페이스</div></div>
       </div>
     </div>
@@ -671,7 +671,7 @@
       <div class="lname"><b>공용 데이터</b><span>전 층 공용</span></div>
       <div class="lcards">
         <div class="lchip"><span class="r">pl2_arm</span><b>description</b><div class="d">형상 — /robot_description 하나에서 전부 파생</div></div>
-        <div class="lchip"><span class="r">pl2_m</span><b>config/ · rig 기록</b><div class="d">이 기체의 실측값 · 배선 · 카메라</div></div>
+        <div class="lchip"><span class="r">pl_2m</span><b>config/ · rig 기록</b><div class="d">이 기체의 실측값 · 배선 · 카메라</div></div>
         <div class="lchip green"><span class="r">pl_platform</span><b>조립 규칙 + robot/</b><div class="d">계약 + 선언 → resolver → 스키마 · 파라미터</div></div>
         <div class="lchip"><span class="r">pl2_arm</span><b>cameras</b><div class="d">층계 밖 — ZMQ 로 운영 · 학습에 최신 프레임 직송</div></div>
       </div>
@@ -685,8 +685,8 @@
   <div class="drawer-body"><div class="rich"></div></div>
 </aside>
 <div class="panel-store" hidden>
-<div class="panel-src" id="panel-robot" data-title="robot/ — 로봇 진입점"><p><strong>로봇을 정의하는 곳이다.</strong> <code>composition.yaml</code> 한 파일이 이 로봇의 구성(팔 2개·리더·카메라 3대)을 선언한다. 나머지는 모두 이 선언에서 생성된다.</p><p>선언은 두 가지다. composition.yaml 은 어떤 모듈을 쓰는지를, <code>urdf/pl2_m.urdf.xacro</code> 는 그 모듈이 몸체 어디에 붙는지를 정한다. 좌표 같은 실제 값은 description 패키지에 있다. 여기에는 이름만 적는다.</p><p><code>generate.sh</code> 를 실행하면 스키마·파라미터·URDF 가 <code>generated/</code> 에 생성된다. 로봇 기동은 <code>robot.launch.py</code> 한 곳이며, board 인자를 받은 머신의 컴포넌트만 뜬다.</p><a class="more-btn" href="pkg-robot.html">자세히 보기 →</a></div>
-<div class="panel-src" id="panel-config" data-title="config/ — 이 기체의 값"><p><strong>기체마다 다른 값을 모아 두는 곳이다.</strong> 코드가 아니라 측정값·설정값이다. 호스트별 파일은 gitignore 하고, 저장소에는 .example 템플릿만 커밋한다.</p><p><code>boards/</code> 는 보드별 장치와 네트워크 예산, <code>rigs/pl2m-001/</code> 은 이 기체 한 대의 캘리브레이션·배선·카메라 기록이다. payload 커미셔닝 결과도 이 파일에 저장된다.</p><p>rig 기록의 <code>module_revision</code> 은 안전장치다. 측정 당시의 팔 모델을 기록해 두고, composition 의 모델과 다르면 기동을 거부한다. 오래된 캘리브레이션을 새 모델에 적용하는 사고를 막는다.</p><a class="more-btn" href="pkg-config.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-robot" data-title="robot/ — 로봇 진입점"><p><strong>로봇을 정의하는 곳이다.</strong> <code>composition.yaml</code> 한 파일이 이 로봇의 구성(팔 2개·리더·카메라 3대)을 선언한다. 나머지는 모두 이 선언에서 생성된다.</p><p>선언은 두 가지다. composition.yaml 은 어떤 모듈을 쓰는지를, <code>urdf/pl_2m.urdf.xacro</code> 는 그 모듈이 몸체 어디에 붙는지를 정한다. 좌표 같은 실제 값은 description 패키지에 있다. 여기에는 이름만 적는다.</p><p><code>generate.sh</code> 를 실행하면 스키마·파라미터·URDF 가 <code>generated/</code> 에 생성된다. 로봇 기동은 <code>robot.launch.py</code> 한 곳이며, board 인자를 받은 머신의 컴포넌트만 뜬다.</p><a class="more-btn" href="pkg-robot.html">자세히 보기 →</a></div>
+<div class="panel-src" id="panel-config" data-title="config/ — 이 기체의 값"><p><strong>기체마다 다른 값을 모아 두는 곳이다.</strong> 코드가 아니라 측정값·설정값이다. 호스트별 파일은 gitignore 하고, 저장소에는 .example 템플릿만 커밋한다.</p><p><code>boards/</code> 는 보드별 장치와 네트워크 예산, <code>rigs/pl_2m-001/</code> 은 이 기체 한 대의 캘리브레이션·배선·카메라 기록이다. payload 커미셔닝 결과도 이 파일에 저장된다.</p><p>rig 기록의 <code>module_revision</code> 은 안전장치다. 측정 당시의 팔 모델을 기록해 두고, composition 의 모델과 다르면 기동을 거부한다. 오래된 캘리브레이션을 새 모델에 적용하는 사고를 막는다.</p><a class="more-btn" href="pkg-config.html">자세히 보기 →</a></div>
 <div class="panel-src" id="panel-arm" data-title="src/pl2_arm — 팔"><p>팔 도메인 저장소다. 제품 <strong>PL-2 ARM</strong> 에 해당한다. 실물은 OpenArm v2 팔 2개, DAMIAO 모터, CAN-FD 버스, 카메라 3대다.</p><p>패키지 13개는 층 구조다. 형상 데이터 → 모터 구동(실물/시뮬레이션) → 안전 게이트 → 팔의 제어(계획·조그·게인·실측) → 화면·조립 순이다.</p><p>팔이 외부에 제공하는 인터페이스(관절 그룹·토픽·QoS)는 <code>contract/</code> 의 계약 파일에 데이터로 선언한다. 조립 계층은 이 계약만 읽는다.</p><a class="more-btn" href="packages.html">자세히 보기 →</a></div>
 <div class="panel-src" id="panel-base" data-title="src/pl2_base — 주행"><p>VicPinky 모바일 베이스의 자리다. 현재는 README 만 있다.</p><p>주행 계약이 만들어지면 composition.yaml 에 <code>drive</code> 모듈로 추가된다. 이동 중 팔 고정, 단일 E-stop 같은 주행·팔 결합 규칙도 그때 함께 들어온다.</p></div>
 <div class="panel-src" id="panel-leader" data-title="src/pl2_leader — 리더 디바이스"><p>사람이 손으로 잡고 움직이는 <strong>교시(텔레옵) 입력 장치</strong>다. 현재 실물은 Feetech OpenArm Mini 2대다. 판매 제품 PL-2 LEADER(dynamixel)는 아직 구현하지 않았다.</p><p>이 저장소가 하는 일은 장치의 관절값을 읽어 <code>leader_state</code> 토픽으로 발행하는 데까지다. 팔이 이를 따라 움직이는 방식은 조립 계층(pl_adapters)이 정한다. 그래서 이 저장소에는 팔 관련 코드가 없다.</p><p>하드웨어 교체는 <code>backend</code> 파라미터 하나로 한다(mini·dynamixel·bandi·mock). 미구현 백엔드를 지정하면 명확한 에러로 종료된다.</p><a class="more-btn" href="pkg-leader.html">자세히 보기 →</a></div>

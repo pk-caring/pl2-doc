@@ -577,7 +577,7 @@ flowchart LR
   <div class="tbl-wrap"><table><tbody><tr><td><strong>pl_composition</strong></td><td>계약·구성이 따라야 하는 JSON Schema</td></tr><tr><td><strong>pl_resolver</strong></td><td>계약 + 구성 + 레이어 → 파라미터·관측/행동 스키마. 순수 함수</td></tr><tr><td><strong>pl_adapters</strong></td><td>leader_state → 게이트 intent (enable/align 상태기계)</td></tr><tr><td><strong>pl_supervisor</strong></td><td>고아 노드 doctor · NIC 자동감지/DDS 핀</td></tr><tr><td><strong>reference_robots</strong></td><td>mock 참조 구성 3종 — 로봇 없이 조립 규칙 검증</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre class="nohl"><span class="hljs-title">robot/generate.sh</span>                                  <span class="hljs-comment"># 선언 → generated/ (sim 레이어)</span>
-<span class="hljs-title">robot/generate.sh</span> <span class="hljs-attr">--layers</span> config/rigs/pl2m-001    <span class="hljs-comment"># 이 기체의 실측 레이어로</span>
+<span class="hljs-title">robot/generate.sh</span> <span class="hljs-attr">--layers</span> config/rigs/pl_2m-001    <span class="hljs-comment"># 이 기체의 실측 레이어로</span>
 <span class="hljs-title">ros2</span> run pl_supervisor doctor <span class="hljs-attr">--kill</span>               <span class="hljs-comment"># 고아 노드 정리</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim"><strong>pl_composition</strong> — 스키마는 데이터일 뿐이고, 적용하는 손은 resolver 의 validate.py 다. pl_composition/schema/ 의 *.schema.json 을 읽어 계약·구성·placement 를 검사하고, 위반은 첫 건에서 멈추지 않고 전부 모아 한 번에 보고한다 — 실패 메시지가 곧 수리 목록이 된다.</p>
