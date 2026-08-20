@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PL-2 M — pl_platform</title>
+<title>Caring M — pl_platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -522,7 +522,7 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">Caring M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl_platform</code></h1>
@@ -538,7 +538,7 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_composition/schema/</span><span class="xdesc">계약 · 구성 · 보드의 JSON Schema</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_resolver/contracts.py</span><span class="xdesc">계약 로드 · 검증</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_resolver/layers.py</span><span class="xdesc">설정 레이어 + meta 자물쇠</span></div>
-<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_adapters/</span><span class="xdesc">teleop 어댑터 — leader_state → intent</span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_adapters/</span><span class="xdesc">teleop 어댑터 — leader_state → intent (joint · <b>ik</b> 두 모드)</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>pl_supervisor/</span><span class="xdesc">doctor · net.py · dds.py</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>reference_robots/</span><span class="xdesc">mock 로봇 3종 — 자기 검증</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>ci/ · tests/</span><span class="xdesc">제품명 금지 등 경계 게이트</span></div>
@@ -562,7 +562,7 @@ flowchart LR
   CON["모듈 계약들<br/>arm · leader · camera"]:::mod --> RES["pl_resolver<br/>순수 함수"]:::plat
   COMP["composition + 레이어<br/>(boards · rig · site)"]:::ws --> RES
   RES --> GEN["generated/<br/>스키마 · 파라미터 · URDF"]:::gen
-  LS["leader_state"]:::mod --> AD["pl_adapters"]:::plat -->|intent| GATE["게이트"]:::mod
+  LS["leader_state"]:::mod --> AD["pl_adapters<br/>joint · ik"]:::plat -->|"intent_raw"| MF["움직임 필터"]:::mod -->|intent| GATE["게이트"]:::mod
   SUP["pl_supervisor<br/>doctor · NIC/DDS"]:::plat -.-> HOST["호스트 런타임"]:::dim
   classDef hw fill:#1f1a10,stroke:#d9a23a,color:#edeff5
   classDef mod fill:#1b1e29,stroke:#8b90a3,color:#edeff5

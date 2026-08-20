@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PL-2 M — 패키지</title>
+<title>Caring M — 패키지</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -163,6 +163,7 @@
     font-size: 34px; font-weight: 700; letter-spacing: -0.8px;
     line-height: 1.25; text-wrap: balance; margin: 18px 0 8px;
   }
+  .k-amber { color: var(--amber); font-weight: 600; }
   .subtitle {
     color: var(--text-dim); font-family: var(--font-mono);
     font-size: 12px; margin-bottom: 26px;
@@ -522,13 +523,14 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">Caring M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0">패키지</h1>
-  <p class="subtitle animate" style="--i:1">핵심 패키지 목록 — 구조 · 연결 · 핵심 · 빠른 시작 · 실전 코드</p>
+  <p class="subtitle animate" style="--i:1">핵심 패키지 목록 — 구조 · 연결 · 핵심 · 빠른 시작 · 실전 코드. <span class="k-amber">cr_*</span> 는 caring_m 에만 있는 케어링 기능 계층이다.</p>
   <div class="pkg-grid animate" style="--i:2">
     <a class="pkg-card" href="pkg-safety.html"><div class="n">pl2_arm_safety</div><p>안전층 — 정책(rclpy) + 집행(C++ 체인 게이트), fail-closed</p></a>
+    <a class="pkg-card" href="pkg-motion-filter.html"><div class="n">pl2_arm_motion_filter</div><p>움직임 필터 — 모든 intent 가 지난다. 속도 QP · 기하 회피 · 접촉 힘 유계</p></a>
     <a class="pkg-card" href="pkg-description.html"><div class="n">pl2_arm_description</div><p>URDF · 메시 · 모델별 값 — 로봇의 형상 SSOT</p></a>
     <a class="pkg-card" href="pkg-hardware-can.html"><div class="n">pl2_arm_hardware · can</div><p>실물 구동 — DAMIAO 모터 SystemInterface + CAN-FD</p></a>
     <a class="pkg-card" href="pkg-mujoco.html"><div class="n">pl2_arm_mujoco</div><p>MuJoCo 심 — 자산 + 플러그인 + 뷰어, 실물과 같은 제어법칙</p></a>
@@ -539,10 +541,11 @@
     <a class="pkg-card" href="pkg-leader.html"><div class="n">pl2_leader</div><p>리더 디바이스 — 교시·텔레옵 입력, backend 교체형</p></a>
     <a class="pkg-card" href="pkg-imitation.html"><div class="n">pl_imitation</div><p>모방학습 — 수집 · 학습 · 추론, 스키마 기반</p></a>
     <a class="pkg-card" href="pkg-platform.html"><div class="n">pl_platform</div><p>조립 계층 — 계약 + 구성 → 파라미터·스키마 (resolver)</p></a>
+    <a class="pkg-card" href="pkg-caring.html"><div class="n">케어링 계층 (cr_*)</div><p>북치기 — 표면(interfaces) · 시퀀서(percussion) · 폰 리모컨(studio)</p></a>
     <a class="pkg-card" href="pkg-robot.html"><div class="n">robot/ (부모)</div><p>로봇 진입점 — composition 선언 · generate · 유일 기동 경로</p></a>
     <a class="pkg-card" href="pkg-config.html"><div class="n">config/ (부모)</div><p>이 기체의 값 — placement · boards · rig 실측 · site</p></a>
   </div>
-  <footer><span>기준일 2026-08-02</span><span>정본: 각 저장소 README · wiki/</span></footer>
+  <footer><span>기준일 2026-08-20</span><span>정본: 각 저장소 README · wiki/</span></footer>
 
 </div>
 
