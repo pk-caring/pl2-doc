@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PL-2 M — robot/</title>
+<title>Caring M — robot/</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -522,7 +522,7 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">Caring M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">robot/</code></h1>
@@ -540,6 +540,9 @@
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>generate.sh</span><span class="xdesc">resolver 실행 → generated/ 재생성</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>generated/</span><span class="xdesc">schema.json · params/ · robot_description.urdf — 산출물</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>placement.yaml</span><span class="xdesc">컴포넌트 → 보드 역할 선언</span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>config/command_sources.yaml</span><span class="xdesc">intent 소스 표 — teleop · <b>percussion</b> · inference</span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>layers/sim/</span><span class="xdesc">하드웨어 없이 resolver 를 돌려 보는 가짜 board · rig 레이어</span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>launch/sim_teleop · sim_percussion</span><span class="xdesc">실물 없이 두 시연을 세우는 심 진입점</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">└─ </span>launch/robot.launch.py</span><span class="xdesc">유일한 기동 진입점</span></div>
 </div>
   <div class="sec-head" id="p2"><span class="num">02</span><h2>다른 패키지와의 연결</h2><a class="anchor" href="#p2">#</a></div>
@@ -572,12 +575,14 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
+  <p class="p">누가 팔에게 명령할 수 있는지도 이 선언의 일부다 — <code>config/command_sources.yaml</code> 의 소스 표에 teleop · <strong>percussion</strong> · inference 가 나란히 있다. 케어링 기능이 팔을 얻는 방법은 특권이 아니라 이 표의 한 줄이고, 그래서 소스가 하나 늘어도 팔 쪽 코드는 바뀌지 않는다.</p>
+<p class="p dim"><code>board</code> 인자에는 기본값이 없다 — 기본값이 있으면 한 호스트가 조용히 다른 보드의 스택을 띄운다. 텔레옵은 <code>teleop_mode:=joint</code>(관절 복사) 과 <code>ik</code>(리더 자세를 팁 자세로 푼다) 중 하나로 뜨고, 브라우저 가상 리더(<code>backend:=virtual</code>)는 팁 자세 입력이라 launch 가 <b>항상 ik 로 맞춘다</b>.</p>
+<div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>composition.yaml</strong></td><td>이 로봇이 무엇으로 이루어지는가 — 조건 분기도 스크립트도 없는 선언</td></tr><tr><td><strong>generate.sh</strong></td><td>계약·선언·레이어 수정 후 재실행 — <code>generated/</code> 를 다시 만든다</td></tr><tr><td><strong>generated/</strong></td><td>전부 산출물 — 손으로 고치지 않는다. 수집·추론이 보는 유일한 로봇 정의</td></tr><tr><td><strong>robot.launch.py</strong></td><td>유일한 기동 진입점 — <code>board</code> 인자는 placement 어휘와 대조되고, 그 머신 몫의 컴포넌트만 뜬다</td></tr><tr><td><strong>urdf/</strong></td><td>마운트 선언 — 베이스 어느 링크에 팔이 붙는가 (좌표값은 description 소유)</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre class="nohl"><span class="hljs-title">robot/generate.sh</span>                                   <span class="hljs-comment"># 선언 → generated/ (sim 레이어)</span>
 <span class="hljs-title">robot/generate.sh</span> <span class="hljs-attr">--layers</span> config/rigs/pl_2m-001     <span class="hljs-comment"># 이 기체의 실측 레이어로</span>
-<span class="hljs-title">ros2</span> launch pl_2m_bringup robot.launch.py board:=compute   <span class="hljs-comment"># 이 머신의 컴포넌트만 기동</span></pre></div>
+<span class="hljs-title">ros2</span> launch pl_2m_bringup robot.launch.py board:=arm_board   <span class="hljs-comment"># 이 머신의 컴포넌트만 기동</span></pre></div>
   <div class="sec-head" id="p5"><span class="num">05</span><h2>실전 코드</h2><a class="anchor" href="#p5">#</a></div>
   <p class="p dim">선언이 실제로 어떻게 생겼는지 — 조건 분기도 스크립트도 없다. 팔 둘·리더·카메라 셋이 이 로봇의 전부고, resolver 가 이걸 모듈 계약과 합쳐 산출물을 만든다.</p>
   <p class="diagram-shell__hint">robot/composition.yaml (발췌)</p>

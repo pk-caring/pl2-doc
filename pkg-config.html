@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PL-2 M — config/</title>
+<title>Caring M — config/</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -522,7 +522,7 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">Caring M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">config/</code></h1>
@@ -536,7 +536,8 @@
   <div class="xtree" style="margin:14px 0">
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)"></span><span class="t-dir">config/</span></span><span class="xdesc">이 기체의 값</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>placement.json</span><span class="xdesc">보드 → 실제 머신 (호스트별 · .example)</span></div>
-<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>boards/compute.yaml · leader.yaml</span><span class="xdesc">보드 장치 · 링크 예산 실측</span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>components.yaml</span><span class="xdesc">그 컴포넌트는 <b>무엇으로 뜨는가</b> — follower · leader · cameras · recorder · inference · <b>percussion</b></span></div>
+<div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>boards/arm_board.yaml · leader_board.yaml</span><span class="xdesc">보드 장치 · 링크 예산 실측</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>rigs/pl_2m-001/rig.yaml</span><span class="xdesc">캘리브레이션 실측 (module_revision 자물쇠)</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>rigs/pl_2m-001/board.yaml</span><span class="xdesc">결선 — can0/can1 · 리더 포트</span></div>
 <div class="xleaf plain"><span class="xname"><span style="color:var(--text-subtle)">├─ </span>rigs/pl_2m-001/cameras.json</span><span class="xdesc">카메라 결선 · 해상도 · fps</span></div>
@@ -572,7 +573,8 @@ flowchart LR
   classDef dim fill:#0e0f14,stroke:#565b6b,color:#8b90a3
     </script>
   </section>
-  <div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
+  <p class="p">짝이 둘이다. <code>placement.json</code> 이 <strong>어느 머신이 어느 컴포넌트를 돌리나</strong>(호스트마다 다르니 gitignore + <code>.example</code>), <code>components.yaml</code> 이 <strong>그 컴포넌트는 무엇으로 뜨나</strong>(이 로봇의 성질이라 모든 호스트에서 같으니 커밋)를 말한다. 케어링 북치기도 여기서는 <code>percussion</code> 한 줄일 뿐이다 — 운영자 콘솔이 <code>cr_percussion</code> 을 직접 알면 그 콘솔은 이 로봇 전용이 되기 때문이다.</p>
+<div class="sec-head" id="p3"><span class="num">03</span><h2>핵심</h2><a class="anchor" href="#p3">#</a></div>
   <div class="tbl-wrap"><table><tbody><tr><td><strong>placement.json</strong></td><td>머신 배치 — 호스트별(gitignore), 커밋본은 <code>.example</code> 템플릿</td></tr><tr><td><strong>boards/</strong></td><td>보드 사실 — 장치 목록·링크 대역/지연 예산·카메라 스트림 실측. resolver 가 링크 예산을 검사한다</td></tr><tr><td><strong>rigs/&lt;rig&gt;/</strong></td><td>기체 실측 기록 — payload 커미셔닝이 직접 저장, <code>module_revision</code> 이 모델 자물쇠</td></tr><tr><td><strong>config.env</strong></td><td>bash 점검 스크립트 전용 호스트 사실 — 파이썬은 읽지 않는다</td></tr></tbody></table></div>
   <div class="sec-head" id="p4"><span class="num">04</span><h2>빠른 시작</h2><a class="anchor" href="#p4">#</a></div>
   <div class="codeblock"><pre class="nohl"><span class="hljs-title">cp</span> config/placement.json.example config/placement.json   <span class="hljs-comment"># 템플릿 → 이 호스트의 배치</span>
@@ -608,8 +610,8 @@ flowchart LR
     <span class="hljs-attr">approved_by:</span> <span class="hljs-string">woolim</span></pre></div>
   <div class="sec-head" id="p6"><span class="num">06</span><h2>설정 파일 실물</h2><a class="anchor" href="#p6">#</a></div>
   <p class="p dim">보드의 네트워크 실측값이다. 값은 계산이 아니라 측정이며, resolver 가 카메라 스트림 합계를 이 예산과 대조한다.</p>
-  <p class="diagram-shell__hint">config/boards/compute.yaml (발췌)</p>
-  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># links: 기가비트 유선 실측 (compute↔leader 직결):</span>
+  <p class="diagram-shell__hint">config/boards/arm_board.yaml (발췌)</p>
+  <div class="codeblock"><pre class="nohl"><span class="hljs-comment"># links: 기가비트 유선 실측 (arm_board↔leader_board 직결):</span>
 <span class="hljs-comment">#   TCP 양방향 941 Mbit/s, ping RTT avg 0.41 ms.</span>
 <span class="hljs-comment">#   예산은 측정치보다 보수적으로 잡는다.</span>
 <span class="hljs-attr">devices:</span> [<span class="hljs-string">socketcan</span>]

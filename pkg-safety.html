@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PL-2 M — pl2_arm_safety</title>
+<title>Caring M — pl2_arm_safety</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -522,7 +522,7 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">PL-2 M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
+<nav class="site-nav"><div class="site-nav__in"><a class="brand" href="index.html">Caring M</a><a href="index.html">폴더 구조</a><a href="packages.html" class="on">패키지</a><a href="basics.html">기초 지식</a></div></nav>
 <div class="wrap1">
 
   <h1 class="animate" style="--i:0"><code style="background:transparent;border:none;padding:0">pl2_arm_safety</code></h1>
@@ -578,10 +578,13 @@ flowchart LR
   <div class="sec-head" id="p4"><span class="num">04</span><h2>명령의 여정</h2><a class="anchor" href="#p4">#</a></div>
   <p class="p">명령 하나가 모터에 닿으려면 여러 단계를 거친다. intent · lease · 정책 게이트 · 체인 게이트는 모두 그 길목에 붙은 이름이다. 관절 각도값 일곱 개("오른팔을 여기로")가 실제로 어떤 길을 지나는지 따라가 보자.</p>
   <div class="journey">
-    <div class="jstat"><span class="tag">발행자</span><b>프로그램</b> — studio · teleop · 추론
+    <div class="jstat"><span class="tag">발행자</span><b>프로그램</b> — studio · teleop · 북치기 · 추론
       <p>팔을 움직이려는 쪽. 누구도 모터·컨트롤러에 직접 명령을 쓸 수 없다.</p></div>
     <div class="jstep"><span class="n">①</span>lease(명령권)를 빌린다<small>한 번에 한 프로그램만 · heartbeat(0.2 초 간격 생존 신호)가 끊기면 자동 회수 — 죽은 프로그램은 명령권을 쥘 수 없다</small></div>
-    <div class="jstep"><span class="n">②</span>intent(명령 후보)를 발행한다 — 관절 각도값 일곱 개<small><code>right/command_intent</code> (그리퍼 · 속도용은 따로) · 이 시점엔 아무것도 움직이지 않는다</small></div>
+    <div class="jstep"><span class="n">②</span>intent(명령 후보)를 발행한다 — 관절 각도값 일곱 개<small><code>right/command_intent_raw</code> (그리퍼 · 속도용은 따로) · 이 시점엔 아무것도 움직이지 않는다</small></div>
+    <div class="jstat gate"><span class="tag">셰이핑 · C++</span><b>움직임 필터</b>
+      <p>후보를 <b>버리지 않고 고친다</b> — 속도·가속도·jerk 를 캡 안으로 깎고, 링크가 서로 닫히는 성분만 제동한다(접선은 그대로 흘린다). 여기서 나온 값이 정본 <code>right/command_intent</code> 다.</p>
+      <span class="jreject">→ 충돌 예방이 아니라 접촉 <b>힘</b>의 유계 — 멈추는 일은 하지 않는다</span></div>
     <div class="jstat gate"><span class="tag">판단 · Python</span><b>정책 게이트</b>
       <p>후보를 검사한다 — lease 를 쥔 소스인가 · E-stop 이 아닌가 · 값이 관절 한계 안인가.</p>
       <span class="jreject">✕ 탈락한 후보는 버려진다 · 팔은 그대로</span></div>
